@@ -3,5 +3,6 @@ program main;
 uses
   classes,sysutils,constantunit;
 begin 
-   
+   write('testeujhutrug8888er');
+   readln();
 end.
