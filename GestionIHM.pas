@@ -10,14 +10,14 @@ implementation
 
 
 uses
-  SysUtils, Classes,gestionEcran;
+  SysUtils, Classes,gestionEcran,constantUnit;
 
 
 {Affichage du menu ECRAN TITRE}
 procedure EcranTitre();
 begin
     writeln('ECRANTITRE');
-    dessinerCadreXY(5,5,10,10,simple,white,black); // c'est un test me tape pas stp
+    dessinerCadreXY(10,5,180,30,simple,white,black); // c'est un test me tape pas stp
 end;
 
 {Affichage du menu principale}
