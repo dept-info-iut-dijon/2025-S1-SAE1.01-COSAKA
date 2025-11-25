@@ -17,7 +17,7 @@ uses
 procedure EcranTitre();
 begin
     dessinerCadreXY(5,5,195,35,simple,white,black); // c'est un test me tape pas stp
-    writeln('reuiferoperj');
+    writeln('JAJAOFIEKJIOF');
 end;
 
 {Affichage du menu principale}
