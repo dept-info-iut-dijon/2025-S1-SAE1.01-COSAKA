@@ -16,8 +16,8 @@ uses
 {Affichage du menu ECRAN TITRE}
 procedure EcranTitre();
 begin
-    writeln('ECRANTITRE');
-    dessinerCadreXY(10,5,180,30,simple,white,black); // c'est un test me tape pas stp
+    dessinerCadreXY(5,5,195,35,simple,white,black); // c'est un test me tape pas stp
+    writeln('reuiferoperj');
 end;
 
 {Affichage du menu principale}
