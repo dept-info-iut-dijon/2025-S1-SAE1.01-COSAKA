@@ -1,8 +1,8 @@
 program main;
 {$mode objfpc}{$H+}
 uses
-  classes,sysutils,constantunit;
+  classes,sysutils,constantunit,gestionEcran;
 begin 
-   write('testeujhutrug8888er');
+   EcranTitre();
    readln();
 end.
