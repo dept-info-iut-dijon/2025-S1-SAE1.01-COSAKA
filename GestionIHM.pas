@@ -13,7 +13,7 @@ uses
   SysUtils, Classes,gestionEcran,constantUnit;
 
 
-{Affichage du menu ECRAN TITRE}
+{Affichage de l'Ecran Titre}
 procedure EcranTitre();
 begin
     dessinerCadreXY(5,5,195,35,simple,white,black); // c'est un test me tape pas stp
