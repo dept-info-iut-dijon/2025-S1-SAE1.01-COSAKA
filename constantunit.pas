@@ -14,6 +14,7 @@ interface
       niveau:Integer;
       est_decouvert:Boolean;
       materiaux:Materiaux;
+      production:Integer;
       // Il faudrat sûrement rajouter des choses par la suite
     end;
 
@@ -33,6 +34,8 @@ interface
 
     MINERAI1=Fer;   // Minerai le plus courant
     MINERAI2=Cuivre;  // 2ème Minerai le plus courant
+
+    PRODUCTION_BASE:array[Fer..Cuivre] of Integer=(10, 15);
 
     NOM_ZONE1='L Antre de Marzani';
     NOM_ZONE2='La Caverne Simmonet';
