@@ -56,10 +56,10 @@ procedure initEmplacements(var zone:Zone);
   end;
 
 procedure creerMine(var emplacement:Structure);
-  Procédure qui prend en paramètre un emplacement et 
+  {Procédure qui prend en paramètre un emplacement et 
   qui renvoie ce même emplacement en changeant le type 
   de la structure en 'Mine', en initialisant le niveau 
-  de la structure à 1 et la valeur de la production
+  de la structure à 1 et la valeur de la production}
   const
     // Initialise le nouveau niveau à 1
     NOUVEAU_NIVEAU = 1;
