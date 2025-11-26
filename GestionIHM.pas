@@ -14,7 +14,7 @@ uses
   SysUtils, Classes,gestionEcran,constantUnit;
 
 
-{Affichage du menu ECRAN TITRE}
+{Affichage de l'Ecran Titre}
 procedure EcranTitre();
 const 
   B = 35;
