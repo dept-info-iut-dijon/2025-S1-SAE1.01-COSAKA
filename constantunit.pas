@@ -23,6 +23,7 @@ interface
       numero:Integer;
       nom:String;
       emplacements:Array[0..9] of Structure;
+      minerais:Array[0..2] of Materiaux;
       inventaire:Array[Fer..Cuivre] of Integer;
     end;
   

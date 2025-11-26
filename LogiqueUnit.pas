@@ -28,7 +28,11 @@ function getEmplacementVideAlea(zone:Zone):Structure;
   var
     curent_emplacement:Structure;
   begin
-    
+    curent_emplacement:=zone.emplacements[random(1, 9)];
+    while (curent_emplacement.type_structure<>Null) do
+      begin
+      curent_emplacement:=zone.emplacements[random(1, 9)];
+      end;
   end;
 
 procedure initEmplacements(var zone:Zone);
@@ -44,11 +48,7 @@ procedure initEmplacements(var zone:Zone);
     // Définie un emplacement avec un gisement du premier minerai de la zone.
     setEmplacement(zone.emplacements[random(1, 9)], 3, true, Hub, zone.minerais[0]);
 
-    curent_emplacement:=zone.emplacements[random(1, 9)];
-    while (curent_emplacement.type_structure<>Null) do
-      begin
-      curent_emplacement:=zone.emplacements[random(1, 9)];
-      end;
+    
     // Définie un gisement du deuxième minerai de la zone dans un emplacement aléatoire.
     setEmplacement(curent_emplacement, 2, true, Hub, zone.minerais[1]);
     
