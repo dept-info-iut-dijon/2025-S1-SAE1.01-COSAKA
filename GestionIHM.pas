@@ -6,7 +6,7 @@ interface
 procedure EcranTitre();
 procedure MainMenu();
 procedure Scenario();
-procedure AfficherMessage(var msg:string);
+procedure AfficherMessage(msg:string);
 procedure AfficherJeu();
 procedure AfficherEmplacement();
 procedure AfficherInventaireZone();
@@ -162,7 +162,7 @@ begin
   readln()
 end;
 
-procedure AfficherMessage(var msg:string);
+procedure AfficherMessage(msg:string);
 begin
 dessinerCadreXY((SCREEN_WIDTH div 2)-((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)-2,(SCREEN_WIDTH div 2)+((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)+2,simple,White,Black);
 deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(msg)div 2),(SCREEN_HEIGHT div 2));

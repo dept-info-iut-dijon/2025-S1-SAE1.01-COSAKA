@@ -13,7 +13,7 @@ implementation
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
                          new_type_structure:Batiment; new_materiaux:Materiaux;
-                         new_production:Integer);
+                         new_production:Integer; new_consommable:Array[Fer..Electricite] of Integer);
   {Définit les valeur des paramètres de l'emplacement 'emplacement'.
   Attention, tous les paramètres doivent être renseignés.}
   begin
@@ -22,6 +22,7 @@ procedure setEmplacement(var emplacement:Structure;
     emplacement.est_decouvert:=new_est_decouvert;
     emplacement.materiaux:=new_materiaux;
     emplacement.production:=new_production;
+    emplacement.consommable:=new_consommable;
   end;
 
 function getEmplacementVideAlea(zone:Zone):Structure;
@@ -101,26 +102,52 @@ procedure creerMine(var emplacement:Structure);
     NOUVEAU_NIVEAU = 1;
   var
     production:Integer;
-    message:string;
   begin
+    // Vérifie si l'emplacement a bien été découvert
+    if emplacement.est_decouvert then
+    begin
     // Vérifie si le type de struture est bien un Gisement
-    if (emplacement.type_structure=Gisement) then
-    begin
-      // Calcul de la production selon le niveau du Gisement
-      production := round(PRODUCTION_BASE[emplacement.materiaux]*(1 + ((emplacement.niveau - 1) / 4)));
-      // Modifie l'emplacement avec les nouveaux paramètres
-      setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
-                      Mine, emplacement.materiaux, production);
-    end
+      if (emplacement.type_structure=Gisement) then
+      begin
+        // Calcul de la production selon le niveau du Gisement
+        production := round(PRODUCTION_BASE[emplacement.materiaux]*(1 + ((emplacement.niveau - 1) / 4)));
+
+        // Initialise le coût en éléctricité a 100
+        emplacement.consommable[Electricite] := 100
+
+        // Modifie l'emplacement avec les nouveaux paramètres
+        setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
+                        Mine, emplacement.materiaux, production, emplacement.consommable);
+      end
+      else
+        // Affiche le message d'erreur
+        AfficherMessage('Vous devez impérativement placer une mine sur un gisement');
+      end
     else
-    begin
-      message := 'Vous devez impérativement placer une mine sur un gisement';
-      // Affiche le message
-      AfficherMessage(message);
-    end;
+      // Affiche le message d'erreur
+      AfficherMessage('Vous n''avez pas encore explorer cet emplacement');
   end;
 
-  procedure revenusProduction(zone:Zone);
+procedure creerUsine(var emplacement:Structure; nouveau_materiaux:Materiaux);
+  {}
+  const
+    NOUVEAU_NIVEAU = 1;
+  begin
+    // Vérifie si l'emplacement a bien été découvert
+    if emplacement.est_decouvert then
+    begin
+      setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
+                      Usine, nouveau_materiaux, emplacemen.consommable )
+    end
+    else
+      // Affiche le message d'erreur
+      AfficherMessage('Vous n''avez pas encore explorer cet emplacement');
+  end;
+
+
+
+
+procedure revenusProduction(zone:Zone);
   {Fonction qui prend en parametre une zone et qui ajoute a 
   chaque materiaux dans l'inventaire les materiaux produit 
   par les différents batiments}

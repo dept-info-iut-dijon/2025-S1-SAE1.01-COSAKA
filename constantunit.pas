@@ -44,6 +44,8 @@ interface
                                                                         10, 10, 10, 10, 
                                                                         10, 10);
 
+    CONSOMMABLE_BASE:Array[Fer..Electricite] of Array[Fer..Electricite]=();
+
     NOM_ZONE1='L Antre de Marzani';
     NOM_ZONE2='La Caverne Simmonet';
     NOM_ZONE3='La Montagne Coulon';
