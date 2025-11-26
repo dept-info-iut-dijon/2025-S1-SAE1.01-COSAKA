@@ -3,7 +3,7 @@ unit LogiqueUnit;
 
 interface
   uses
-    constantunit;
+    constantunit, GestionIHM;
 
 
 implementation
