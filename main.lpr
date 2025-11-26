@@ -9,4 +9,6 @@ var
 begin 
    EcranTitre();
    readln();
+   MainMenu();
+   readln();
 end.
