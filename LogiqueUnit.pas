@@ -12,8 +12,8 @@ implementation
 
 {procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
-                         new_type_structure:Batiment; new_materiaux:Materiaux,
-                         new_production:production);
+                         new_type_structure:Batiment; new_materiaux:Materiaux;
+                         new_production:Integer);
   {Définit les valeur des paramètres de l'emplacement 'emplacement'.
   Attention, tous les paramètres doivent être renseignés.
   begin
@@ -28,7 +28,11 @@ function getEmplacementVideAlea(zone:Zone):Structure;
   var
     curent_emplacement:Structure;
   begin
-    
+    curent_emplacement:=zone.emplacements[random(8)+1];
+    while (curent_emplacement.type_structure<>Null) do
+      begin
+      curent_emplacement:=zone.emplacements[random(8)+1];
+      end;
   end;
 
 procedure initEmplacements(var zone:Zone);
@@ -40,17 +44,13 @@ procedure initEmplacements(var zone:Zone);
 
   begin
     // Définie le Hub de la zone
-    setEmplacement(zone.emplacements[0], 0, true, Hub, Null);
+    setEmplacement(zone.emplacements[0], 0, true, Hub, Null, 0);
     // Définie un emplacement avec un gisement du premier minerai de la zone.
-    setEmplacement(zone.emplacements[random(1, 9)], 3, true, Hub, zone.minerais[0]);
+    setEmplacement(zone.emplacements[random(8)+1], 3, true, Hub, zone.minerais[0], 0);
 
-    curent_emplacement:=zone.emplacements[random(1, 9)];
-    while (curent_emplacement.type_structure<>Null) do
-      begin
-      curent_emplacement:=zone.emplacements[random(1, 9)];
-      end;
+    
     // Définie un gisement du deuxième minerai de la zone dans un emplacement aléatoire.
-    setEmplacement(curent_emplacement, 2, true, Hub, zone.minerais[1]);
+    setEmplacement(curent_emplacement, 2, true, Hub, zone.minerais[1], 0);
     
 
   end;
@@ -84,10 +84,29 @@ procedure creerMine(var emplacement:Structure);
     end;
   end;
 
+<<<<<<< HEAD
   function revenusProduction(zone:Zone):array[Fer..Cuivre] of Integer;
   }
   
   begin
   //end;
+=======
+  procedure revenusProduction(zone:Zone);
+  {Fonction qui prend en parametre une zone et qui ajoute a 
+  chaque materiaux dans l'inventaire les materiaux produit 
+  par les différents batiments}
+  var
+    emplacement:Structure;
+  begin
+    // Boucle sur chaque emplacements de la zone
+    for emplacement in zone.emplacements do
+    begin
+      // Vérifie que l'emplacement a été découvert
+      if emplacement.est_decouvert then
+        // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
+        zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + emplacement.production;
+    end;
+  end;
+>>>>>>> 754ebcbac92e2436bd3675aeb7ffffa164d4be3a
 
 end.
