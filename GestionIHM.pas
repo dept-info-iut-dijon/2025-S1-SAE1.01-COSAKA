@@ -9,7 +9,7 @@ procedure Scenario();
 procedure AfficherMessage(var msg:string);
 procedure AfficherJeu();
 procedure AfficherEmplacement();
-procedure AfficherInventaireZone();
+procedure AfficherInventaireZone(marzaCoin:Integer);
 procedure AfficherInformations(zone:string; time:string);
 procedure AfficherActions();
 
@@ -27,8 +27,6 @@ end;
 
 {Affichage de l'Ecran Titre}
 procedure EcranTitre();
-const 
-  B = 35;
 begin
   CadrePrincipale();
   // ART ASCII SATISFACT'IUT BY COSAKA | NAMES
@@ -77,8 +75,8 @@ begin
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('DUPUIS Gabin | NAVELOT-GENET Anatole | SUCCAR Eric | WAGNER Tom')div 2)+12,28);
   writeln('DUPUIS Gabin | NAVELOT-GENET Anatole | SUCCAR Eric | WAGNER Tom');
 
-  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Appuyez sur ENTRER pour commencer')div 2),35);
-  write('Appuyez sur ENTRER pour commencer');
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('< Appuyez sur ENTRER pour commencer >')div 2),35);
+  write('< Appuyez sur ENTRER pour commencer >');
 end;
 
 {Affichage du menu principale}
@@ -159,7 +157,6 @@ begin
   attendre(1000);
   couleurTexte(white);
   writeln('Appuyez sur ENTRER pour continuer');
-  readln()
 end;
 
 procedure AfficherMessage(var msg:string);
@@ -186,6 +183,9 @@ begin
   writeln('INFORMATIONS');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)+1));
   writeln('ACTIONS');
+
+  AfficherInformations('Dijon','Mardi 10 avril 2007');
+  AfficherInventaireZone(800);
 end;
 
 procedure AfficherEmplacement();
@@ -193,14 +193,19 @@ begin
   
 end;
 
-procedure AfficherInventaireZone();
+procedure AfficherInventaireZone(marzaCoin:Integer);
 begin
+  deplacerCurseurXY((SCREEN_WIDTH div 10)-(Length('Marza Coin : ')div 2),5);
+  writeln('Marza Coin : ',marzaCoin);
   
 end;
 
 procedure AfficherInformations(zone:string; time:string);
 begin
-  
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ZONE : '+ zone)div 2),5);
+  writeln('ZONE : ',zone);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length(time)div 2),7);
+  writeln(time);
 end;
 
 procedure AfficherActions();
