@@ -13,7 +13,7 @@ implementation
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
                          new_type_structure:Batiment; new_materiaux:Materiaux);
-{Définit les valeur des paramètres de l'emplacement 'emplacement'.
+  {Définit les valeur des paramètres de l'emplacement 'emplacement'.
   Attention, tous les paramètres doivent être renseignés.}
   begin
     emplacement.type_structure:=new_type_structure;
@@ -35,7 +35,7 @@ procedure initEmplacements(var zone:Zone);
   initialisé tous ses emplacements,  prêts pour le jeu.}
   var
     curent_emplacement:Structure;
-  
+
   begin
     // Définie le Hub de la zone
     setEmplacement(zone.emplacements[0], 0, true, Hub, Null);
