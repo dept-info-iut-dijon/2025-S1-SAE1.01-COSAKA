@@ -3,7 +3,7 @@ unit LogiqueUnit;
 
 interface
   uses
-    constantunit;
+    constantunit, GestionIHM;
 
 
 implementation
@@ -59,15 +59,22 @@ procedure creerMine(var emplacement:Structure);
     NOUVEAU_NIVEAU = 1;
   var
     production:Integer;
+    message:string;
   begin
     // Vérifie si le type de struture est bien un Gisement
     if emplacement.type_structure = Gisement then
     begin
       // Calcul de la production selon le niveau du Gisement
       production := round(PRODUCTION_BASE[emplacement.materiaux]*(1 + ((emplacement.niveau - 1) / 4)));
-      // Modifie l'emplacement
+      // Modifie l'emplacement avec les nouveaux paramètres
       setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
                       Mine, emplacement.materiaux, production);
+    end
+    else
+    begin
+      message := 'Vous devez impérativement placer une mine sur un gisement';
+      // Affiche le message
+      AfficherMessage(message);
     end;
   end;
 
