@@ -12,7 +12,8 @@ implementation
 
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
-                         new_type_structure:Batiment; new_materiaux:Materiaux);
+                         new_type_structure:Batiment; new_materiaux:Materiaux,
+                         new_production:production);
   {Définit les valeur des paramètres de l'emplacement 'emplacement'.
   Attention, tous les paramètres doivent être renseignés.}
   begin
@@ -20,6 +21,7 @@ procedure setEmplacement(var emplacement:Structure;
     emplacement.niveau:=new_niveau;
     emplacement.est_decouvert:=new_est_decouvert;
     emplacement.materiaux:=new_materiaux;
+    emplacement.production:=new_production;
   end;
 
 function getEmplacementVideAlea(zone:Zone):Structure;
@@ -53,5 +55,39 @@ procedure initEmplacements(var zone:Zone);
 
   end;
 
+procedure creerMine(var emplacement:Structure);
+  {Procédure qui prend en paramètre un emplacement et 
+  qui renvoie ce même emplacement en changeant le type 
+  de la structure en 'Mine', en initialisant le niveau 
+  de la structure à 1 et la valeur de la production}
+  const
+    // Initialise le nouveau niveau à 1
+    NOUVEAU_NIVEAU = 1;
+  var
+    production:Integer;
+    message:string;
+  begin
+    // Vérifie si le type de struture est bien un Gisement
+    if emplacement.type_structure = Gisement then
+    begin
+      // Calcul de la production selon le niveau du Gisement
+      production := round(PRODUCTION_BASE[emplacement.materiaux]*(1 + ((emplacement.niveau - 1) / 4)));
+      // Modifie l'emplacement avec les nouveaux paramètres
+      setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
+                      Mine, emplacement.materiaux, production);
+    end
+    else
+    begin
+      message := 'Vous devez impérativement placer une mine sur un gisement';
+      // Affiche le message
+      AfficherMessage(message);
+    end;
+  end;
+
+  function revenusProduction(zone:Zone):array[Fer..Cuivre] of Integer;
+  {
+  }
+  begin
+  end;
 
 end.
