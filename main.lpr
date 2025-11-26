@@ -7,4 +7,5 @@ begin
    readln();
    MainMenu();
    readln();
+   Scenario();
 end.
