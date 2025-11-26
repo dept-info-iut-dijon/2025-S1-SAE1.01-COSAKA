@@ -12,8 +12,8 @@ implementation
 
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
-                         new_type_structure:Batiment; new_materiaux:Materiaux,
-                         new_production:production);
+                         new_type_structure:Batiment; new_materiaux:Materiaux;
+                         new_production:Integer);
   {Définit les valeur des paramètres de l'emplacement 'emplacement'.
   Attention, tous les paramètres doivent être renseignés.}
   begin
@@ -88,6 +88,8 @@ procedure creerMine(var emplacement:Structure);
   {Fonction qui prend en parametre une zone et qui ajoute a 
   chaque materiaux dans l'inventaire les materiaux produit 
   par les différents batiments}
+  var
+    emplacement:Structure;
   begin
     // Boucle sur chaque emplacements de la zone
     for emplacement in zone.emplacements do
