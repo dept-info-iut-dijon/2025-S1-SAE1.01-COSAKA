@@ -30,7 +30,6 @@ interface
     SCREEN_WIDTH=200;
     SCREEN_HEIGHT=40;
 
-    EMPLACEMENTS_PAR_ZONE=10;
 
 
     MINERAI1=Fer;   // Minerai le plus courant

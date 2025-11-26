@@ -84,10 +84,19 @@ procedure creerMine(var emplacement:Structure);
     end;
   end;
 
-  function revenusProduction(zone:Zone):array[Fer..Cuivre] of Integer;
-  {
-  }
+  procedure revenusProduction(zone:Zone);
+  {Fonction qui prend en parametre une zone et qui ajoute a 
+  chaque materiaux dans l'inventaire les materiaux produit 
+  par les différents batiments}
   begin
+    // Boucle sur chaque emplacements de la zone
+    for emplacement in zone.emplacements do
+    begin
+      // Vérifie que l'emplacement a été découvert
+      if emplacement.est_decouvert then
+        // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
+        zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + emplacement.production;
+    end;
   end;
 
 end.
