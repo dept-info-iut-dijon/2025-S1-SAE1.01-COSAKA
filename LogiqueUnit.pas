@@ -25,31 +25,43 @@ procedure setEmplacement(var emplacement:Structure;
     emplacement.consommable:=new_consommable;
   end;
 
+function emplacementsSontDifferents(emplacement1:Structure; emplacement2:Structure):Boolean;
+  {Renvoie True si les emplacements en paramètres sont différents, False sinon}
+  begin
+    emplacementsSontDifferents:=(emplacement1.niveau<>emplacement2.niveau) or
+                                (emplacement1.est_decouvert<>emplacement2.est_decouvert) or
+                                (emplacement1.type_structure<>emplacement2.type_structure) or
+                                (emplacement1.materiaux<>emplacement2.materiaux) or
+                                (emplacement1.production<>emplacement2.production);
+  end;
+
 function getEmplacementVideAlea(zone:Zone):Structure;
+  {Renvoie un emplacement vide de 'zone'.
+  Si il n'y en a pas, renvoie le premier emplacement de 'zone'.}
   var
     curent_emplacement:Structure;
     a_emplacement_vide:Boolean;   // Indique si la zone contient au moins un emplacement vide.
   begin
     // Vérifie si la zone possède au moins un emplacement vide.
-    curent_emplacement:=Null;
+    curent_emplacement:=zone.emplacements[low(zone.emplacements)];
     a_emplacement_vide:=false;
     for curent_emplacement in zone.emplacements do
       begin
-      if (curent_emplacement.type_structure<>Null) then
+      if (curent_emplacement.type_structure<>Vide) then
         begin
         a_emplacement_vide:=true;
         end;
       end;
 
     // Boucle si au moins un emplacement vide existe et tant qu'aucun n'est trouvé.
-    while a_emplacement_vide and (curent_emplacement.type_structure<>Null) do
+    while a_emplacement_vide and (curent_emplacement.type_structure<>Vide) do
       begin
       curent_emplacement:=zone.emplacements[random(8)+1];
       end;
     getEmplacementVideAlea:=curent_emplacement;
   end;
 
-procedure ajouteStructureemplacementAlea(zone:Zone; niveau:Integer; 
+procedure ajouteStructureemplacementAlea(var zone:Zone; niveau:Integer; 
                                          est_decouvert:Boolean; type_structure:Batiment;
                                          materiaux:Materiaux; production:Integer);
   {Ajoute une structure avec des caractéristiques spécifiés en paramètre
@@ -58,7 +70,7 @@ procedure ajouteStructureemplacementAlea(zone:Zone; niveau:Integer;
     emplacement:Structure;
   begin
     emplacement:=getEmplacementVideAlea(zone);
-    if (emplacement<>Null) then
+    if emplacementsSontDifferents(emplacement, zone.emplacements[low(zone.emplacements)]) then
       begin
       setEmplacement(emplacement, 2, true, Gisement, zone.minerais[1], 0);
       end;
@@ -68,9 +80,6 @@ procedure initEmplacements(var zone:Zone);
   {Fonction qui prend en paramètres une zone
   et qui renvoie cette même zone après avoir
   initialisé tous ses emplacements,  prêts pour le jeu.}
-  var
-    emplacement:Structure;
-
   begin
     // Définie le Hub de la zone
     setEmplacement(zone.emplacements[0], 0, true, Hub, Null, 0);
@@ -84,12 +93,13 @@ procedure initEmplacements(var zone:Zone);
     // A 1/5 chance d'ajouter un deuxième gisement d'un minerai y étant déjà.
     if (random<0.2) then
       begin
-      emplacement:=getEmplacementVideAlea(zone);
-      if (emplacement<>Null) then
-        begin
-        setEmplacement(emplacement, 2, true, Gisement, zone.minerais[random(1)+1], 0);
-        end;
+      ajouteStructureEmplacementAlea(zone, 2, false, Gisement, zone.minerais[random(1)], 0);
       end;
+    
+    if (random<0.5) then
+      begin
+      ajouteStructureEmplacementAlea(zone, 1, false, Gisement, zone.minerais[random(2)], 0)
+      end;  
   end;
 
 procedure creerMine(var emplacement:Structure);
