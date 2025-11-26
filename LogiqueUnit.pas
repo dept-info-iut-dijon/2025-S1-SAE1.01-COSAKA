@@ -10,12 +10,12 @@ implementation
   uses
     SysUtils, Classes;
 
-{procedure setEmplacement(var emplacement:Structure; 
+procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
                          new_type_structure:Batiment; new_materiaux:Materiaux;
                          new_production:Integer);
   {Définit les valeur des paramètres de l'emplacement 'emplacement'.
-  Attention, tous les paramètres doivent être renseignés.
+  Attention, tous les paramètres doivent être renseignés.}
   begin
     emplacement.type_structure:=new_type_structure;
     emplacement.niveau:=new_niveau;
@@ -38,7 +38,7 @@ function getEmplacementVideAlea(zone:Zone):Structure;
 procedure initEmplacements(var zone:Zone);
   {Fonction qui prend en paramètres une zone
   et qui renvoie cette même zone après avoir
-  initialisé tous ses emplacements,  prêts pour le jeu.
+  initialisé tous ses emplacements,  prêts pour le jeu.}
   var
     curent_emplacement:Structure;
 
@@ -56,7 +56,7 @@ procedure initEmplacements(var zone:Zone);
   end;
 
 procedure creerMine(var emplacement:Structure);
-  {Procédure qui prend en paramètre un emplacement et 
+  Procédure qui prend en paramètre un emplacement et 
   qui renvoie ce même emplacement en changeant le type 
   de la structure en 'Mine', en initialisant le niveau 
   de la structure à 1 et la valeur de la production
@@ -84,13 +84,6 @@ procedure creerMine(var emplacement:Structure);
     end;
   end;
 
-<<<<<<< HEAD
-  function revenusProduction(zone:Zone):array[Fer..Cuivre] of Integer;
-  }
-  
-  begin
-  //end;
-=======
   procedure revenusProduction(zone:Zone);
   {Fonction qui prend en parametre une zone et qui ajoute a 
   chaque materiaux dans l'inventaire les materiaux produit 
@@ -107,6 +100,5 @@ procedure creerMine(var emplacement:Structure);
         zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + emplacement.production;
     end;
   end;
->>>>>>> 754ebcbac92e2436bd3675aeb7ffffa164d4be3a
 
 end.

@@ -12,6 +12,7 @@ begin
   MainMenu();
   readln();
   Scenario();
+  readln();
   AfficherJeu();
   readln();
 end.
