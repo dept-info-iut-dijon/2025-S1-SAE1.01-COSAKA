@@ -5,9 +5,11 @@ uses
 
 var
   zones:Array[0..2] of Zone;
+  msg:string;
 
 begin 
-   EcranTitre();
+
+EcranTitre();
    readln();
    MainMenu();
    readln();
