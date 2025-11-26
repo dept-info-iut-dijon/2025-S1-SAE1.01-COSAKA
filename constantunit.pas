@@ -3,10 +3,12 @@ unit constantUnit;
 interface
   type
     // Materiaux que l'on peut récolter
-    Materiaux=(Fer, Cuivre);
+    Materiaux=(Fer, Cuivre, Calcaire, Charbon, LingotFer, LingotCuivre, 
+                PlaqueFer, TuyauFer, SacBeton, Acier, PlaqueRenforcee, 
+                PoutreIndustrielle, Fondations, Electricite);
 
     // Batiment que l'ont peut construire
-    Batiment=(Hub, Gisement, Mine);
+    Batiment=(Hub, Gisement, Mine, Usine, Centrale);
     
     // Les structures que pourront contenir les emplacements (représente un emplacement en quelque sorte)
     Structure=record
@@ -15,6 +17,7 @@ interface
       est_decouvert:Boolean;
       materiaux:Materiaux;
       production:Integer;
+      consommable:Array[low(Materiaux)..high(Materiaux)] of Integer;
       // Il faudrat sûrement rajouter des choses par la suite
     end;
 
@@ -24,7 +27,7 @@ interface
       nom:String;
       emplacements:Array[0..9] of Structure;
       minerais:Array[0..2] of Materiaux;
-      inventaire:Array[Fer..Cuivre] of Integer;
+      inventaire:Array[low(Materiaux)..high(Materiaux)] of Integer;
     end;
   
   const
@@ -36,7 +39,7 @@ interface
     MINERAI1=Fer;   // Minerai le plus courant
     MINERAI2=Cuivre;  // 2ème Minerai le plus courant
 
-    PRODUCTION_BASE:array[Fer..Cuivre] of Integer=(10, 15);
+    PRODUCTION_BASE:array[low(Materiaux)..high(Materiaux)] of Integer=(10, 15);
 
     NOM_ZONE1='L Antre de Marzani';
     NOM_ZONE2='La Caverne Simmonet';
