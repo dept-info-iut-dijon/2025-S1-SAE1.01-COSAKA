@@ -10,12 +10,12 @@ implementation
   uses
     SysUtils, Classes;
 
-procedure setEmplacement(var emplacement:Structure; 
+{procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
                          new_type_structure:Batiment; new_materiaux:Materiaux,
                          new_production:production);
   {Définit les valeur des paramètres de l'emplacement 'emplacement'.
-  Attention, tous les paramètres doivent être renseignés.}
+  Attention, tous les paramètres doivent être renseignés.
   begin
     emplacement.type_structure:=new_type_structure;
     emplacement.niveau:=new_niveau;
@@ -34,7 +34,7 @@ function getEmplacementVideAlea(zone:Zone):Structure;
 procedure initEmplacements(var zone:Zone);
   {Fonction qui prend en paramètres une zone
   et qui renvoie cette même zone après avoir
-  initialisé tous ses emplacements,  prêts pour le jeu.}
+  initialisé tous ses emplacements,  prêts pour le jeu.
   var
     curent_emplacement:Structure;
 
@@ -59,7 +59,7 @@ procedure creerMine(var emplacement:Structure);
   {Procédure qui prend en paramètre un emplacement et 
   qui renvoie ce même emplacement en changeant le type 
   de la structure en 'Mine', en initialisant le niveau 
-  de la structure à 1 et la valeur de la production}
+  de la structure à 1 et la valeur de la production
   const
     // Initialise le nouveau niveau à 1
     NOUVEAU_NIVEAU = 1;
@@ -85,9 +85,9 @@ procedure creerMine(var emplacement:Structure);
   end;
 
   function revenusProduction(zone:Zone):array[Fer..Cuivre] of Integer;
-  {
   }
+  
   begin
-  end;
+  //end;
 
 end.

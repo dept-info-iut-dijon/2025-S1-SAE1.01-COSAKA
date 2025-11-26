@@ -7,6 +7,11 @@ procedure EcranTitre();
 procedure MainMenu();
 procedure Scenario();
 procedure AfficherMessage(var msg:string);
+procedure AfficherJeu();
+procedure AfficherEmplacement();
+procedure AfficherInventaireZone();
+procedure AfficherInformations(zone:string; time:string);
+procedure AfficherActions();
 
 implementation
 
@@ -146,7 +151,6 @@ begin
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('vous atteignez (contre toute attente) la surface martienne sans le moindre incident majeur.')div 2),25);
   write('vous atteignez (contre toute attente) la surface martienne sans le moindre incident majeur.');
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('vous atteignez (contre toute attente) la surface martienne sans le moindre incident majeur.')div 2),28);
-  attendre(10000);
   couleurTexte(Yellow);
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Maintenant, il est temps de vous mettre au travail. L IUT a besoin de vous !')div 2),30);
   write('Maintenant, il est temps de vous mettre au travail. L IUT a besoin de vous !');
@@ -163,6 +167,44 @@ begin
 dessinerCadreXY((SCREEN_WIDTH div 2)-((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)-2,(SCREEN_WIDTH div 2)+((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)+2,simple,White,Black);
 deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(msg)div 2),(SCREEN_HEIGHT div 2));
 writeln(msg);
+  
+end;
+// Affiche le cadre principale du jeu
+procedure AfficherJeu();
+begin
+  effacerEcran();
+  dessinerCadreXY(2,1,(SCREEN_WIDTH-1),(SCREEN_HEIGHT-2),simple,white,black); // TAILLE DE BASE
+  dessinerCadreXY(1,1,(SCREEN_WIDTH div 5),(SCREEN_HEIGHT-2),double,white,black);
+  dessinerCadreXY((SCREEN_WIDTH div 5)*4,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+  // Titre
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('SATISFACT IUT')div 2),1);
+  writeln('<| SATISFACT IUT |>');
+  // Titre 2
+  deplacerCurseurXY((SCREEN_WIDTH div 10)-(Length('INVENTAIRE DE LA ZONE')div 2),2);
+  writeln('INVENTAIRE DE LA ZONE');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('INFORMATIONS')div 2),2);
+  writeln('INFORMATIONS');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)+1));
+  writeln('ACTIONS');
+end;
+
+procedure AfficherEmplacement();
+begin
+  
+end;
+
+procedure AfficherInventaireZone();
+begin
+  
+end;
+
+procedure AfficherInformations(zone:string; time:string);
+begin
+  
+end;
+
+procedure AfficherActions();
+begin
   
 end;
 
