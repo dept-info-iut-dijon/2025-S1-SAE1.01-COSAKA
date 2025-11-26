@@ -8,7 +8,7 @@ interface
                 PoutreIndustrielle, Fondations, Electricite);
 
     // Batiment que l'ont peut construire
-    Batiment=(Hub, Gisement, Mine, Usine, Centrale);
+    Batiment=(Vide, Hub, Gisement, Mine, Usine, Centrale);
     
     // Les structures que pourront contenir les emplacements (représente un emplacement en quelque sorte)
     Structure=record
@@ -34,15 +34,13 @@ interface
     SCREEN_WIDTH=200;
     SCREEN_HEIGHT=40;
 
-
-
     MINERAI1=Fer;   // Minerai le plus courant
     MINERAI2=Cuivre;  // 2ème Minerai le plus courant
 
     PRODUCTION_BASE:array[Fer..Electricite] of Integer=(10, 15, 10, 10, 
-                                                                        10, 10, 10, 10, 
-                                                                        10, 10, 10, 10, 
-                                                                        10, 10);
+                                                                                              10, 10, 10, 10, 
+                                                                                              10, 10, 10, 10, 
+                                                                                              10, 10);
 
     NOM_ZONE1='L Antre de Marzani';
     NOM_ZONE2='La Caverne Simmonet';
