@@ -17,7 +17,7 @@ interface
       est_decouvert:Boolean;
       materiaux:Materiaux;
       production:Integer;
-      consommable:Array[low(Materiaux)..high(Materiaux)] of Integer;
+      consommable:Array[Fer..Electricite] of Integer;
       // Il faudrat sûrement rajouter des choses par la suite
     end;
 
@@ -27,7 +27,7 @@ interface
       nom:String;
       emplacements:Array[0..9] of Structure;
       minerais:Array[0..2] of Materiaux;
-      inventaire:Array[low(Materiaux)..high(Materiaux)] of Integer;
+      inventaire:Array[Fer..Electricite] of Integer;
     end;
   
   const
@@ -39,7 +39,10 @@ interface
     MINERAI1=Fer;   // Minerai le plus courant
     MINERAI2=Cuivre;  // 2ème Minerai le plus courant
 
-    PRODUCTION_BASE:array[low(Materiaux)..high(Materiaux)] of Integer=(10, 15);
+    PRODUCTION_BASE:array[Fer..Electricite] of Integer=(10, 15, 10, 10, 
+                                                                        10, 10, 10, 10, 
+                                                                        10, 10, 10, 10, 
+                                                                        10, 10);
 
     NOM_ZONE1='L Antre de Marzani';
     NOM_ZONE2='La Caverne Simmonet';
