@@ -186,7 +186,7 @@ procedure creerMine(zone:Zone; var emplacement:Structure);
 
         // Modifie l'emplacement avec les nouveaux paramètres
         setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
-                        Mine, emplacement.materiaux, PRODUCTION_BASE[emplacement.materiaux], emplacement.consommable);
+                        Mine, emplacement.materiaux, production, emplacement.consommable);
       end
       else
         // Affiche le message d'erreur
