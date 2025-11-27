@@ -16,13 +16,25 @@ procedure AfficherInformations(zone:string; time:string);
 procedure AfficherActions();
 procedure WikiBatiment();
 procedure WikiProduction();
-
+procedure UTF8(status:Boolean);
 
 implementation
 
 uses
   SysUtils, TypInfo, Classes, gestionEcran, LogiqueUnit, windows;
 
+// Pour les accents dans la console
+procedure UTF8(status:Boolean);
+begin
+  if status = True then
+  begin
+    SetConsoleOutputCP(65001); 
+  end
+  else
+  begin
+    SetConsoleOutputCP(850); // RESET
+  end;
+end;
 
 procedure CadrePrincipale();
   begin
@@ -125,6 +137,7 @@ procedure Scenario();
     effacerEcran();
     CadrePrincipale();
     // SCENARIO - - - 
+    UTF8(True);
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Dans une réalité. Pas si alternative que ça.')div 2),10);
     writeln('Dans une réalité. Pas si alternative que ça.');
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('2024 : une année particulièrement compliquée.')div 2),11);
@@ -165,13 +178,17 @@ procedure Scenario();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Appuyez sur ENTRER pour continuer')div 2),35);
     couleurTexte(white);
     writeln('Appuyez sur ENTRER pour continuer');
+
+    UTF8(False);
   end;
 
 procedure AfficherMessage(msg:string);
   begin
   dessinerCadreXY((SCREEN_WIDTH div 2)-((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)-2,(SCREEN_WIDTH div 2)+((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)+2,simple,White,Black);
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(msg)div 2),(SCREEN_HEIGHT div 2));
+  UTF8(True);
   writeln(msg);
+  UTF8(False);
   end;
 
 // Affiche le cadre principale du jeu
@@ -192,7 +209,7 @@ procedure AfficherJeu();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)));
     writeln('ACTIONS');
 
-    AfficherInformations('Dijon','Mardi 10 avril 2007');
+    AfficherInformations('-','-');
     AfficherInventaireZone();
     AfficherActions()
   end;
@@ -342,27 +359,30 @@ procedure AfficherInformations(zone:string; time:string);
       begin
         couleurTexte(Green);
       end;
-    write('Production Electricite');
+      UTF8(True);
+    write('Production Electricité');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),10);
 
     writeln(': ',ProductionElectricite(ZoneTest));
     couleurTexte(White);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),11);
     couleurTexte(Yellow); // couleur jaune
-    write('Consommation Electricite');
+    write('Consommation Electricité');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),11);
     writeln(': ',ConsommationElectricite(ZoneTest));
     couleurTexte(White); // Reset de la couleur
+    UTF8(False);
   end;
 
 procedure AfficherActions();
   begin
+    UTF8(True);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+3));
-    writeln('[1] Construire un batiment');
+    writeln('[1] Construire un bâtiment');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+4));
-    writeln('[2] Chnager la production');
+    writeln('[2] Changer la production');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+5));
-    writeln('[3] Ameliorer un batiment');
+    writeln('[3] Améliorer un bâtiment');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+6));
     writeln('[4] Explorer la zone');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
@@ -370,13 +390,14 @@ procedure AfficherActions();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
     writeln('[6] Transferer des ressources');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
-    writeln('[7] Passer la journee');
+    writeln('[7] Passer la journée');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
     writeln('[8] Missions');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
     writeln('[9] Wiki');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
     writeln('[0] Quitter la partie');
+    UTF8(False);
     dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
@@ -388,8 +409,13 @@ begin
   dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
 
   // Titre
+  UTF8(True);
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI BATIMENTS |>')div 2),1);
   writeln('<| WIKI BATIMENTS |>');
+
+  deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
+  writeln('Source : Karine Serier');
+
 
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
   writeln('[1] Wiki PRODUCTION');
@@ -397,7 +423,7 @@ begin
   writeln('[2] Scenario');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
   writeln('[0] Revenir au jeu');
-
+  UTF8(False);
   dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
 end;
@@ -409,8 +435,12 @@ begin
   dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
 
   // Titre
+  UTF8(True);
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI PRODUCTION |>')div 2),1);
   writeln('<| WIKI PRODUCTION |>');
+
+  deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
+  writeln('Source : Sabine Vaudeville');
 
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
   writeln('[1] Wiki BATIMENTS');
@@ -418,6 +448,7 @@ begin
   writeln('[2] Scenario');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
   writeln('[0] Revenir au jeu');
+  UTF8(False);
 
   dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
