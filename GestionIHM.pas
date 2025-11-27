@@ -14,6 +14,9 @@ procedure AfficherEmplacements(zone:Zone);
 procedure AfficherInventaireZone();
 procedure AfficherInformations(zone:string; time:string);
 procedure AfficherActions();
+procedure WikiBatiment();
+procedure WikiProduction();
+
 
 implementation
 
@@ -284,13 +287,19 @@ procedure AfficherInventaireZone();
     i:= 0;
     for m in Materiaux do 
       begin
-          valeur[m] := 0;
-          if (m <> Electricite) and (m <> Fondations) then
+          if (m <> Electricite) then
           begin
           deplacerCurseurXY((SCREEN_WIDTH div 10-15),startY+i);
           writeln(m);
           deplacerCurseurXY((SCREEN_WIDTH div 10+10),startY+i);
+
+          // Affiche les valeurs en rouge si elle sont = 0
+          if valeur[m] = 0 then
+          begin
+            couleurTexte(Red);
+          end;
           writeln(': ',valeur[m]);
+          couleurTexte(White);
           i:= i + 1; 
           end;
       end;
@@ -307,21 +316,28 @@ procedure AfficherInformations(zone:string; time:string);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
     writeln('DATE : ',time);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),10);
+
+    {Si la consommation est plus importante que la production
+    alors la valeur s'affiche en rouge}
+        if (ConsommationElectricite(ZoneTest)) > ProductionElectricite(ZoneTest) then
+      begin
+        couleurTexte(Red);
+      end
+      else
+      begin
+        couleurTexte(Green);
+      end;
     write('Production Electricite');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),10);
-    writeln(': ',valeur[Electricite]);
+
+    writeln(': ',ProductionElectricite(ZoneTest));
+    couleurTexte(White);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),11);
+    couleurTexte(Yellow); // couleur jaune
     write('Consommation Electricite');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),11);
-    couleurTexte(Yellow); // couleur jaune
-    writeln(': ',valeur[Electricite]);
+    writeln(': ',ConsommationElectricite(ZoneTest));
     couleurTexte(White); // Reset de la couleur
-
-
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),13);
-    write('Fondations');
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),13);
-    writeln(': ',valeur[Fondations]);
   end;
 
 procedure AfficherActions();
@@ -350,4 +366,47 @@ procedure AfficherActions();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
 
-  end.
+procedure WikiBatiment();
+begin
+  effacerEcran();
+  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+  dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+
+  // Titre
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI BATIMENTS |>')div 2),1);
+  writeln('<| WIKI BATIMENTS |>');
+
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
+  writeln('[1] Wiki PRODUCTION');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+  writeln('[2] Scenario');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+  writeln('[0] Revenir au jeu');
+
+  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+end;
+
+procedure WikiProduction();
+begin
+  effacerEcran();
+  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+  dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+
+  // Titre
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI PRODUCTION |>')div 2),1);
+  writeln('<| WIKI PRODUCTION |>');
+
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
+  writeln('[1] Wiki BATIMENTS');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+  writeln('[2] Scenario');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+  writeln('[0] Revenir au jeu');
+
+  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+end;
+
+
+end.

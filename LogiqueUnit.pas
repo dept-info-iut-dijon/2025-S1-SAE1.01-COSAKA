@@ -114,23 +114,72 @@ procedure initEmplacements(var zone:Zone);
       end;  
   end;
 
-procedure creerMine(var emplacement:Structure);
+function MateriauxNecessairesConstruction(zone:Zone; emplacement:Structure; niveau:Integer):Boolean;
+  {Fonction qui prend en parametre une zone, un emplacement 
+  et un niveau et renvoie Faux si l'inventaire de la zone 
+  contient moins de materiaux que le nombre de materiaux 
+  qu'il faut pour construire un batiment  et renvoie Vrai sinon}
+  var
+    materiau:Materiaux;
+  begin
+    MateriauxNecessairesConstruction := True;
+    // Boucle sur chaque materiaux du type Materiaux
+    for materiau in Materiaux do
+    begin
+      // Vérifie que le materiau sur lequel on boucle est necessaire a la construction du batiment
+      if (CONSTRUCTION_BASE[niveau][emplacement.type_structure][materiau] > 0) then
+      begin
+        // Vérifie que l'inventaire de la zone possèdent assez de matériaux
+        if (zone.inventaire[materiau] < CONSTRUCTION_BASE[niveau][emplacement.type_structure][materiau]) then
+          MateriauxNecessairesConstruction := False;
+      end;
+    end;
+  end;
+
+procedure SuppressionMateriauxConstruction(zone:Zone; emplacement:Structure; niveau:Integer);
+  {Procédure qui prend en parametre une zone, un emplacement et 
+  un niveau et enleve les matériaux necessaires pour la construction
+  d'un batiment à l'inventaire de la zone}
+  var
+    materiau:Materiaux;
+  begin
+    // Boucle sur chaque materiaux du type Materiaux
+    for materiau in Materiaux do
+    begin
+      // Vérifie que le materiau sur lequel on boucle est necessaire a la construction du batiment
+      if (CONSTRUCTION_BASE[niveau][emplacement.type_structure][materiau] > 0) then
+      begin
+        // Supprime les matériaux nécessaire a la construction de l'inventaire
+        zone.inventaire[materiau] :=  zone.inventaire[materiau] - CONSTRUCTION_BASE[niveau][emplacement.type_structure][materiau];
+      end;
+    end;
+  end;
+
+procedure creerMine(zone:Zone; var emplacement:Structure);
   {Procédure qui prend en paramètre un emplacement et 
-  qui renvoie ce même emplacement en changeant le type 
-  de la structure en 'Mine', en initialisant le niveau 
-  de la structure à 1 et la valeur de la production}
+  une zone et qui modifie ce même emplacement en changeant 
+  le type de la structure en 'Mine', en initialisant le 
+  niveau de la structure à 1, en supprimant les coûts de 
+  la construction de l'inventaire de la zone, en 
+  initialisant l'énergie consommé du batiment et en 
+  initialisant la production de base du batiment}
   const
     // Initialise le nouveau niveau à 1
     NOUVEAU_NIVEAU = 1;
   var
     production:Integer;
+    possedeMateriauxNecessaires:Boolean;
   begin
-    // Vérifie si l'emplacement a bien été découvert
-    if emplacement.est_decouvert then
-    begin
     // Vérifie si le type de struture est bien un Gisement
-      if (emplacement.type_structure=Gisement) then
+    if (emplacement.type_structure=Gisement) then
+    begin
+      // Vérifie que la zone possede les materiaux necessaires a la construction du batiment
+      possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, emplacement, NOUVEAU_NIVEAU);
+      if possedeMateriauxNecessaires then
       begin
+        // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
+        SuppressionMateriauxConstruction(zone, emplacement, NOUVEAU_NIVEAU);
+
         // Calcul de la production selon le niveau du Gisement
         production := round(PRODUCTION_BASE[emplacement.materiaux]*(1 + ((emplacement.niveau - 1) / 4)));
 
@@ -143,27 +192,43 @@ procedure creerMine(var emplacement:Structure);
       end
       else
         // Affiche le message d'erreur
-        AfficherMessage('Vous devez impérativement placer une mine sur un gisement');
-      end
-    else
-      // Affiche le message d'erreur
-      AfficherMessage('Vous n''avez pas encore explorer cet emplacement');
-  end;
-
-procedure creerUsine(var emplacement:Structure; nouveau_materiaux:Materiaux);
-  {}
-  const
-    NOUVEAU_NIVEAU = 1;
-  begin
-    // Vérifie si l'emplacement a bien été découvert
-    if emplacement.est_decouvert then
-    begin
-      setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
-                      Usine, nouveau_materiaux, PRODUCTION_BASE[nouveau_materiaux], CONSOMMABLE_BASE[nouveau_materiaux])
+        AfficherMessage('Vous n''avez pas les materiaux necessaires')
     end
     else
       // Affiche le message d'erreur
-      AfficherMessage('Vous n''avez pas encore explorer cet emplacement');
+      AfficherMessage('Vous devez impérativement placer une mine sur un gisement');
+  end;
+
+procedure creerUsine(zone:Zone; var emplacement:Structure; nouveau_materiaux:Materiaux);
+  {{Procédure qui prend en paramètre un emplacement, une zone 
+  et un nouveau materiau qui modifie ce même emplacement en changeant 
+  le type de la structure en 'Usine', en initialisant le 
+  niveau de la structure à 1, en supprimant les coûts de 
+  la construction de l'inventaire de la zone, en initialisant 
+  l'énergie consommé du batiment et en initialisant la production 
+  de base du batiment }
+  const
+    NOUVEAU_NIVEAU = 1;
+  var
+    possedeMateriauxNecessaires:Boolean;
+  begin
+    // Vérifie que la zone possede les materiaux necessaires a la construction du batiment
+    possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, emplacement, NOUVEAU_NIVEAU);
+    if possedeMateriauxNecessaires then
+    begin
+      // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
+      SuppressionMateriauxConstruction(zone, emplacement, NOUVEAU_NIVEAU);
+
+      // Initialise le coût en éléctricité a 100
+      emplacement.consommable[Electricite] := 100;
+      
+      // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
+      setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
+                      Usine, nouveau_materiaux, PRODUCTION_BASE[nouveau_materiaux], CONSOMMABLE_BASE[nouveau_materiaux]);
+    end
+    else
+      // Affiche le message d'erreur
+      AfficherMessage('Vous n''avez pas les materiaux necessaires');
   end;
 
 function ProductionElectricite(zone:Zone):Integer;
