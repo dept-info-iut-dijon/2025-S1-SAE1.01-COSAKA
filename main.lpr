@@ -15,6 +15,7 @@ begin
     Scenario();
     readln();
     AfficherJeu();
+    AfficherEmplacements(ZoneTest);
     readln();
     end
   else;
