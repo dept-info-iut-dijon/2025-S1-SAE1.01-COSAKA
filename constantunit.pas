@@ -94,6 +94,22 @@ interface
     NOM_ZONE1='L Antre de Marzani';
     NOM_ZONE2='La Caverne Simmonet';
     NOM_ZONE3='La Montagne Coulon';
+    
+    StructureTest:Structure = (
+                    type_structure:Hub;
+                    niveau:1;
+                    est_decouvert:True;
+                    materiaux:Fer;
+                    production:800;
+                    consommable:(0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+
+    ZoneTest:Zone = (
+                    numero:1;
+                    nom:'SabineLaGoat';
+                 //   emplacements:();
+                 //   minerais:(Fer,Cuivre,Calcaire);
+                   // inventaire:(0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+                   ); 
 
 implementation
 
