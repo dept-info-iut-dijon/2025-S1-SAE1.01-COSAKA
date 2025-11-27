@@ -125,6 +125,7 @@ procedure EcranTitre();
 
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('< Appuyez sur ENTRER pour commencer >')div 2),35);  
     write('< Appuyez sur ENTRER pour commencer >');
+    deplacerCurseurXY(2,SCREEN_HEIGHT-1);
   end;
 
 // ...............................__..__._____._..._._..._.
@@ -165,6 +166,7 @@ function AfficheMainMenu():String;
     writeln('[1] Commencer');
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('[2] Quitter')div 2),28); // Idem
     writeln('[0] Quitter');
+    deplacerCurseurXY(2,SCREEN_HEIGHT-1);
 
     readln(res);
     AfficheMainMenu:=res;
@@ -223,6 +225,7 @@ procedure Scenario();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Appuyez sur ENTRER pour continuer')div 2),35);
     couleurTexte(white);
     writeln('Appuyez sur ENTRER pour continuer');
+    deplacerCurseurXY(2,SCREEN_HEIGHT-1);
     readln();
 
     UTF8(False);
@@ -264,9 +267,9 @@ procedure AfficherZone(zone:Zone);
     writeln('ACTIONS');
 
     {Call des procedures pour assembler toutes les interfaces en une}
+    AfficherEmplacements(zone);
     AfficherInformations(zone,'-');
     AfficherInventaireZone(zone);
-    AfficherEmplacements(zone);
     AfficherActions();
   end;
 
