@@ -125,6 +125,7 @@ procedure initEmplacements(var zone:Zone);
 function initZone(numero:Integer; nom:String; minerai1:Materiaux; minerai2:Materiaux; minerai3:Materiaux):Zone;
   var
     new_zone:Zone;
+    m:Materiaux;
   begin
     new_zone.numero:=numero;
     new_zone.nom:=nom;
@@ -132,6 +133,10 @@ function initZone(numero:Integer; nom:String; minerai1:Materiaux; minerai2:Mater
     new_zone.minerais[1]:=minerai2;
     new_zone.minerais[2]:=minerai3;
     initEmplacements(new_zone);
+    for m:=low(zone.inventaire) to high(zone.inventaire) do
+      begin
+      new_zone.inventaire[m]:=0;
+      end;
     initZone:=new_zone;
   end;
 
