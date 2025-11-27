@@ -2,13 +2,15 @@ unit LogiqueUnit;
 {$mode delphi}{$H+}
 
 interface
-  uses
-    constantunit, GestionIHM;
+uses
+  constantunit;
+
+function getEmplacement(zone:Zone):Emplacements;
 
 
 implementation
   uses
-    SysUtils, Classes;
+    SysUtils, Classes, GestionIHM;
 
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
@@ -23,6 +25,10 @@ procedure setEmplacement(var emplacement:Structure;
     emplacement.materiaux:=new_materiaux;
     emplacement.production:=new_production;
     emplacement.consommable:=new_consommable;
+  end;
+
+function getEmplacement(zone:Zone):Emplacements;
+  begin
   end;
 
 function emplacementsSontDifferents(emplacement1:Structure; emplacement2:Structure):Boolean;
