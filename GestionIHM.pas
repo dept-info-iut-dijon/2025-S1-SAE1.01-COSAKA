@@ -159,7 +159,6 @@ begin
   write('Maintenant, il est temps de vous mettre au travail. L IUT a besoin de vous !');
   
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Appuyez sur ENTRER pour continuer')div 2),35);
-  attendre(1000);
   couleurTexte(white);
   writeln('Appuyez sur ENTRER pour continuer');
 end;
@@ -186,11 +185,12 @@ procedure AfficherJeu();
     writeln('INVENTAIRE DE LA ZONE');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('INFORMATIONS')div 2),2);
     writeln('INFORMATIONS');
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)+1));
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)));
     writeln('ACTIONS');
 
     AfficherInformations('Dijon','Mardi 10 avril 2007');
     AfficherInventaireZone();
+    AfficherActions()
   end;
 
 procedure AfficherEmplacement();
@@ -245,6 +245,28 @@ end;
 
 procedure AfficherActions();
   begin
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+3));
+    writeln('[1] Construire un batiment');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+4));
+    writeln('[2] Chnager la production');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+5));
+    writeln('[3] Ameliorer un batiment');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+6));
+    writeln('[4] Explorer la zone');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    writeln('[5] Changer de zone');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
+    writeln('[6] Transferer des ressources');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
+    writeln('[7] Passer la journee');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+    writeln('[8] Missions');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
+    writeln('[9] Wiki');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+    writeln('[0] Quitter la partie');
+    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
 
   end.
