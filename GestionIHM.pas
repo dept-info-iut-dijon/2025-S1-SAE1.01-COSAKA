@@ -174,7 +174,7 @@ begin
   dessinerCadreXY(1,1,(SCREEN_WIDTH div 5),(SCREEN_HEIGHT-2),double,white,black);
   dessinerCadreXY((SCREEN_WIDTH div 5)*4,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
   // Titre
-  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('SATISFACT IUT')div 2),1);
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| SATISFACT IUT |>')div 2),1);
   writeln('<| SATISFACT IUT |>');
   // Titre 2
   deplacerCurseurXY((SCREEN_WIDTH div 10)-(Length('INVENTAIRE DE LA ZONE')div 2),2);
