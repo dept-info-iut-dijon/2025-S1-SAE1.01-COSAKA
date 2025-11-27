@@ -156,29 +156,36 @@ procedure creerUsine(var emplacement:Structure; nouveau_materiaux:Materiaux);
   end;
 
 function ProductionElectricite(zone:Zone):Integer;
-  {}
+  {Fonction qui prend en parametre une zone et qui renvoie 
+  la somme de la production d'Electricite de la zone}
   var
     emplacement:Structure;
     production:Integer;
   begin
     production := 0;
+    // Boucle sur chaque emplacement de la zone
     for emplacement in zone.emplacements do
     begin
+      // Vérifie qu'une centrale est sur l'emplacement
       if (emplacement.type_structure = Centrale) then
+        // Ajoute la production d'Electricite de la centrale a la production global
         production := production + emplacement.production;
     end;
     ProductionElectricite := production;
   end;
 
 function ConsommationElectricite(zone:Zone):Integer;
-  {}
+  {Fonction qui prend en parametre une zone et qui renvoie 
+  la somme de la consommation d'Electricite de la zone}
   var
     emplacement:Structure;
     consommation:Integer;
   begin
     consommation := 0;
+    // Boucle sur chaque emplacement de la zone
     for emplacement in zone.emplacements do
     begin
+      // Ajoute la consommation d'Electricite du batiment a la consommation global
       consommation := consommation + emplacement.consommable[Electricite];
     end;
     ConsommationElectricite := consommation;
@@ -214,27 +221,39 @@ procedure revenusProduction(zone:Zone);
     emplacement:Structure;
     materiau:Materiaux;
     possedeMateriauxNecessaires:Boolean;
+    pElectricite:Integer;
+    cElectricite:Integer;
   begin
-    // Boucle sur chaque emplacements de la zone
-    for emplacement in zone.emplacements do
+    // Calcule la production en Electricite d'une zone
+    pElectricite := ProductionElectricite(zone);
+    // Calcule la Consommation en Electricite d'une zone
+    cElectricite := ConsommationElectricite(zone);
+    // Vérifie que l'on consomme moins ou autant d'Electricite que la production d'Electricite
+    if (cElectricite <= pElectricite) then
     begin
-      // Vérifie que l'emplacement a été découvert
-      if emplacement.est_decouvert then
+      // Boucle sur chaque emplacements de la zone
+      for emplacement in zone.emplacements do
       begin
-        // Vérifie que l'inventaire de la zone possede assez de materiaux
-        possedeMateriauxNecessaires := MateriauxNecessaires(zone, emplacement);
-
-        if possedeMateriauxNecessaires then
+        // Vérifie que l'emplacement a été découvert
+        if emplacement.est_decouvert then
         begin
-          for materiau in Materiaux do
-          begin
-            if (emplacement.consommable[materiau] > 0) then
-                // Enleve les matériaux consommés à l'inventaire de la zone
-                zone.inventaire[materiau] := zone.inventaire[materiau] - emplacement.consommable[materiau];
-          end;
+          // Vérifie que l'inventaire de la zone possede assez de materiaux
+          possedeMateriauxNecessaires := MateriauxNecessaires(zone, emplacement);
 
-          // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
-          zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + emplacement.production;
+          if possedeMateriauxNecessaires then
+          begin
+            // Boucle sur chaque materiaux
+            for materiau in Materiaux do
+            begin
+              // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
+              if (emplacement.consommable[materiau] > 0) then
+                  // Enleve les matériaux consommés à l'inventaire de la zone
+                  zone.inventaire[materiau] := zone.inventaire[materiau] - emplacement.consommable[materiau];
+            end;
+
+            // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
+            zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + emplacement.production;
+          end;
         end;
       end;
     end;
