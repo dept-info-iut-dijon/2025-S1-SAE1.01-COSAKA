@@ -10,6 +10,8 @@ interface
     // Batiment que l'ont peut construire
     Batiment=(Vide, Hub, Gisement, Mine, Usine, Centrale);
     
+    Consommation=Array[Materiaux] of Integer;
+    
     // Les structures que pourront contenir les emplacements (représente un emplacement en quelque sorte)
     Structure=record
       type_structure:Batiment;
