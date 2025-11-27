@@ -27,11 +27,11 @@ procedure AfficherEmplacements(zone:Zone);
 procedure AfficherInventaireZone();
 procedure AfficherInformations(zone:string; time:string);
 procedure AfficherActions();
-procedure WikiBatiment();
-procedure WikiProduction();
+procedure AfficherMenuWikiBatiment();
+procedure AfficherMenuWikiProduction();
 procedure UTF8(status:Boolean);
-procedure ConstruireBatiment();
-procedure ChangerZone();
+procedure AfficherMenuBatiment();
+procedure AfficherMenuZone();
 
 implementation
 
@@ -268,7 +268,6 @@ procedure AfficherJeu();
     AfficherInformations('-','-');
     AfficherInventaireZone();
     AfficherActions();
-    ChangerZone();
     readln();
   end;
 
@@ -497,7 +496,7 @@ procedure AfficherActions();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
 
-procedure MenuBatiment();
+procedure AfficherMenuBatiment();
   begin
    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
@@ -517,7 +516,7 @@ begin
   
 end;
 
-procedure MenuZone();
+procedure AfficherMenuZone();
   begin
    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
@@ -544,7 +543,7 @@ procedure MenuZone();
 // |.|_)./.___.\|.|..|.||.|..|.|.|___|.|\..|.|.|..___).|..
 // |____/_/...\_\_|.|___|_|..|_|_____|_|.\_|.|_|.|____/...
 
-procedure WikiBatiment();
+procedure AfficherMenuWikiBatiment();
 begin
   effacerEcran();
   dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
@@ -580,7 +579,7 @@ end;
 // |..__/|.._.<|.|_|.|.|_|.|.|_|.|.|___..|.|..|.|.|_|.|.|\..|
 // |_|...|_|.\_\\___/|____/.\___/.\____|.|_|.|___\___/|_|.\_|
 
-procedure WikiProduction();
+procedure AfficherMenuWikiProduction();
 begin
   effacerEcran();
   dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
