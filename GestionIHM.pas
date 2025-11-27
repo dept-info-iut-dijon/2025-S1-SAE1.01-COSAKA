@@ -220,10 +220,13 @@ end;
 
 procedure AfficherInformations(zone:string; time:string);
 begin
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ZONE : '+ zone)div 2),5);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),5);
   writeln('ZONE : ',zone);
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length(time)div 2),7);
-  writeln(time);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
+  writeln('DATE : ',time);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),10);
+  write('Electricité : ');
+
 end;
 
 procedure AfficherActions();
