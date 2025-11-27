@@ -252,6 +252,43 @@ procedure creerUsine(zone:Zone; var emplacement:Structure; nouveau_materiaux:Mat
       AfficherMessage('Vous n''avez pas les materiaux necessaires');
   end;
 
+procedure creerCentrale(zone:Zone; var emplacement:Structure);
+  {{Procédure qui prend en paramètre un emplacement, une zone 
+  et un nouveau materiau qui modifie ce même emplacement en changeant 
+  le type de la structure en 'Usine', en initialisant le 
+  niveau de la structure à 1, en supprimant les coûts de 
+  la construction de l'inventaire de la zone, en initialisant 
+  l'énergie consommé du batiment et en initialisant la production 
+  de base du batiment }
+  const
+    NOUVEAU_NIVEAU = 1;
+  var
+    possedeMateriauxNecessaires:Boolean;
+  begin
+    // Vérifie que la zone possede les materiaux necessaires a la construction du batiment
+    possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, Centrale, NOUVEAU_NIVEAU);
+    if possedeMateriauxNecessaires then
+    begin
+      // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
+      SuppressionMateriauxConstruction(zone, Centrale, NOUVEAU_NIVEAU);
+      
+      // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
+      setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
+                      Centrale, Electricite, PRODUCTION_BASE[Electricite], emplacement.consommable);
+    end
+    else
+      // Affiche le message d'erreur
+      AfficherMessage('Vous n''avez pas les materiaux necessaires');
+  end;
+
+{procedure ChangementUsine(zone:Zone; emplacement:Structure; nouveau_materiaux:Materiaux):
+  PAS ENCORE FONCTIONNEL
+  begin
+    // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
+    setEmplacement(emplacement, emplacement.niveau, emplacement.est_decouvert, 
+                    emplacement.type_structure, nouveau_materiaux, PRODUCTION_BASE[nouveau_materiaux], CONSOMMABLE_BASE[nouveau_materiaux]);
+  end;}
+
 procedure UpgradeBatiment(zone:Zone; emplacement:Structure; niveau:Integer);
   {Procedure qui prend en parametre une zone, un emplacement et 
   un niveau et modifie l'emplacement ce qui permet d'augmenter 
@@ -385,6 +422,35 @@ procedure revenusProduction(zone:Zone);
         end;
       end;
     end;
+  end;
+
+procedure ConstruireBatiment(zone:Zone);
+  {}
+  var
+    choix:Integer;
+    emplacement:Structure;
+  begin
+    AfficherMessage('Veuillez choisir un emplacement(entre 0 et 9)');
+    readln(choix);
+    emplacement := zone.emplacements[choix];
+    if emplacement.est_decouvert then
+    begin
+      if (emplacement.type_structure = Vide) or (emplacement.type_structure = Gisement) then
+      begin
+
+
+
+
+
+
+
+        
+      end
+      else
+        AfficherMessage('Vous ne pouvez pas construire un batiment sur un autre batiment')
+    end
+    else
+      AfficherMessage('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
   end;
 
 procedure JeuPrincipal();
