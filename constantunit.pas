@@ -10,6 +10,8 @@ interface
     // Batiment que l'ont peut construire
     Batiment=(Vide, Hub, Gisement, Mine, Usine, Centrale);
 
+    Emplacements=Array of Batiment;
+
     Consommation=Array[Materiaux] of Integer;
     
     // Les structures que pourront contenir les emplacements (représente un emplacement en quelque sorte)
@@ -35,6 +37,12 @@ interface
   const
     SCREEN_WIDTH=200;
     SCREEN_HEIGHT=40;
+
+    // Coordonée X de la séparation entre l'affichage de l'inventaire et l'affichage principal
+    SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL = SCREEN_WIDTH div 5;
+    // Coordonée X de la séparation entre l'affichage des informations et l'affichage principal
+    SEPARATION_ECRAN_INFO_PRINCIPAL = (SCREEN_WIDTH div 5)*4;
+    
 
     MINERAI1=Fer;   // Minerai le plus courant
     MINERAI2=Cuivre;  // 2ème Minerai le plus courant
