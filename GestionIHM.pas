@@ -168,6 +168,7 @@ function AfficheMainMenu():String;
     writeln('[1] Commencer');
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('[2] Quitter')div 2),28); // Idem
     writeln('[0] Quitter');
+    deplacerCurseurXY(2,SCREEN_HEIGHT-1);
 
     readln(res);
     AfficheMainMenu:=res;
@@ -226,6 +227,7 @@ procedure Scenario();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Appuyez sur ENTRER pour continuer')div 2),35);
     couleurTexte(white);
     writeln('Appuyez sur ENTRER pour continuer');
+    deplacerCurseurXY(2,SCREEN_HEIGHT-1);
     readln();
 
     UTF8(False);
@@ -267,13 +269,10 @@ procedure AfficherZone(zone:Zone);
     writeln('ACTIONS');
 
     {Call des procedures pour assembler toutes les interfaces en une}
-    AfficherInformations('-','-');
-    AfficherInventaireZone();
     AfficherEmplacements(zone);
+    AfficherInformations(zone,'-');
+    AfficherInventaireZone(zone);
     AfficherActions();
-    readln();
-    AfficherActionInformation('I m still standing but pas trop because Anatole ce connard qui me donne des procedure de SALOPARD a faire alors que je pourrai faire plus simple et conserver ma conscience mentale intacte ou dumoins presque... bref Anatole mange moi stp');
-    readln();
   end;
 
 // .____.._____.____.____.___._..._._..._._____.____...........................
