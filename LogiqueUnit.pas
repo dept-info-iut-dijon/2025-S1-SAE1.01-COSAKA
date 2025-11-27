@@ -31,7 +31,9 @@ procedure setEmplacement(var emplacement:Structure;
   end;
 
 function getEmplacement(zone:Zone):Emplacements;
+  {Renvoie la liste des emplacements de la zone passé en paramètre.}
   begin
+  getEmplacement:=zone.emplacements;
   end;
 
 function emplacementsSontDifferents(emplacement1:Structure; emplacement2:Structure):Boolean;
