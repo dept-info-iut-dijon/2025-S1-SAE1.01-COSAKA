@@ -10,15 +10,18 @@ function MainMenu():String;
 procedure Scenario();
 procedure AfficherMessage(msg:string);
 procedure AfficherJeu();
-procedure AfficherEmplacement(zone:Zone);
+procedure AfficherEmplacements(zone:Zone);
 procedure AfficherInventaireZone();
 procedure AfficherInformations(zone:string; time:string);
 procedure AfficherActions();
+procedure WikiBatiment();
+procedure WikiProduction();
+
 
 implementation
 
 uses
-  SysUtils, Classes, gestionEcran, LogiqueUnit;
+  SysUtils, Classes, gestionEcran, LogiqueUnit,windows;
 
 
 procedure CadrePrincipale();
@@ -121,7 +124,6 @@ procedure Scenario();
   begin
     effacerEcran();
     CadrePrincipale();
-
     // SCENARIO - - - 
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Dans une réalité. Pas si alternative que ça.')div 2),10);
     writeln('Dans une réalité. Pas si alternative que ça.');
@@ -176,9 +178,9 @@ procedure AfficherMessage(msg:string);
 procedure AfficherJeu();
   begin
     effacerEcran();
-    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
-    dessinerCadreXY(1, 1, SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL, (SCREEN_HEIGHT-2), double, white, black);
-    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, BORD_DROIT, BORD_BAS, simple, white, black); // TAILLE DE BASE
+    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL, BORD_BAS, double, white, black);
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
     // Titre
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| SATISFACT IUT |>')div 2),1);
     writeln('<| SATISFACT IUT |>');
@@ -195,17 +197,80 @@ procedure AfficherJeu();
     AfficherActions()
   end;
 
-procedure AfficherEmplacement(zone:Zone);
+procedure dessinerEmplacement(emplacement:Structure; x1:Integer; y1:Integer; x2:Integer; y2:Integer);
+  begin
+      dessinerCadreXY(x1, y1, x2, y2, simple, white, black);
+      if (not emplacement.est_decouvert) and false then
+        begin
+        deplacerCurseurXY((x1+x2-Length('Emplacement non decouvert')) div 2, ((y1+y2) div 2));
+        write('Emplacement non decouvert');
+        end
+      else
+        begin
+        deplacerCurseurXY(x1+1, y1+1);
+        write(emplacement.type_structure);
+        end;
+  end;
+
+
+procedure AfficherEmplacements(zone:Zone);
   {Affiches les emplacements d'un zone donnée en paramètre}
   const
     BORD_GAUCHE=SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL;
     BORD_DROIT=SEPARATION_ECRAN_INFO_PRINCIPAL;
     MILIEU=(BORD_GAUCHE+BORD_DROIT) div 2;
   var
-    listeEmplacements:Emplacements;
-    nbEmplacements:Integer;
+    emplacement:Structure;
+    listeEmplacements:Emplacements; // Liste des emplacements de la zone
+    
+    i,
+    
+    // Coordonées x et y des bordures du cadre
+    haut_cadre,
+    bas_cadre,
+    gauche_cadre,
+    droite_cadre,
+
+    longueur_colonne, // Nombre de cellule par colonne
+    hauteur_tableau,  // Hauteur des cellules
+    nbEmplacements:Integer; // Nombre d'emplacament dans la zone
   begin
     listeEmplacements:=getEmplacement(zone);
+    nbEmplacements:=Length(listeEmplacements);
+
+    longueur_colonne:=nbEmplacements div 2;
+    if ((nbEmplacements mod 2)=1) then
+      begin
+      inc(longueur_colonne);
+      end;
+
+    hauteur_tableau:=(BORD_BAS-BORD_HAUT) div longueur_colonne;
+
+    gauche_cadre:=BORD_GAUCHE+1;
+    droite_cadre:=MILIEU-1;
+    // Affiche la première moitié des emplacements
+    for i:=low(listeEmplacements) to longueur_colonne-1 do
+      begin
+      haut_cadre:=BORD_HAUT+i*hauteur_tableau+1;
+      bas_cadre:=BORD_HAUT+hauteur_tableau*(i+1);
+      emplacement:=listeEmplacements[i];
+
+      dessinerEmplacement(emplacement, gauche_cadre, haut_cadre, droite_cadre, bas_cadre);
+      end;
+    
+    gauche_cadre:=MILIEU+1;
+    droite_cadre:=BORD_DROIT-1;
+    // Affiche la seconde moitié des emplacements
+    for i:=longueur_colonne to High(listeEmplacements) do
+      begin
+      haut_cadre:=BORD_HAUT+(i-longueur_colonne)*hauteur_tableau+1;
+      bas_cadre:=BORD_HAUT+hauteur_tableau*(i-longueur_colonne+1);
+      emplacement:=listeEmplacements[i];
+
+      dessinerEmplacement(emplacement, gauche_cadre, haut_cadre, droite_cadre, bas_cadre);
+      end;
+    
+
   end;
 
 procedure AfficherInventaireZone();
@@ -299,4 +364,48 @@ procedure AfficherActions();
     dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
+
+procedure WikiBatiment();
+begin
+  effacerEcran();
+  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+  dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+
+  // Titre
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI BATIMENTS |>')div 2),1);
+  writeln('<| WIKI BATIMENTS |>');
+
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
+  writeln('[1] Wiki PRODUCTION');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+  writeln('[2] Scenario');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+  writeln('[0] Revenir au jeu');
+
+  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+end;
+
+procedure WikiProduction();
+begin
+  effacerEcran();
+  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+  dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+
+  // Titre
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI PRODUCTION |>')div 2),1);
+  writeln('<| WIKI PRODUCTION |>');
+
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
+  writeln('[1] Wiki BATIMENTS');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+  writeln('[2] Scenario');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+  writeln('[0] Revenir au jeu');
+
+  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+end;
+
+
 end.

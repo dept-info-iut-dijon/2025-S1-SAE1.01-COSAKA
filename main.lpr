@@ -7,7 +7,6 @@ var
   choix:String;
 
 begin 
-  SetConsoleOutputCP(65001); // Pour les accents dans la console
   EcranTitre();
   readln();
   choix:=MainMenu();
@@ -16,6 +15,7 @@ begin
     Scenario();
     readln();
     AfficherJeu();
+    AfficherEmplacements(ZoneTest);
     readln();
     end
   else;

@@ -10,8 +10,6 @@ interface
     // Batiment que l'ont peut construire
     Batiment=(Vide, Hub, Gisement, Mine, Usine, Centrale);
 
-    Emplacements=Array of Batiment;
-
     Consommation=Array[Materiaux] of Integer;
     
     // Les structures que pourront contenir les emplacements (représente un emplacement en quelque sorte)
@@ -25,11 +23,13 @@ interface
       // Il faudrat sûrement rajouter des choses par la suite
     end;
 
+    Emplacements=Array[0..9] of Structure;
+
     // Une zone du jeu, contenant par défaut 10 emplacements
     Zone=record
       numero:Integer;
       nom:String;
-      emplacements:Array[0..9] of Structure;
+      emplacements:Emplacements;
       minerais:Array[0..2] of Materiaux;
       inventaire:Array[Materiaux] of Integer;
     end;
@@ -37,6 +37,11 @@ interface
   const
     SCREEN_WIDTH=200;
     SCREEN_HEIGHT=40;
+
+    BORD_HAUT = 1;  // Position y de la bordure haute de l'interface du jeu.
+    BORD_BAS = SCREEN_HEIGHT-2;    // Position y de la bordure basse de l'interface du jeu.
+    BORD_GAUCHE = 2;  // Position x de la bordure gauche de l'interface du jeu.
+    BORD_DROIT = SCREEN_WIDTH-1;  // Position x de la bordure droite de l'interface du jeu.
 
     // Coordonée X de la séparation entre l'affichage de l'inventaire et l'affichage principal
     SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL = SCREEN_WIDTH div 5;
@@ -110,6 +115,22 @@ interface
                  //   minerais:(Fer,Cuivre,Calcaire);
                    // inventaire:(0,0,0,0,0,0,0,0,0,0,0,0,0,0)
                    ); 
+
+    StructureTest:Structure = (
+                    type_structure:Hub;
+                    niveau:1;
+                    est_decouvert:True;
+                    materiaux:Fer;
+                    production:800;
+                    consommable:(0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+
+    ZoneTest:Zone = (
+                    numero:1;
+                    nom:'SabineLaGoat';
+                 //   emplacements:();
+                 //   minerais:(Fer,Cuivre,Calcaire);
+                   // inventaire:(0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+                   );
 
 implementation
 
