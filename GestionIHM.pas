@@ -30,6 +30,8 @@ procedure AfficherActions();
 procedure WikiBatiment();
 procedure WikiProduction();
 procedure UTF8(status:Boolean);
+procedure ConstruireBatiment();
+procedure ChangerZone();
 
 implementation
 
@@ -265,7 +267,9 @@ procedure AfficherJeu();
     {Call des procedures pour assembler toutes les interfaces en une}
     AfficherInformations('-','-');
     AfficherInventaireZone();
-    AfficherActions()
+    AfficherActions();
+    ChangerZone();
+    readln();
   end;
 
 // .____.._____.____.____.___._..._._..._._____.____...........................
@@ -491,6 +495,43 @@ procedure AfficherActions();
     UTF8(False);
     dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+  end;
+
+procedure ConstruireBatiment();
+  begin
+   dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    writeln('Que voulez vous construire ?');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
+    writeln('[1] Mine');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+    writeln('[2] Usine');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
+    writeln('[3] Centrale');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+    writeln('[0] Retour');
+  end;
+
+procedure ErreurBatiment();
+begin
+  
+end;
+
+procedure ChangerZone();
+  begin
+   dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    UTF8(True);
+    writeln('Où allons nous ?');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
+    writeln('[1] ',NOM_ZONE1);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+    writeln('[2] ',NOM_ZONE2);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
+    writeln('[3] ',NOM_ZONE3);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+    writeln('[0] Retour');
+    UTF8(False);
   end;
 
 // ..............................__........_____._.._____.
