@@ -206,7 +206,6 @@ begin
   i:= 0;
   for m in Materiaux do 
     begin
-        valeur[m] := 0;
         if (m <> Electricite) and (m <> Fondations) then
         begin
         deplacerCurseurXY((SCREEN_WIDTH div 10-15),startY+i);
@@ -219,14 +218,23 @@ begin
 end;
 
 procedure AfficherInformations(zone:string; time:string);
+var
+m:Materiaux; // Prend la liste des Materiaux
+valeur:array[Materiaux] of Integer;
+
 begin
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),5);
   writeln('ZONE : ',zone);
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
   writeln('DATE : ',time);
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),10);
-  write('Electricité : ');
-
+  write('Electricite');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),10);
+  writeln(': ',valeur[Electricite]);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),12);
+  write('Fondations');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),12);
+  writeln(': ',valeur[Fondations]);
 end;
 
 procedure AfficherActions();
