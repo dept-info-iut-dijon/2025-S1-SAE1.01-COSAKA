@@ -7,6 +7,9 @@ uses
 
 function getEmplacement(zone:Zone):Emplacements;
 
+function ProductionElectricite(zone:Zone):Integer;
+function ConsommationElectricite(zone:Zone):Integer;
+
 
 implementation
   uses
