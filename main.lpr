@@ -9,14 +9,5 @@ var
 begin 
   EcranTitre();
   readln();
-  choix:=MainMenu();
-  if choix <>'0' then
-    begin
-    Scenario();
-    readln();
-    AfficherJeu();
-    AfficherEmplacements(ZoneTest);
-    readln();
-    end
-  else;
+  MainMenu();
 end.

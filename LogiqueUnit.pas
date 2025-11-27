@@ -10,6 +10,7 @@ function getEmplacement(zone:Zone):Emplacements;
 function ProductionElectricite(zone:Zone):Integer;
 function ConsommationElectricite(zone:Zone):Integer;
 
+procedure MainMenu();
 
 implementation
   uses
@@ -92,9 +93,16 @@ procedure initEmplacements(var zone:Zone);
   {Fonction qui prend en paramètres une zone
   et qui renvoie cette même zone après avoir
   initialisé tous ses emplacements,  prêts pour le jeu.}
+  var
+    i:integer;
   begin
+    // Définie tous les emplacements par des emplacements vides et non découverts
+    for i:=low(zone.emplacements) to high(zone.emplacements) do
+      begin
+      setEmplacement(zone.emplacements[i], 0, false, Vide, Fer, 0, CONSOMMATION0);
+      end;
     // Définie le Hub de la zone
-    setEmplacement(zone.emplacements[0], 0, true, Hub, Null, 0, CONSOMMATION0);
+    setEmplacement(zone.emplacements[0], 0, true, Hub, Fer, 0, CONSOMMATION0);
     // Définie un emplacement avec un gisement du premier minerai de la zone.
     setEmplacement(zone.emplacements[random(8)+1], 3, true, Gisement, zone.minerais[0], 0, CONSOMMATION0);
 
@@ -112,6 +120,19 @@ procedure initEmplacements(var zone:Zone);
       begin
       ajouteStructureEmplacementAlea(zone, 1, false, Gisement, zone.minerais[random(2)], 0, CONSOMMATION0)
       end;  
+  end;
+
+function initZone(numero:Integer; nom:String; minerai1:Materiaux; minerai2:Materiaux; minerai3:Materiaux):Zone;
+  var
+    new_zone:Zone;
+  begin
+    new_zone.numero:=numero;
+    new_zone.nom:=nom;
+    new_zone.minerais[0]:=minerai1;
+    new_zone.minerais[1]:=minerai2;
+    new_zone.minerais[2]:=minerai3;
+    initEmplacements(new_zone);
+    initZone:=new_zone;
   end;
 
 function MateriauxNecessairesConstruction(zone:Zone; batiment:Batiment; niveau:Integer):Boolean;
@@ -432,5 +453,34 @@ procedure ConstruireBatiment(zone:Zone);
       AfficherMessage('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
   end;
 
+procedure JeuPrincipal();
+  var
+    curent_zone:Integer;
+    zones:Array[0..2] of Zone;
+    choix:String;
+  begin
+    Scenario();
+    choix:='';
+    curent_zone:=0;
+    zones[0]:=initZone(0, NOM_ZONE1, Fer, Cuivre, Charbon);
+    while (choix<>QUITTER) do
+      begin
+      AfficherZone(zones[curent_zone]);
+      readln(choix);
+      end;  
+  end;
+
+procedure MainMenu();
+  var
+    choix:String;
+  begin
+    choix:='';
+    while (choix<>'2') do
+      begin
+      choix:=AfficheMainMenu();
+      if (choix='1') then
+        JeuPrincipal();
+      end;
+  end;
 
 end.

@@ -19,13 +19,13 @@ interface
 uses constantunit;
 // Liste des procédures et fonctions
 procedure EcranTitre();
-function MainMenu():String;
+function AfficheMainMenu():String;
 procedure Scenario();
 procedure AfficherMessage(msg:string);
-procedure AfficherJeu();
+procedure AfficherZone(zone:Zone);
 procedure AfficherEmplacements(zone:Zone);
-procedure AfficherInventaireZone();
-procedure AfficherInformations(zone:string; time:string);
+procedure AfficherInventaireZone(zone:Zone);
+procedure AfficherInformations(zone:zone; time:string);
 procedure AfficherActions();
 procedure AfficherMenuWikiBatiment();
 procedure AfficherMenuWikiProduction();
@@ -137,7 +137,7 @@ procedure EcranTitre();
 // ..............................|_|..|_|_____|_|.\_|\___/.
 
 {Affichage du menu principale}
-function MainMenu():String;
+function AfficheMainMenu():String;
   var
     res:String;
   begin
@@ -170,7 +170,7 @@ function MainMenu():String;
     writeln('[0] Quitter');
 
     readln(res);
-    MainMenu:=res;
+    AfficheMainMenu:=res;
 
   end;
 
@@ -226,6 +226,7 @@ procedure Scenario();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Appuyez sur ENTRER pour continuer')div 2),35);
     couleurTexte(white);
     writeln('Appuyez sur ENTRER pour continuer');
+    readln();
 
     UTF8(False);
   end;
@@ -247,7 +248,7 @@ procedure AfficherMessage(msg:string);
   end;
 
 // Affiche le cadre principale du jeu
-procedure AfficherJeu();
+procedure AfficherZone(zone:Zone);
   begin
     effacerEcran();
     {1 cadre principale avec deux cadres de chaque coté}
@@ -268,6 +269,7 @@ procedure AfficherJeu();
     {Call des procedures pour assembler toutes les interfaces en une}
     AfficherInformations('-','-');
     AfficherInventaireZone();
+    AfficherEmplacements(zone);
     AfficherActions();
     readln();
     AfficherActionInformation('I m still standing but pas trop because Anatole ce connard qui me donne des procedure de SALOPARD a faire alors que je pourrai faire plus simple et conserver ma conscience mentale intacte ou dumoins presque... bref Anatole mange moi stp');
@@ -363,7 +365,7 @@ procedure AfficherEmplacements(zone:Zone);
     // Affiche la première moitié des emplacements
     for i:=low(listeEmplacements) to longueur_colonne-1 do
       begin
-      haut_cadre:=BORD_HAUT+i*hauteur_tableau+ESPACEMENT;
+      haut_cadre:=BORD_HAUT+(i)*hauteur_tableau+ESPACEMENT;
       bas_cadre:=BORD_HAUT+hauteur_tableau*(i+1);
       emplacement:=listeEmplacements[i];
 
@@ -391,33 +393,33 @@ procedure AfficherEmplacements(zone:Zone);
 // .|.||.|\..|.\.V./.|.|___|.|\..|.|.|/.___.\.|.||.._.<|.|___.
 // |___|_|.\_|..\_/..|_____|_|.\_|.|_/_/...\_\___|_|.\_\_____|
 
-procedure AfficherInventaireZone();
+procedure AfficherInventaireZone(zone:Zone);
   var
   m:Materiaux; // Prend la liste des Materiaux
-  valeur:array[Materiaux] of Integer;
+  inventaire_zone:Inventaire;
   i,count,startY:Integer;
 
   begin
-
+    inventaire_zone:=zone.inventaire;
     count := Ord(High(Materiaux)) - Ord(Low(Materiaux)) + 1;
     startY := (SCREEN_HEIGHT div 2) - ((count) div 2);
     i:= 0;
     for m in Materiaux do 
       begin
           if (m <> Electricite) then
-          begin
-          deplacerCurseurXY((SCREEN_WIDTH div 10-15),startY+i);
-          writeln(m);
-          deplacerCurseurXY((SCREEN_WIDTH div 10+10),startY+i);
+            begin
+            deplacerCurseurXY((SCREEN_WIDTH div 10-15),startY+i);
+            writeln(m);
+            deplacerCurseurXY((SCREEN_WIDTH div 10+10),startY+i);
 
-          // Affiche les valeurs en rouge si elle sont = 0
-          if valeur[m] = 0 then
-          begin
-            couleurTexte(Red);
-          end;
-          writeln(': ',valeur[m]);
-          couleurTexte(White);
-          i:= i + 1; 
+            // Affiche les valeurs en rouge si elle sont = 0
+            if inventaire_zone[m] = 0 then
+              begin
+                couleurTexte(Red);
+              end;
+            writeln(': ',inventaire_zone[m]);
+            couleurTexte(White);
+            i:= i + 1; 
           end;
       end;
   end;
@@ -428,21 +430,21 @@ procedure AfficherInventaireZone();
 // .|.||.|\..|.._||.|_|.|.._.<|.|..|.|/.___.\|.|..|.|.|_|.|.|\..|___).|
 // |___|_|.\_|_|...\___/|_|.\_\_|..|_/_/...\_\_|.|___\___/|_|.\_|____/.
 
-procedure AfficherInformations(zone:string; time:string);
+procedure AfficherInformations(zone:Zone; time:string);
   var
   m:Materiaux; // Prend la liste des Materiaux
   valeur:array[Materiaux] of Integer;
 
   begin
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),5);
-    writeln('ZONE : ',zone);
+    writeln('ZONE : ',zone.nom);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
     writeln('DATE : ',time);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),10);
 
     {Si la consommation est plus importante que la production
     alors la valeur s'affiche en rouge}
-        if (ConsommationElectricite(ZoneTest)) > ProductionElectricite(ZoneTest) then
+        if (ConsommationElectricite(zone)) > ProductionElectricite(zone) then
       begin
         couleurTexte(Red);
       end
@@ -454,13 +456,13 @@ procedure AfficherInformations(zone:string; time:string);
     write('Production Electricité');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),10);
 
-    writeln(': ',ProductionElectricite(ZoneTest));
+    writeln(': ',ProductionElectricite(zone));
     couleurTexte(White);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),11);
     couleurTexte(Yellow); // couleur jaune
     write('Consommation Electricité');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),11);
-    writeln(': ',ConsommationElectricite(ZoneTest));
+    writeln(': ',ConsommationElectricite(zone));
     couleurTexte(White); // Reset de la couleur
     UTF8(False);
   end;
@@ -658,9 +660,9 @@ begin
   writeln('[0] Revenir au jeu');
   UTF8(False);
 
-  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
-end;
+    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+  end;
 
 
 end.
