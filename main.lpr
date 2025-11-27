@@ -6,7 +6,8 @@ uses
 var
   choix:String;
 
-begin 
+begin
+  Randomize;
   EcranTitre();
   readln();
   MainMenu();
