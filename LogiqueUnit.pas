@@ -159,45 +159,49 @@ function ProductionElectricite(zone:Zone):Integer;
   {}
   var
     emplacement:Structure;
+    production:Integer;
   begin
-    ProductionElectricite := 0;
+    production := 0;
     for emplacement in zone.emplacements do
     begin
       if (emplacement.type_structure = Centrale) then
-        ProductionElectricite := ProductionElectricite + emplacement.production;
+        production := production + emplacement.production;
     end;
+    ProductionElectricite := production;
   end;
 
 function ConsommationElectricite(zone:Zone):Integer;
   {}
   var
     emplacement:Structure;
+    consommation:Integer;
   begin
-    ConsommationElectricite := 0;
+    consommation := 0;
     for emplacement in zone.emplacements do
     begin
-      ConsommationElectricite := ConsommationElectricite + emplacement.consommable[Electricite];
+      consommation := consommation + emplacement.consommable[Electricite];
     end;
+    ConsommationElectricite := consommation;
   end;
 
 
-function MateriauxNecessaire(zone:Zone, emplacement:Structure):Boolean;
+function MateriauxNecessaires(zone:Zone; emplacement:Structure):Boolean;
   {Fonction qui prend en parametre une zone et un emplacement et 
   renvoie Faux si l'inventaire de la zone contient moins de materiaux 
   que l'emplacement en consomme et renvoie Vrai sinon}
   var
-    materiaux:Materiaux;
+    materiau:Materiaux;
   begin
-    MateriauxNecessaire := True;
+    MateriauxNecessaires := True;
     // Boucle sur chaque materiaux du type Materiaux
-    for materiaux in Materiaux do
+    for materiau in Materiaux do
     begin
       // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
-      if (emplacement.consommable[materiaux] > 0) then
+      if (emplacement.consommable[materiau] > 0) then
       begin
         // Vérifie que l'inventaire de la zone possèdent assez de matériaux
-        if (zone.inventaire[materiaux] < emplacement.consommable[materiaux]) then
-          MateriauxNecessaire := False;
+        if (zone.inventaire[materiau] < emplacement.consommable[materiau]) then
+          MateriauxNecessaires := False;
       end;
     end;
   end;
@@ -209,7 +213,7 @@ procedure revenusProduction(zone:Zone);
   var
     emplacement:Structure;
     materiau:Materiaux;
-    materiauxNecessaire:Boolean;
+    possedeMateriauxNecessaires:Boolean;
   begin
     // Boucle sur chaque emplacements de la zone
     for emplacement in zone.emplacements do
@@ -218,15 +222,15 @@ procedure revenusProduction(zone:Zone);
       if emplacement.est_decouvert then
       begin
         // Vérifie que l'inventaire de la zone possede assez de materiaux
-        materiauxNecessaire := MateriauxNecessaire(zone, emplacement);
+        possedeMateriauxNecessaires := MateriauxNecessaires(zone, emplacement);
 
-        if materiauxNecessaire then
+        if possedeMateriauxNecessaires then
         begin
-          for materiaux in Materiaux do
+          for materiau in Materiaux do
           begin
-            if (emplacement.consommable[materiaux] > 0) then
+            if (emplacement.consommable[materiau] > 0) then
                 // Enleve les matériaux consommés à l'inventaire de la zone
-                zone.inventaire[materiaux] := zone.inventaire[materiaux] - emplacement.consommable[materiaux];
+                zone.inventaire[materiau] := zone.inventaire[materiau] - emplacement.consommable[materiau];
           end;
 
           // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
