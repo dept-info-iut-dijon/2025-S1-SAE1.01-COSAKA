@@ -100,7 +100,7 @@ interface
     NOM_ZONE2='La Caverne Simmonet';
     NOM_ZONE3='La Montagne Coulon';
     
-    
+
 
     StructureTest:Structure = (
                     type_structure:Hub;
