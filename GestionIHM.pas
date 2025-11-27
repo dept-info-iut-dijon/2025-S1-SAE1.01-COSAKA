@@ -21,7 +21,7 @@ procedure WikiProduction();
 implementation
 
 uses
-  SysUtils, TypInfo, Classes, gestionEcran, LogiqueUnit;
+  SysUtils, TypInfo, Classes, gestionEcran, LogiqueUnit, windows;
 
 
 procedure CadrePrincipale();
@@ -124,7 +124,6 @@ procedure Scenario();
   begin
     effacerEcran();
     CadrePrincipale();
-
     // SCENARIO - - - 
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Dans une réalité. Pas si alternative que ça.')div 2),10);
     writeln('Dans une réalité. Pas si alternative que ça.');

@@ -114,7 +114,7 @@ procedure initEmplacements(var zone:Zone);
       end;  
   end;
 
-function MateriauxNecessairesConstruction(zone:Zone; emplacement:Structure; niveau:Integer):Boolean;
+function MateriauxNecessairesConstruction(zone:Zone; batiment:Batiment; niveau:Integer):Boolean;
   {Fonction qui prend en parametre une zone, un emplacement 
   et un niveau et renvoie Faux si l'inventaire de la zone 
   contient moins de materiaux que le nombre de materiaux 
@@ -127,16 +127,16 @@ function MateriauxNecessairesConstruction(zone:Zone; emplacement:Structure; nive
     for materiau in Materiaux do
     begin
       // Vérifie que le materiau sur lequel on boucle est necessaire a la construction du batiment
-      if (CONSTRUCTION_BASE[niveau][emplacement.type_structure][materiau] > 0) then
+      if (CONSTRUCTION_BASE[niveau][batiment][materiau] > 0) then
       begin
         // Vérifie que l'inventaire de la zone possèdent assez de matériaux
-        if (zone.inventaire[materiau] < CONSTRUCTION_BASE[niveau][emplacement.type_structure][materiau]) then
+        if (zone.inventaire[materiau] < CONSTRUCTION_BASE[niveau][batiment][materiau]) then
           MateriauxNecessairesConstruction := False;
       end;
     end;
   end;
 
-procedure SuppressionMateriauxConstruction(zone:Zone; emplacement:Structure; niveau:Integer);
+procedure SuppressionMateriauxConstruction(zone:Zone; batiment:Batiment; niveau:Integer);
   {Procédure qui prend en parametre une zone, un emplacement et 
   un niveau et enleve les matériaux necessaires pour la construction
   d'un batiment à l'inventaire de la zone}
@@ -147,10 +147,10 @@ procedure SuppressionMateriauxConstruction(zone:Zone; emplacement:Structure; niv
     for materiau in Materiaux do
     begin
       // Vérifie que le materiau sur lequel on boucle est necessaire a la construction du batiment
-      if (CONSTRUCTION_BASE[niveau][emplacement.type_structure][materiau] > 0) then
+      if (CONSTRUCTION_BASE[niveau][batiment][materiau] > 0) then
       begin
         // Supprime les matériaux nécessaire a la construction de l'inventaire
-        zone.inventaire[materiau] :=  zone.inventaire[materiau] - CONSTRUCTION_BASE[niveau][emplacement.type_structure][materiau];
+        zone.inventaire[materiau] :=  zone.inventaire[materiau] - CONSTRUCTION_BASE[niveau][batiment][materiau];
       end;
     end;
   end;
@@ -174,11 +174,11 @@ procedure creerMine(zone:Zone; var emplacement:Structure);
     if (emplacement.type_structure=Gisement) then
     begin
       // Vérifie que la zone possede les materiaux necessaires a la construction du batiment
-      possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, emplacement, NOUVEAU_NIVEAU);
+      possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, Mine, NOUVEAU_NIVEAU);
       if possedeMateriauxNecessaires then
       begin
         // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
-        SuppressionMateriauxConstruction(zone, emplacement, NOUVEAU_NIVEAU);
+        SuppressionMateriauxConstruction(zone, Mine, NOUVEAU_NIVEAU);
 
         // Calcul de la production selon le niveau du Gisement
         production := round(PRODUCTION_BASE[emplacement.materiaux]*(1 + ((emplacement.niveau - 1) / 4)));
@@ -213,11 +213,11 @@ procedure creerUsine(zone:Zone; var emplacement:Structure; nouveau_materiaux:Mat
     possedeMateriauxNecessaires:Boolean;
   begin
     // Vérifie que la zone possede les materiaux necessaires a la construction du batiment
-    possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, emplacement, NOUVEAU_NIVEAU);
+    possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, Usine, NOUVEAU_NIVEAU);
     if possedeMateriauxNecessaires then
     begin
       // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
-      SuppressionMateriauxConstruction(zone, emplacement, NOUVEAU_NIVEAU);
+      SuppressionMateriauxConstruction(zone, Usine, NOUVEAU_NIVEAU);
 
       // Initialise le coût en éléctricité a 100
       emplacement.consommable[Electricite] := 100;
@@ -225,6 +225,37 @@ procedure creerUsine(zone:Zone; var emplacement:Structure; nouveau_materiaux:Mat
       // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
       setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
                       Usine, nouveau_materiaux, PRODUCTION_BASE[nouveau_materiaux], CONSOMMABLE_BASE[nouveau_materiaux]);
+    end
+    else
+      // Affiche le message d'erreur
+      AfficherMessage('Vous n''avez pas les materiaux necessaires');
+  end;
+
+procedure UpgradeBatiment(zone:Zone; emplacement:Structure; niveau:Integer);
+  {Procedure qui prend en parametre une zone, un emplacement et 
+  un niveau et modifie l'emplacement ce qui permet d'augmenter 
+  le niveau du batiment en augmentant sa consommation d'electricité 
+  et sa production}
+  var
+    possedeMateriauxNecessaires:Boolean;
+    production:Integer;
+  begin
+    // Vérifie que la zone possede les materiaux necessaires a la construction du batiment
+    possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, emplacement.type_structure, niveau);
+    if possedeMateriauxNecessaires then
+    begin
+      // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
+      SuppressionMateriauxConstruction(zone, emplacement.type_structure, niveau);
+
+      // Augmente la consommation de l'electricité du batiment
+      emplacement.consommable[Electricite] := round(emplacement.consommable[Electricite]*1.5);
+
+      // Augmente la production du batiment
+      production := round(emplacement.production*1.5);
+      
+      // Modifie l'emplacement en mettant nouveaux parametres voulu
+      setEmplacement(emplacement, niveau, emplacement.est_decouvert, 
+                      emplacement.type_structure, emplacement.materiaux, production, emplacement.consommable);
     end
     else
       // Affiche le message d'erreur
