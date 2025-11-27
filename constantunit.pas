@@ -9,6 +9,8 @@ interface
 
     // Batiment que l'ont peut construire
     Batiment=(Vide, Hub, Gisement, Mine, Usine, Centrale);
+
+    Consommation=Array[Materiaux] of Integer;
     
     // Les structures que pourront contenir les emplacements (représente un emplacement en quelque sorte)
     Structure=record
@@ -17,7 +19,7 @@ interface
       est_decouvert:Boolean;
       materiaux:Materiaux;
       production:Integer;
-      consommable:Array[Fer..Electricite] of Integer;
+      consommable:Consommation;
       // Il faudrat sûrement rajouter des choses par la suite
     end;
 
@@ -27,7 +29,7 @@ interface
       nom:String;
       emplacements:Array[0..9] of Structure;
       minerais:Array[0..2] of Materiaux;
-      inventaire:Array[Fer..Electricite] of Integer;
+      inventaire:Array[Materiaux] of Integer;
     end;
   
   const
@@ -37,12 +39,14 @@ interface
     MINERAI1=Fer;   // Minerai le plus courant
     MINERAI2=Cuivre;  // 2ème Minerai le plus courant
 
-    PRODUCTION_BASE:array[Fer..Electricite] of Integer=(10, 15, 10, 10, 
-                                                                                              10, 10, 10, 10, 
-                                                                                              10, 10, 10, 10, 
-                                                                                              10, 10);
+    CONSOMMATION0:Consommation=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);  // Un tableau de consommation où rien est consommé (tout = à 0)
 
-    CONSOMMABLE_BASE:Array[Fer..Electricite] of Array[Fer..Electricite] of Integer=((0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+    PRODUCTION_BASE:array[Materiaux] of Integer=(10, 15, 10, 10, // La production de base des Mines, Usines et Générateurs
+                                                        10, 10, 10, 10, 
+                                                        10, 10, 10, 10, 
+                                                        10, 10);
+
+    CONSOMMABLE_BASE:Array[Materiaux] of Consommation=((0,0,0,0,0,0,0,0,0,0,0,0,0,0),
                                                                                     (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
                                                                                     (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
                                                                                     (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
