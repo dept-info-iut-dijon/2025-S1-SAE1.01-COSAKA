@@ -10,10 +10,11 @@ implementation
   uses
     SysUtils, Classes;
 
+begin
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
-                         new_type_structure:Batiment; new_materiaux:Materiaux;
-                         new_production:Integer; new_consommable:Array[Fer..Electricite] of Integer);
+                         new_type_structure:Batiment; new_materiaux:Materiaux);
+                       //  new_production:Integer; new_consommable:Array[Fer..Electricite] of Integer);
   {Définit les valeur des paramètres de l'emplacement 'emplacement'.
   Attention, tous les paramètres doivent être renseignés.}
   begin
@@ -106,7 +107,7 @@ procedure creerMine(var emplacement:Structure);
   {Procédure qui prend en paramètre un emplacement et 
   qui renvoie ce même emplacement en changeant le type 
   de la structure en 'Mine', en initialisant le niveau 
-  de la structure à 1 et la valeur de la production}
+  de la structure à 1 et la valeur de la production
   const
     // Initialise le nouveau niveau à 1
     NOUVEAU_NIVEAU = 1;
@@ -126,8 +127,8 @@ procedure creerMine(var emplacement:Structure);
         emplacement.consommable[Electricite] := 100
 
         // Modifie l'emplacement avec les nouveaux paramètres
-        setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
-                        Mine, emplacement.materiaux, production, emplacement.consommable);
+        //setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
+                 //       Mine, emplacement.materiaux, production, emplacement.consommable);
       end
       else
         // Affiche le message d'erreur
@@ -138,23 +139,22 @@ procedure creerMine(var emplacement:Structure);
       AfficherMessage('Vous n''avez pas encore explorer cet emplacement');
   end;
 
-procedure creerUsine(var emplacement:Structure; nouveau_materiaux:Materiaux);
-  {}
+{procedure creerUsine(var emplacement:Structure; nouveau_materiaux:Materiaux);
   const
     NOUVEAU_NIVEAU = 1;
   begin
     // Vérifie si l'emplacement a bien été découvert
     if emplacement.est_decouvert then
     begin
-      setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
-                      Usine, nouveau_materiaux, emplacement.consommable )
+      //setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
+              //        Usine, nouveau_materiaux, emplacement.consommable )
     end
     else
       // Affiche le message d'erreur
       AfficherMessage('Vous n''avez pas encore explorer cet emplacement');
   end;
 
-
+}
 
 
 procedure revenusProduction(zone:Zone);
@@ -163,7 +163,7 @@ procedure revenusProduction(zone:Zone);
   par les différents batiments}
   var
     emplacement:Structure;
-    materiaux:Materiaux;
+  //  materiaux:Materiaux;
     materiauxNecessaire:Boolean;
   begin
     // Boucle sur chaque emplacements de la zone
@@ -174,7 +174,7 @@ procedure revenusProduction(zone:Zone);
       if emplacement.est_decouvert then
       begin
         // Boucle sur chaque materiaux du type Materiaux
-        for materiaux in Materiaux do
+       // for materiaux in Materiaux do
         begin
           // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
           if (emplacement.consommable[materiaux] > 0) then
@@ -195,5 +195,4 @@ procedure revenusProduction(zone:Zone);
       end;
     end;
   end;
-
 end.

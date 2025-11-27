@@ -9,7 +9,7 @@ procedure Scenario();
 procedure AfficherMessage(msg:string);
 procedure AfficherJeu();
 procedure AfficherEmplacement();
-procedure AfficherInventaireZone(marzaCoin:Integer);
+procedure AfficherInventaireZone();
 procedure AfficherInformations(zone:string; time:string);
 procedure AfficherActions();
 
@@ -185,7 +185,7 @@ begin
   writeln('ACTIONS');
 
   AfficherInformations('Dijon','Mardi 10 avril 2007');
-  AfficherInventaireZone(800);
+  AfficherInventaireZone();
 end;
 
 procedure AfficherEmplacement();
@@ -193,11 +193,29 @@ begin
   
 end;
 
-procedure AfficherInventaireZone(marzaCoin:Integer);
+procedure AfficherInventaireZone();
+var
+m:Materiaux; // Prend la liste des Materiaux
+valeur:array[Materiaux] of Integer;
+i,count,startY:Integer;
+
 begin
-  deplacerCurseurXY((SCREEN_WIDTH div 10)-(Length('Marza Coin : ')div 2),5);
-  writeln('Marza Coin : ',marzaCoin);
-  
+
+  count := Ord(High(Materiaux)) - Ord(Low(Materiaux)) + 1;
+  startY := (SCREEN_HEIGHT div 2) - ((count) div 2);
+  i:= 0;
+  for m in Materiaux do 
+    begin
+        valeur[m] := 0;
+        if (m <> Electricite) and (m <> Fondations) then
+        begin
+        deplacerCurseurXY((SCREEN_WIDTH div 10-15),startY+i);
+        writeln(m);
+        deplacerCurseurXY((SCREEN_WIDTH div 10+10),startY+i);
+        writeln(': ',valeur[m]);
+        i:= i + 1; 
+        end;
+    end;
 end;
 
 procedure AfficherInformations(zone:string; time:string);
