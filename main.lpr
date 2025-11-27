@@ -3,13 +3,19 @@ program main;
 uses
   classes,sysutils,constantunit,gestionIHM,LogiqueUnit;
 
+var
+  choix:String;
+
 begin 
   EcranTitre();
   readln();
-  MainMenu();
-  readln();
-  Scenario();
-  readln();
-  AfficherJeu();
-  readln();
+  choix:=MainMenu();
+  if choix<>'2' then
+    begin
+    Scenario();
+    readln();
+    AfficherJeu();
+    readln();
+    end
+  else;
 end.
