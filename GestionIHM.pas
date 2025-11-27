@@ -4,7 +4,7 @@ unit gestionIHM;
 
 interface
 procedure EcranTitre();
-procedure MainMenu();
+function MainMenu():String;
 procedure Scenario();
 procedure AfficherMessage(msg:string);
 procedure AfficherJeu();
@@ -80,7 +80,9 @@ begin
 end;
 
 {Affichage du menu principale}
-procedure MainMenu();
+function MainMenu():String;
+var
+  res:String;
 begin
   effacerEcran();
   CadrePrincipale();
@@ -107,6 +109,9 @@ begin
 
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('[2] Quitter')div 2),28);
   writeln('[2] Quitter');
+
+  readln(res);
+  MainMenu:=res;
 
 end;
 
@@ -164,58 +169,59 @@ begin
 dessinerCadreXY((SCREEN_WIDTH div 2)-((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)-2,(SCREEN_WIDTH div 2)+((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)+2,simple,White,Black);
 deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(msg)div 2),(SCREEN_HEIGHT div 2));
 writeln(msg);
-  
 end;
+
 // Affiche le cadre principale du jeu
 procedure AfficherJeu();
-begin
-  effacerEcran();
-  dessinerCadreXY(2,1,(SCREEN_WIDTH-1),(SCREEN_HEIGHT-2),simple,white,black); // TAILLE DE BASE
-  dessinerCadreXY(1,1,(SCREEN_WIDTH div 5),(SCREEN_HEIGHT-2),double,white,black);
-  dessinerCadreXY((SCREEN_WIDTH div 5)*4,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
-  // Titre
-  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| SATISFACT IUT |>')div 2),1);
-  writeln('<| SATISFACT IUT |>');
-  // Titre 2
-  deplacerCurseurXY((SCREEN_WIDTH div 10)-(Length('INVENTAIRE DE LA ZONE')div 2),2);
-  writeln('INVENTAIRE DE LA ZONE');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('INFORMATIONS')div 2),2);
-  writeln('INFORMATIONS');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)+1));
-  writeln('ACTIONS');
+  begin
+    effacerEcran();
+    dessinerCadreXY(2,1,(SCREEN_WIDTH-1),(SCREEN_HEIGHT-2),simple,white,black); // TAILLE DE BASE
+    dessinerCadreXY(1,1,(SCREEN_WIDTH div 5),(SCREEN_HEIGHT-2),double,white,black);
+    dessinerCadreXY((SCREEN_WIDTH div 5)*4,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+    // Titre
+    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| SATISFACT IUT |>')div 2),1);
+    writeln('<| SATISFACT IUT |>');
+    // Titre 2
+    deplacerCurseurXY((SCREEN_WIDTH div 10)-(Length('INVENTAIRE DE LA ZONE')div 2),2);
+    writeln('INVENTAIRE DE LA ZONE');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('INFORMATIONS')div 2),2);
+    writeln('INFORMATIONS');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)+1));
+    writeln('ACTIONS');
 
-  AfficherInformations('Dijon','Mardi 10 avril 2007');
-  AfficherInventaireZone();
-end;
+    AfficherInformations('Dijon','Mardi 10 avril 2007');
+    AfficherInventaireZone();
+  end;
 
 procedure AfficherEmplacement();
-begin
-  
-end;
+  begin
+    
+  end;
 
 procedure AfficherInventaireZone();
-var
-m:Materiaux; // Prend la liste des Materiaux
-valeur:array[Materiaux] of Integer;
-i,count,startY:Integer;
+  var
+  m:Materiaux; // Prend la liste des Materiaux
+  valeur:array[Materiaux] of Integer;
+  i,count,startY:Integer;
 
-begin
+  begin
 
-  count := Ord(High(Materiaux)) - Ord(Low(Materiaux)) + 1;
-  startY := (SCREEN_HEIGHT div 2) - ((count) div 2);
-  i:= 0;
-  for m in Materiaux do 
-    begin
-        if (m <> Electricite) and (m <> Fondations) then
-        begin
-        deplacerCurseurXY((SCREEN_WIDTH div 10-15),startY+i);
-        writeln(m);
-        deplacerCurseurXY((SCREEN_WIDTH div 10+10),startY+i);
-        writeln(': ',valeur[m]);
-        i:= i + 1; 
-        end;
-    end;
-end;
+    count := Ord(High(Materiaux)) - Ord(Low(Materiaux)) + 1;
+    startY := (SCREEN_HEIGHT div 2) - ((count) div 2);
+    i:= 0;
+    for m in Materiaux do 
+      begin
+          valeur[m] := 0;
+          if (m <> Electricite) and (m <> Fondations) then
+          begin
+          deplacerCurseurXY((SCREEN_WIDTH div 10-15),startY+i);
+          writeln(m);
+          deplacerCurseurXY((SCREEN_WIDTH div 10+10),startY+i);
+          writeln(': ',valeur[m]);
+          i:= i + 1; 
+          end;
+      end;
+  end;
 
 procedure AfficherInformations(zone:string; time:string);
 var
@@ -238,8 +244,6 @@ begin
 end;
 
 procedure AfficherActions();
-begin
-  
-end;
+  begin
 
-end.
+  end.
