@@ -37,7 +37,7 @@ interface
   const
     SCREEN_WIDTH=200;
     SCREEN_HEIGHT=40;
-
+    
     BORD_HAUT = 1;  // Position y de la bordure haute de l'interface du jeu.
     BORD_BAS = SCREEN_HEIGHT-2;    // Position y de la bordure basse de l'interface du jeu.
     BORD_GAUCHE = 2;  // Position x de la bordure gauche de l'interface du jeu.
@@ -100,6 +100,12 @@ interface
     NOM_ZONE2='La Caverne Simmonet';
     NOM_ZONE3='La Montagne Coulon';
     
+
+    QUITTER=0;
+
+    MATERIAUX_PREMIERS=4;
+    MATERIAUX_AUTRES=1;
+    MATERIAUX_TRANSFORMES=ord(high(Materiaux))-MATERIAUX_PREMIERS-MATERIAUX_AUTRES;
 
 
     StructureTest:Structure = (

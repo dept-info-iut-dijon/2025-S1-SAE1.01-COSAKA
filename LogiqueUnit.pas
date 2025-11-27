@@ -408,6 +408,9 @@ procedure ConstruireBatiment(zone:Zone);
   var
     choix:Integer;
     emplacement:Structure;
+    sortie:Boolean;
+    sortie2:Boolean;
+    materiau:Materiaux;
   begin
     AfficherMessage('Veuillez choisir un emplacement(entre 0 et 9)');
     readln(choix);
@@ -416,17 +419,46 @@ procedure ConstruireBatiment(zone:Zone);
     begin
       if (emplacement.type_structure = Vide) or (emplacement.type_structure = Gisement) then
       begin
-
-
-
-
-
-
-
-        
+        sortie:=False;
+        while not sortie do
+        begin
+          AfficherMenuBatiment();
+          readln(choix);
+          case choix of
+            0: sortie:=True;
+            1:
+            begin 
+            creerMine(zone, emplacement);
+            sortie:=True;
+            end;
+            2:
+            begin
+              sortie2:=False;
+              while not sortie2 do
+              begin
+                // AfficherMenuFabrication()
+                readln(choix);
+                if (choix>QUITTER) and (choix<MATERIAUX_TRANSFORMES) then
+                  sortie2:=True;
+              end;
+              if choix<>QUITTER then
+                for materiau in Materiaux do
+                begin
+                  if ord(materiau) = (choix+MATERIAUX_PREMIERS) then
+                    creerUsine(zone, emplacement, materiau);
+                end;
+                sortie:=True;
+            end;
+            3:
+            begin
+              creerCentrale(zone, emplacement);
+              sortie:=True;
+            end;
+          end;
+        end;
       end
       else
-        AfficherMessage('Vous ne pouvez pas construire un batiment sur un autre batiment')
+        AfficherMessage('Vous ne pouvez pas construire un batiment sur un autre batiment');
     end
     else
       AfficherMessage('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
