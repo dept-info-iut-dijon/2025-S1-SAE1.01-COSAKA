@@ -289,7 +289,7 @@ procedure dessinerEmplacement(emplacement:Structure; x1:Integer; y1:Integer; x2:
   begin
       dessinerCadreXY(x1, y1, x2, y2, simple, white, black);
       // Vérifie si l'emplacement est découvert
-      if (not emplacement.est_decouvert) and false then
+      if (not emplacement.est_decouvert) then
         // Si l'emplacement n'est pas découvert, l'indique
         begin
         s:='Emplacement non decouvert';
@@ -299,13 +299,13 @@ procedure dessinerEmplacement(emplacement:Structure; x1:Integer; y1:Integer; x2:
       else
         begin
         deplacerCurseurXY(x1+2, y1+1);
-        write('Structure : ', emplacement.type_structure);
+        write('STRUCTURE : ', emplacement.type_structure);
         if (emplacement.type_structure<>Vide) and (emplacement.type_structure<>Hub) then
           begin
-          s:= 'Niveau : ' + IntToStr(emplacement.niveau);
+          s:= 'NIVEAU : ' + IntToStr(emplacement.niveau);
           deplacerCurseurXY(x2-Length(s)-2, y1+1);
           write(s);
-          s:= 'Production : ' + GetEnumName(TypeInfo(emplacement.materiaux), Ord(emplacement.materiaux));
+          s:= 'PRODUCTION : ' + GetEnumName(TypeInfo(emplacement.materiaux), Ord(emplacement.materiaux));
           deplacerCurseurXY(x1+2, y2-1);
           write(s);
           end;
