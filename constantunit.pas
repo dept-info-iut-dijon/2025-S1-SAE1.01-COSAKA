@@ -116,7 +116,7 @@ interface
                    // inventaire:(0,0,0,0,0,0,0,0,0,0,0,0,0,0)
                    ); 
 
-    StructureTest:Structure = (
+    {StructureTest:Structure = (
                     type_structure:Hub;
                     niveau:1;
                     est_decouvert:True;
@@ -130,7 +130,7 @@ interface
                  //   emplacements:();
                  //   minerais:(Fer,Cuivre,Calcaire);
                    // inventaire:(0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-                   );
+                   );}
 
 implementation
 

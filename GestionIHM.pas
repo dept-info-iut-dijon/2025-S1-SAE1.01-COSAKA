@@ -21,7 +21,7 @@ procedure WikiProduction();
 implementation
 
 uses
-  SysUtils, Classes, gestionEcran, LogiqueUnit;
+  SysUtils, TypInfo, Classes, gestionEcran, LogiqueUnit;
 
 
 procedure CadrePrincipale();
@@ -199,17 +199,32 @@ procedure AfficherJeu();
   end;
 
 procedure dessinerEmplacement(emplacement:Structure; x1:Integer; y1:Integer; x2:Integer; y2:Integer);
+  var
+    s:String; // Variable qui stock les chaine de caractères à écrire
   begin
       dessinerCadreXY(x1, y1, x2, y2, simple, white, black);
-      if (not emplacement.est_decouvert) and false then
+      // Vérifie si l'emplacement est découvert
+      if (not emplacement.est_decouvert) then
+        // Si l'emplacement n'est pas découvert, l'indique
         begin
-        deplacerCurseurXY((x1+x2-Length('Emplacement non decouvert')) div 2, ((y1+y2) div 2));
-        write('Emplacement non decouvert');
+        s:='Emplacement non decouvert';
+        deplacerCurseurXY((x1+x2-Length(s)) div 2, ((y1+y2) div 2));
+        write(s);
         end
       else
         begin
-        deplacerCurseurXY(x1+1, y1+1);
-        write(emplacement.type_structure);
+        deplacerCurseurXY(x1+2, y1+1);
+        write('Structure : ', emplacement.type_structure);
+        if (emplacement.type_structure<>Vide) and (emplacement.type_structure<>Hub) then
+          begin
+          s:= 'Niveau : ' + IntToStr(emplacement.niveau);
+          deplacerCurseurXY(x2-Length(s)-2, y1+1);
+          write(s);
+          s:= 'Production : ' + GetEnumName(TypeInfo(emplacement.materiaux), Ord(emplacement.materiaux));
+          deplacerCurseurXY(x1+2, y2-1);
+          write(s);
+          end;
+
         end;
   end;
 
@@ -217,9 +232,10 @@ procedure dessinerEmplacement(emplacement:Structure; x1:Integer; y1:Integer; x2:
 procedure AfficherEmplacements(zone:Zone);
   {Affiches les emplacements d'un zone donnée en paramètre}
   const
-    BORD_GAUCHE=SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL;
-    BORD_DROIT=SEPARATION_ECRAN_INFO_PRINCIPAL;
-    MILIEU=(BORD_GAUCHE+BORD_DROIT) div 2;
+    BORD_GAUCHE=SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL;  // Les coordonées x du bord gauche du cadre principal
+    BORD_DROIT=SEPARATION_ECRAN_INFO_PRINCIPAL;   // Les coordonées x du bord droit du cadre principal
+    MILIEU=(BORD_GAUCHE+BORD_DROIT) div 2;    // Les coordonées x du milieu du cadre principal
+    ESPACEMENT=2;   // Espacement entre les cellules et le bord du cadre principal
   var
     emplacement:Structure;
     listeEmplacements:Emplacements; // Liste des emplacements de la zone
@@ -245,26 +261,26 @@ procedure AfficherEmplacements(zone:Zone);
       inc(longueur_colonne);
       end;
 
-    hauteur_tableau:=(BORD_BAS-BORD_HAUT) div longueur_colonne;
+    hauteur_tableau:=(BORD_BAS-BORD_HAUT-ESPACEMENT) div longueur_colonne;
 
-    gauche_cadre:=BORD_GAUCHE+1;
-    droite_cadre:=MILIEU-1;
+    gauche_cadre:=BORD_GAUCHE+ESPACEMENT;
+    droite_cadre:=MILIEU-ESPACEMENT;
     // Affiche la première moitié des emplacements
     for i:=low(listeEmplacements) to longueur_colonne-1 do
       begin
-      haut_cadre:=BORD_HAUT+i*hauteur_tableau+1;
+      haut_cadre:=BORD_HAUT+i*hauteur_tableau+ESPACEMENT;
       bas_cadre:=BORD_HAUT+hauteur_tableau*(i+1);
       emplacement:=listeEmplacements[i];
 
       dessinerEmplacement(emplacement, gauche_cadre, haut_cadre, droite_cadre, bas_cadre);
       end;
     
-    gauche_cadre:=MILIEU+1;
-    droite_cadre:=BORD_DROIT-1;
+    gauche_cadre:=MILIEU+ESPACEMENT;
+    droite_cadre:=BORD_DROIT-ESPACEMENT;
     // Affiche la seconde moitié des emplacements
     for i:=longueur_colonne to High(listeEmplacements) do
       begin
-      haut_cadre:=BORD_HAUT+(i-longueur_colonne)*hauteur_tableau+1;
+      haut_cadre:=BORD_HAUT+(i-longueur_colonne)*hauteur_tableau+ESPACEMENT;
       bas_cadre:=BORD_HAUT+hauteur_tableau*(i-longueur_colonne+1);
       emplacement:=listeEmplacements[i];
 
