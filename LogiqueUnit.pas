@@ -10,6 +10,7 @@ function getEmplacement(zone:Zone):Emplacements;
 function ProductionElectricite(zone:Zone):Integer;
 function ConsommationElectricite(zone:Zone):Integer;
 
+procedure MainMenu();
 
 implementation
   uses
@@ -65,9 +66,12 @@ function getEmplacementVideAlea(zone:Zone):Structure;
       end;
 
     // Boucle si au moins un emplacement vide existe et tant qu'aucun n'est trouvé.
-    while a_emplacement_vide and (curent_emplacement.type_structure<>Vide) do
+    if a_emplacement_vide then
       begin
-      curent_emplacement:=zone.emplacements[random(8)+1];
+      while a_emplacement_vide and (curent_emplacement.type_structure<>Vide) do
+        begin
+        curent_emplacement:=zone.emplacements[random(8)+1];
+        end;
       end;
     getEmplacementVideAlea:=curent_emplacement;
   end;
@@ -84,7 +88,7 @@ procedure ajouteStructureemplacementAlea(var zone:Zone; niveau:Integer;
     emplacement:=getEmplacementVideAlea(zone);
     if emplacementsSontDifferents(emplacement, zone.emplacements[low(zone.emplacements)]) then
       begin
-      setEmplacement(emplacement, 2, true, Gisement, zone.minerais[1], 0, consommable);
+      setEmplacement(emplacement, niveau, est_decouvert, type_structure, materiaux, production, consommable);
       end;
   end;
 
@@ -92,9 +96,16 @@ procedure initEmplacements(var zone:Zone);
   {Fonction qui prend en paramètres une zone
   et qui renvoie cette même zone après avoir
   initialisé tous ses emplacements,  prêts pour le jeu.}
+  var
+    i:integer;
   begin
+    // Définie tous les emplacements par des emplacements vides et non découverts
+    for i:=low(zone.emplacements) to high(zone.emplacements) do
+      begin
+      setEmplacement(zone.emplacements[i], 0, false, Vide, Fer, 0, CONSOMMATION0);
+      end;
     // Définie le Hub de la zone
-    setEmplacement(zone.emplacements[0], 0, true, Hub, Null, 0, CONSOMMATION0);
+    setEmplacement(zone.emplacements[0], 0, true, Hub, Fer, 0, CONSOMMATION0);
     // Définie un emplacement avec un gisement du premier minerai de la zone.
     setEmplacement(zone.emplacements[random(8)+1], 3, true, Gisement, zone.minerais[0], 0, CONSOMMATION0);
 
@@ -112,6 +123,24 @@ procedure initEmplacements(var zone:Zone);
       begin
       ajouteStructureEmplacementAlea(zone, 1, false, Gisement, zone.minerais[random(2)], 0, CONSOMMATION0)
       end;  
+  end;
+
+function initZone(numero:Integer; nom:String; minerai1:Materiaux; minerai2:Materiaux; minerai3:Materiaux):Zone;
+  var
+    new_zone:Zone;
+    m:Materiaux;
+  begin
+    new_zone.numero:=numero;
+    new_zone.nom:=nom;
+    new_zone.minerais[0]:=minerai1;
+    new_zone.minerais[1]:=minerai2;
+    new_zone.minerais[2]:=minerai3;
+    initEmplacements(new_zone);
+    for m:=low(zone.inventaire) to high(zone.inventaire) do
+      begin
+      new_zone.inventaire[m]:=0;
+      end;
+    initZone:=new_zone;
   end;
 
 function MateriauxNecessairesConstruction(zone:Zone; batiment:Batiment; niveau:Integer):Boolean;
@@ -464,5 +493,37 @@ procedure ConstruireBatiment(zone:Zone);
       AfficherMessage('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
   end;
 
+procedure JeuPrincipal();
+  var
+    curent_zone:Integer;
+    zones:Array[0..2] of Zone;
+    choix:String;
+  begin
+    Scenario();
+    choix:='';
+    curent_zone:=0;
+    zones[0]:=initZone(0, NOM_ZONE1, Fer, Cuivre, Charbon);
+    while (choix<>QUITTER) do
+      begin
+      AfficherZone(zones[curent_zone]);
+      readln(choix);
+      case choix of 
+        '1':;// Lance le programme 1
+        '2':;// Lance le programme 2
+      end;  
+  end;
+
+procedure MainMenu();
+  var
+    choix:String;
+  begin
+    choix:='';
+    while (choix<>QUITTER) do
+      begin
+      choix:=AfficheMainMenu();
+      if (choix='1') then
+        JeuPrincipal();
+      end;
+  end;
 
 end.

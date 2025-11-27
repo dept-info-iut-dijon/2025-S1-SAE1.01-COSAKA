@@ -24,6 +24,7 @@ interface
     end;
 
     Emplacements=Array[0..9] of Structure;
+    Inventaire=Array[Materiaux] of Integer;
 
     // Une zone du jeu, contenant par défaut 10 emplacements
     Zone=record
@@ -31,7 +32,7 @@ interface
       nom:String;
       emplacements:Emplacements;
       minerais:Array[0..2] of Materiaux;
-      inventaire:Array[Materiaux] of Integer;
+      inventaire:Inventaire;
     end;
   
   const
@@ -59,27 +60,27 @@ interface
                                                  10, 10, 10, 10, 
                                                  10, 10);
 
-                                                                                    // Niveau 1
+                                                                                     // Niveau 1
     CONSTRUCTION_BASE:Array[1..3] of Array[Batiment] of array[Materiaux] of Integer=(((0,0,0,0,0,0,0,0,0,0,0,0,0,0),  // Vide
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0)),   // Centrale
-                                                                                    // Niveau 2
-                                                                                    ((0,0,0,0,0,0,0,0,0,0,0,0,0,0),   // Vide
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0)),   // Centrale
-                                                                                    // Niveau 3
-                                                                                    ((0,0,0,0,0,0,0,0,0,0,0,0,0,0),   // Vide
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                    (0,0,0,0,0,0,0,0,0,0,0,0,0,0)));  // Centrale
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0)),   // Centrale
+                                                                                     // Niveau 2
+                                                                                     ((0,0,0,0,0,0,0,0,0,0,0,0,0,0),   // Vide
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0)),   // Centrale
+                                                                                     // Niveau 3
+                                                                                     ((0,0,0,0,0,0,0,0,0,0,0,0,0,0),   // Vide
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0)));  // Centrale
 
     CONSOMMABLE_BASE:Array[Materiaux] of Consommation=((0,0,0,0,0,0,0,0,0,0,0,0,0,0),
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
@@ -100,45 +101,11 @@ interface
     NOM_ZONE2='La Caverne Simmonet';
     NOM_ZONE3='La Montagne Coulon';
     
-
     QUITTER=0;
 
     MATERIAUX_PREMIERS=4;
     MATERIAUX_AUTRES=1;
     MATERIAUX_TRANSFORMES=ord(high(Materiaux))-MATERIAUX_PREMIERS-MATERIAUX_AUTRES;
-
-
-    StructureTest:Structure = (
-                    type_structure:Hub;
-                    niveau:1;
-                    est_decouvert:True;
-                    materiaux:Fer;
-                    production:800;
-                    consommable:(0,0,0,0,0,0,0,0,0,0,0,0,0,0));
-
-    ZoneTest:Zone = (
-                    numero:1;
-                    nom:'SabineLaGoat';
-                 //   emplacements:();
-                 //   minerais:(Fer,Cuivre,Calcaire);
-                   // inventaire:(0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-                   ); 
-
-  //  StructureTest:Structure = (
-    //                type_structure:Hub;
-      //              niveau:1;
-        //            est_decouvert:True;
-          //          materiaux:Fer;
-            //        production:800;
-              //      consommable:(0,0,0,0,0,0,0,0,0,0,0,0,0,0));
-
-   // ZoneTest:Zone = (
-     //               numero:1;
-      //              nom:'SabineLaGoat';
-                 //   emplacements:();
-                 //   minerais:(Fer,Cuivre,Calcaire);
-                   // inventaire:(0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-                //   );
 
 implementation
 
