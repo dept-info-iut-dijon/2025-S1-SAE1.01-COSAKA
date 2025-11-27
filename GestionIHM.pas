@@ -27,8 +27,6 @@ end;
 
 {Affichage de l'Ecran Titre}
 procedure EcranTitre();
-const 
-  B = 35;
 begin
   CadrePrincipale();
   // ART ASCII SATISFACT'IUT BY COSAKA | NAMES
@@ -77,8 +75,8 @@ begin
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('DUPUIS Gabin | NAVELOT-GENET Anatole | SUCCAR Eric | WAGNER Tom')div 2)+12,28);
   writeln('DUPUIS Gabin | NAVELOT-GENET Anatole | SUCCAR Eric | WAGNER Tom');
 
-  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Appuyez sur ENTRER pour commencer')div 2),35);
-  write('Appuyez sur ENTRER pour commencer');
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('< Appuyez sur ENTRER pour commencer >')div 2),35);
+  write('< Appuyez sur ENTRER pour commencer >');
 end;
 
 {Affichage du menu principale}
@@ -159,7 +157,6 @@ begin
   attendre(1000);
   couleurTexte(white);
   writeln('Appuyez sur ENTRER pour continuer');
-  readln()
 end;
 
 procedure AfficherMessage(msg:string);
@@ -177,7 +174,7 @@ begin
   dessinerCadreXY(1,1,(SCREEN_WIDTH div 5),(SCREEN_HEIGHT-2),double,white,black);
   dessinerCadreXY((SCREEN_WIDTH div 5)*4,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
   // Titre
-  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('SATISFACT IUT')div 2),1);
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| SATISFACT IUT |>')div 2),1);
   writeln('<| SATISFACT IUT |>');
   // Titre 2
   deplacerCurseurXY((SCREEN_WIDTH div 10)-(Length('INVENTAIRE DE LA ZONE')div 2),2);
@@ -186,6 +183,9 @@ begin
   writeln('INFORMATIONS');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)+1));
   writeln('ACTIONS');
+
+  AfficherInformations('Dijon','Mardi 10 avril 2007');
+  AfficherInventaireZone();
 end;
 
 procedure AfficherEmplacement();
@@ -194,13 +194,39 @@ begin
 end;
 
 procedure AfficherInventaireZone();
+var
+m:Materiaux; // Prend la liste des Materiaux
+valeur:array[Materiaux] of Integer;
+i,count,startY:Integer;
+
 begin
-  
+
+  count := Ord(High(Materiaux)) - Ord(Low(Materiaux)) + 1;
+  startY := (SCREEN_HEIGHT div 2) - ((count) div 2);
+  i:= 0;
+  for m in Materiaux do 
+    begin
+        valeur[m] := 0;
+        if (m <> Electricite) and (m <> Fondations) then
+        begin
+        deplacerCurseurXY((SCREEN_WIDTH div 10-15),startY+i);
+        writeln(m);
+        deplacerCurseurXY((SCREEN_WIDTH div 10+10),startY+i);
+        writeln(': ',valeur[m]);
+        i:= i + 1; 
+        end;
+    end;
 end;
 
 procedure AfficherInformations(zone:string; time:string);
 begin
-  
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),5);
+  writeln('ZONE : ',zone);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
+  writeln('DATE : ',time);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),10);
+  write('Electricité : ');
+
 end;
 
 procedure AfficherActions();
