@@ -2,9 +2,22 @@ unit gestionIHM;
 
 {$mode delphi}{$H+}
 
+{
+RÔLE : L’unité gère l’affichage console de manière structurée,
+ notamment le positionnement précis du curseur,
+ le centrage dynamique de textes et la prise en charge facultative de l’encodage UTF-8.
+ Elle fournit des procédures permettant de contrôler la mise en page,
+de calculer automatiquement les positions en fonction de la taille de l’écran et d’assurer un rendu propre,
+quelle que soit la quantité de contenu affiché.
+L’activation temporaire de l’UTF-8 garantit un affichage correct des caractères accentués sans perturber les autres interfaces du programme,
+grâce au rétablissement du code page standard une fois les opérations terminées.
+L’ensemble offre un cadre fiable pour produire des écrans console lisibles,
+cohérents et adaptés à différents contextes d’utilisation.
+}
+
 interface
 uses constantunit;
-
+// Liste des procédures et fonctions
 procedure EcranTitre();
 function MainMenu():String;
 procedure Scenario();
@@ -21,14 +34,19 @@ procedure UTF8(status:Boolean);
 implementation
 
 uses
+{
+  gestionEcran, LogiqueUnit => Autre Unit
+  windows => gère l'affiche pour les symboles(ex : é, à, ç, etc...) notamment.
+}
   SysUtils, TypInfo, Classes, gestionEcran, LogiqueUnit, windows;
 
-// Pour les accents dans la console
+{gère l'affiche pour les symboles(ex : é, à, ç, etc...) notamment. 
+Si la procedure est régler VRAI alors UTF8 activé sinon UTF8 désactivé}
 procedure UTF8(status:Boolean);
 begin
   if status = True then
   begin
-    SetConsoleOutputCP(65001); 
+    SetConsoleOutputCP(65001); // UTF8
   end
   else
   begin
@@ -42,9 +60,22 @@ procedure CadrePrincipale();
   end;
 
 
-{Affichage de l'Ecran Titre}
+// ._____.____.____......_...._..._....._____.___._____.____.._____.
+// |.____/.___|.._.\..../.\..|.\.|.|...|_..._|_._|_..._|.._.\|.____|
+// |.._||.|...|.|_).|../._.\.|..\|.|_____|.|..|.|..|.|.|.|_).|.._|..
+// |.|__|.|___|.._.<../.___.\|.|\..|_____|.|..|.|..|.|.|.._.<|.|___.
+// |_____\____|_|.\_\/_/...\_\_|.\_|.....|_|.|___|.|_|.|_|.\_\_____|
 procedure EcranTitre();
   begin
+
+{
+  Centrage horizontal de chaque ligne de l’ASCII art.
+  Pour chaque ligne, on calcule sa longueur avec Length(), puis on positionne
+  le curseur en X à (SCREEN_WIDTH div 2) - (Length(ligne) div 2) afin de l’afficher
+  exactement au centre de l’écran. La position Y est simplement incrémentée
+  pour afficher les lignes les unes sous les autres tout en conservant
+  un alignement uniforme.
+}
     CadrePrincipale();
     // ART ASCII SATISFACT'IUT BY COSAKA | NAMES
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('  /$$$$$$              /$$     /$$            /$$$$$$                      /$$   /$$ /$$$$$$ /$$   /$$ /$$$$$$$$      ')div 2),10);
@@ -88,22 +119,30 @@ procedure EcranTitre();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('           \______/                                                                   ')div 2),29);
     writeln('           \______/                                                                   ');
 
-    couleurTexte(White); // reset couleur texte
-    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('DUPUIS Gabin | NAVELOT-GENET Anatole | SUCCAR Eric | WAGNER Tom')div 2)+12,28);
-    writeln('DUPUIS Gabin | NAVELOT-GENET Anatole | SUCCAR Eric | WAGNER Tom');
+    couleurTexte(White); // reset couleur texte en blanc
+    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('DUPUIS Gabin | NAVELOT-GENET Anatole | SUCCAR Eric | WAGNER Tom')div 2)+12,28); // deplacer le curseur
+    writeln('DUPUIS Gabin | NAVELOT-GENET Anatole | SUCCAR Eric | WAGNER Tom'); // Les meilleurs
 
-    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('< Appuyez sur ENTRER pour commencer >')div 2),35);
+    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('< Appuyez sur ENTRER pour commencer >')div 2),35);  
     write('< Appuyez sur ENTRER pour commencer >');
   end;
+
+// ...............................__..__._____._..._._..._.
+// ..............................|..\/..|.____|.\.|.|.|.|.|
+// ..............................|.|\/|.|.._|.|..\|.|.|.|.|
+// ..............................|.|..|.|.|___|.|\..|.|_|.|
+// ..............................|_|..|_|_____|_|.\_|\___/.
 
 {Affichage du menu principale}
 function MainMenu():String;
   var
     res:String;
   begin
+    // Tout beau tout propre(nouveau cadre)
     effacerEcran();
     CadrePrincipale();
-      // ART ASCII MENU
+
+    // ART ASCII même principe que pour les précédents.
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(' /$$      /$$ /$$$$$$$$ /$$   /$$ /$$   /$$')div 2),10);
     writeln(' /$$      /$$ /$$$$$$$$ /$$   /$$ /$$   /$$');
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('| $$$    /$$$| $$_____/| $$$ | $$| $$  | $$')div 2),11);
@@ -120,23 +159,29 @@ function MainMenu():String;
     writeln('| $$ \/  | $$| $$$$$$$$| $$ \  $$|  $$$$$$/');
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('| $$ \/  | $$| $$$$$$$$| $$ \  $$|  $$$$$$/')div 2),17);
     writeln('|__/     |__/|________/|__/  \__/ \______/ ');
+    
     // Affiche les choix possible
-    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('[1] Commencer')div 2),25);
+    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('[1] Commencer')div 2),25); // centrer, beau, on valide
     writeln('[1] Commencer');
-
-    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('[2] Quitter')div 2),28);
-    writeln('[2] Quitter');
+    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('[2] Quitter')div 2),28); // Idem
+    writeln('[0] Quitter');
 
     readln(res);
     MainMenu:=res;
 
   end;
 
+// ...............................____...____._____._..._...._....____..___.___..
+// ............................../.___|./.___|.____|.\.|.|../.\..|.._.\|_._/._.\.
+// ..............................\___.\|.|...|.._|.|..\|.|./._.\.|.|_).||.|.|.|.|
+// ...............................___).|.|___|.|___|.|\..|/.___.\|.._.<.|.|.|_|.|
+// ..............................|____/.\____|_____|_|.\_/_/...\_\_|.\_\___\___/.
 procedure Scenario();
   begin
     effacerEcran();
     CadrePrincipale();
     // SCENARIO - - - 
+    { Tous les textes sont centré et mis en UTF8 }
     UTF8(True);
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('Dans une réalité. Pas si alternative que ça.')div 2),10);
     writeln('Dans une réalité. Pas si alternative que ça.');
@@ -182,6 +227,13 @@ procedure Scenario();
     UTF8(False);
   end;
 
+// ...............................____...___..____......._..._.____..
+// ..............................|.._.\./._.\|.._.\.....|.|.|.|.._.\.
+// ..............................|.|_).|.|.|.|.|_).|____|.|.|.|.|_).|
+// ..............................|..__/|.|_|.|..__/_____|.|_|.|..__/.
+// ..............................|_|....\___/|_|.........\___/|_|....
+
+{ Affiche un cadre centrer avec un message en entrée 'msg'}
 procedure AfficherMessage(msg:string);
   begin
   dessinerCadreXY((SCREEN_WIDTH div 2)-((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)-2,(SCREEN_WIDTH div 2)+((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)+2,simple,White,Black);
@@ -195,13 +247,14 @@ procedure AfficherMessage(msg:string);
 procedure AfficherJeu();
   begin
     effacerEcran();
+    {1 cadre principale avec deux cadres de chaque coté}
     dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, BORD_DROIT, BORD_BAS, simple, white, black); // TAILLE DE BASE
     dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL, BORD_BAS, double, white, black);
     dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
     // Titre
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| SATISFACT IUT |>')div 2),1);
     writeln('<| SATISFACT IUT |>');
-    // Titre 2
+    // Titre 2 3 4
     deplacerCurseurXY((SCREEN_WIDTH div 10)-(Length('INVENTAIRE DE LA ZONE')div 2),2);
     writeln('INVENTAIRE DE LA ZONE');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('INFORMATIONS')div 2),2);
@@ -209,10 +262,21 @@ procedure AfficherJeu();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)));
     writeln('ACTIONS');
 
+    {Call des procedures pour assembler toutes les interfaces en une}
     AfficherInformations('-','-');
     AfficherInventaireZone();
     AfficherActions()
   end;
+
+// .____.._____.____.____.___._..._._..._._____.____...........................
+// |.._.\|.____/.___/.___|_._|.\.|.|.\.|.|.____|.._.\..........................
+// |.|.|.|.._|.\___.\___.\|.||..\|.|..\|.|.._|.|.|_).|.........................
+// |.|_|.|.|___.___).|__).|.||.|\..|.|\..|.|___|.._.<..........................
+// |____/|_____|____/____/___|_|_\_|_|_\_|_____|_|.\_\._____._..._._____.____..
+// |.____|..\/..|.._.\|.|....../.\../.___|.____|..\/..|.____|.\.|.|_..._/.___|.
+// |.._|.|.|\/|.|.|_).|.|...../._.\|.|...|.._|.|.|\/|.|.._|.|..\|.|.|.|.\___.\.
+// |.|___|.|..|.|..__/|.|___./.___.\.|___|.|___|.|..|.|.|___|.|\..|.|.|..___).|
+// |_____|_|..|_|_|...|_____/_/...\_\____|_____|_|..|_|_____|_|.\_|.|_|.|____/.
 
 procedure dessinerEmplacement(emplacement:Structure; x1:Integer; y1:Integer; x2:Integer; y2:Integer);
   var
@@ -244,6 +308,15 @@ procedure dessinerEmplacement(emplacement:Structure; x1:Integer; y1:Integer; x2:
         end;
   end;
 
+// ...._...._____._____.___.____._..._._____.____..............................
+// .../.\..|..___|..___|_._/.___|.|.|.|.____|.._.\.............................
+// ../._.\.|.|_..|.|_...|.|.|...|.|_|.|.._|.|.|_).|............................
+// ./.___.\|.._|.|.._|..|.|.|___|.._..|.|___|.._.<.............................
+// /_/___\_\_|__.|_|_..|___\____|_|.|_|_____|_|.\_\.__._____._..._._____.____..
+// |.____|..\/..|.._.\|.|....../.\../.___|.____|..\/..|.____|.\.|.|_..._/.___|.
+// |.._|.|.|\/|.|.|_).|.|...../._.\|.|...|.._|.|.|\/|.|.._|.|..\|.|.|.|.\___.\.
+// |.|___|.|..|.|..__/|.|___./.___.\.|___|.|___|.|..|.|.|___|.|\..|.|.|..___).|
+// |_____|_|..|_|_|...|_____/_/...\_\____|_____|_|..|_|_____|_|.\_|.|_|.|____/.
 
 procedure AfficherEmplacements(zone:Zone);
   {Affiches les emplacements d'un zone donnée en paramètre}
@@ -306,6 +379,12 @@ procedure AfficherEmplacements(zone:Zone);
 
   end;
 
+// .___._...___....._______._..._._____.._....___.____.._____.
+// |_._|.\.|.\.\..././.____|.\.|.|_..._|/.\..|_._|.._.\|.____|
+// .|.||..\|.|\.\././|.._|.|..\|.|.|.|./._.\..|.||.|_).|.._|..
+// .|.||.|\..|.\.V./.|.|___|.|\..|.|.|/.___.\.|.||.._.<|.|___.
+// |___|_|.\_|..\_/..|_____|_|.\_|.|_/_/...\_\___|_|.\_\_____|
+
 procedure AfficherInventaireZone();
   var
   m:Materiaux; // Prend la liste des Materiaux
@@ -336,6 +415,12 @@ procedure AfficherInventaireZone();
           end;
       end;
   end;
+
+// .___._..._._____.___..____..__..__...._.._____.___.___.._..._.____..
+// |_._|.\.|.|..___/._.\|.._.\|..\/..|../.\|_..._|_._/._.\|.\.|./.___|.
+// .|.||..\|.|.|_.|.|.|.|.|_).|.|\/|.|./._.\.|.|..|.|.|.|.|..\|.\___.\.
+// .|.||.|\..|.._||.|_|.|.._.<|.|..|.|/.___.\|.|..|.|.|_|.|.|\..|___).|
+// |___|_|.\_|_|...\___/|_|.\_\_|..|_/_/...\_\_|.|___\___/|_|.\_|____/.
 
 procedure AfficherInformations(zone:string; time:string);
   var
@@ -374,6 +459,12 @@ procedure AfficherInformations(zone:string; time:string);
     UTF8(False);
   end;
 
+// .................................._....____._____.___.___.._..._.____..
+// ................................./.\../.___|_..._|_._/._.\|.\.|./.___|.
+// ................................/._.\|.|.....|.|..|.|.|.|.|..\|.\___.\.
+// .............................../.___.\.|___..|.|..|.|.|_|.|.|\..|___).|
+// ............................../_/...\_\____|.|_|.|___\___/|_|.\_|____/.
+
 procedure AfficherActions();
   begin
     UTF8(True);
@@ -402,6 +493,16 @@ procedure AfficherActions();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
 
+// ..............................__........_____._.._____.
+// ..............................\.\.....././_._|.|/./_._|
+// ...............................\.\./\././.|.||.'./.|.|.
+// ................................\.V..V./..|.||...\.|.|.
+// .____...._.._____.___.__..__.____\_/\_/_.|___|_|\_\___|
+// |.__.)../.\|_..._|_._|..\/..|.____|.\.|.|_..._/.___|...
+// |.._.\./._.\.|.|..|.||.|\/|.|.._|.|..\|.|.|.|.\___.\...
+// |.|_)./.___.\|.|..|.||.|..|.|.|___|.|\..|.|.|..___).|..
+// |____/_/...\_\_|.|___|_|..|_|_____|_|.\_|.|_|.|____/...
+
 procedure WikiBatiment();
 begin
   effacerEcran();
@@ -427,6 +528,16 @@ begin
   dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
 end;
+
+// ..............................__........_____._.._____....
+// ..............................\.\.....././_._|.|/./_._|...
+// ...............................\.\./\././.|.||.'./.|.|....
+// ................................\.V..V./..|.||...\.|.|....
+// .____..____...___..____.._..._.._\_/\_/__|___|_|\_\___|._.
+// |.._.\|.._.\./._.\|.._.\|.|.|.|/.___|_..._|_._/._.\|.\.|.|
+// |.|_).|.|_).|.|.|.|.|.|.|.|.|.|.|.....|.|..|.|.|.|.|..\|.|
+// |..__/|.._.<|.|_|.|.|_|.|.|_|.|.|___..|.|..|.|.|_|.|.|\..|
+// |_|...|_|.\_\\___/|____/.\___/.\____|.|_|.|___\___/|_|.\_|
 
 procedure WikiProduction();
 begin
