@@ -266,7 +266,7 @@ procedure AfficherEmplacements(zone:Zone);
 
     longueur_colonne, // Nombre de cellule par colonne
     hauteur_tableau,  // Hauteur des cellules
-    nbEmplacements:Integer; // Nombre d'emplacament dans la zone
+    nbEmplacements:Integer; // Nombre d'emplacement dans la zone
   begin
     listeEmplacements:=getEmplacement(zone);
     nbEmplacements:=Length(listeEmplacements);

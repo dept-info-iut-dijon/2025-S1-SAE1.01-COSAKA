@@ -403,4 +403,34 @@ procedure revenusProduction(zone:Zone);
     end;
   end;
 
+procedure ConstruireBatiment(zone:Zone);
+  {}
+  var
+    choix:Integer;
+    emplacement:Structure;
+  begin
+    AfficherMessage('Veuillez choisir un emplacement(entre 0 et 9)');
+    readln(choix);
+    emplacement := zone.emplacements[choix];
+    if emplacement.est_decouvert then
+    begin
+      if (emplacement.type_structure = Vide) or (emplacement.type_structure = Gisement) then
+      begin
+
+
+
+
+
+
+
+        
+      end
+      else
+        AfficherMessage('Vous ne pouvez pas construire un batiment sur un autre batiment')
+    end
+    else
+      AfficherMessage('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
+  end;
+
+
 end.
