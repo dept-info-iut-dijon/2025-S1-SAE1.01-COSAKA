@@ -97,7 +97,7 @@ interface
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0));
 
-    NOM_ZONE1='L Antre de Marzani';
+    NOM_ZONE1='L''Antre de Marzani';
     NOM_ZONE2='La Caverne Simmonet';
     NOM_ZONE3='La Montagne Coulon';
     
