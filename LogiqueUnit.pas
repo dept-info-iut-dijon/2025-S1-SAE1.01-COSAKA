@@ -2,8 +2,12 @@ unit LogiqueUnit;
 {$mode delphi}{$H+}
 
 interface
-  uses
+
+uses
     constantunit, GestionIHM;
+
+function ProductionElectricite(zone:Zone):Integer;
+function ConsommationElectricite(zone:Zone):Integer;
 
 
 implementation

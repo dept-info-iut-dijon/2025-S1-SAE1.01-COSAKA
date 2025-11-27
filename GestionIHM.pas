@@ -17,7 +17,7 @@ implementation
 
 
 uses
-  SysUtils, Classes,gestionEcran,constantUnit;
+  SysUtils, Classes,gestionEcran,constantUnit,LogiqueUnit;
 
 procedure CadrePrincipale();
 begin
@@ -234,12 +234,20 @@ begin
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
   writeln('DATE : ',time);
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),10);
-  write('Electricite');
+  write('Production Electricite');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),10);
   writeln(': ',valeur[Electricite]);
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),12);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),11);
+  write('Consommation Electricite');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),11);
+  couleurTexte(Yellow); // couleur jaune
+  writeln(': ',valeur[Electricite]);
+  couleurTexte(White); // Reset de la couleur
+
+
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),13);
   write('Fondations');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),12);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),13);
   writeln(': ',valeur[Fondations]);
 end;
 
