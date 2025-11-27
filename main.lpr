@@ -10,7 +10,7 @@ begin
   EcranTitre();
   readln();
   choix:=MainMenu();
-  if choix<>'2' then
+  if choix <>'0' then
     begin
     Scenario();
     readln();
