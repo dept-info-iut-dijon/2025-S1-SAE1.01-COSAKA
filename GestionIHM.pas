@@ -32,6 +32,7 @@ procedure AfficherMenuWikiProduction();
 procedure UTF8(status:Boolean);
 procedure AfficherMenuBatiment();
 procedure AfficherMenuZone();
+procedure AfficherActionInformation(msg:string);
 
 implementation
 
@@ -268,6 +269,8 @@ procedure AfficherJeu();
     AfficherInformations('-','-');
     AfficherInventaireZone();
     AfficherActions();
+    readln();
+    AfficherActionInformation('I m still standing but pas trop because Anatole ce connard qui me donne des procedure de SALOPARD a faire alors que je pourrai faire plus simple et conserver ma conscience mentale intacte ou dumoins presque... bref Anatole mange moi stp');
     readln();
   end;
 
@@ -509,17 +512,69 @@ procedure AfficherMenuBatiment();
     writeln('[3] Centrale');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
     writeln('[0] Retour');
+    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
 
-procedure ErreurBatiment();
+procedure AfficherActionInformation(msg: string);
+var
+  i, j, compteur, dernierEspace: integer;
+  ligne: string;
 begin
-  
+    // Nouveau Cadre
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    couleurTexte(Red); // couleur Rouge
+    
+    compteur := 0;
+    ligne := '';
+    j := 1;
+    dernierEspace := 0;
+    
+    for i := 1 to Length(msg) do
+    begin
+        ligne := ligne + msg[i];
+        Inc(compteur);
+        
+        // Mémoriser pos dernier espace
+        if msg[i] = ' ' then
+            dernierEspace := compteur;
+        
+        // Si 32 char ou fin du msg
+        if (compteur >= 32) or (i = Length(msg)) then
+        begin
+            // Si pas fin et qu'on a trouvé un espace
+            if (i < Length(msg)) and (dernierEspace > 0) then
+            begin
+                // Afficher seulement jusqu'au dernier espace
+                deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7+j));
+                writeln(Copy(ligne, 1, dernierEspace));
+                
+                // Garde reste pour la ligne suivante
+                ligne := Copy(ligne, dernierEspace + 1, Length(ligne) - dernierEspace);
+                compteur := Length(ligne);
+                dernierEspace := 0;
+            end
+            else
+            begin
+                // Afficher full ligne
+                deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7+j));
+                writeln(ligne);
+                ligne := '';
+                compteur := 0;
+                dernierEspace := 0;
+            end;
+            
+            Inc(j);
+        end;
+    end;
 end;
+
 
 procedure AfficherMenuZone();
   begin
-   dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
-   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
     UTF8(True);
     writeln('Où allons nous ?');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
@@ -531,6 +586,8 @@ procedure AfficherMenuZone();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
     writeln('[0] Retour');
     UTF8(False);
+    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
 
 // ..............................__........_____._.._____.
