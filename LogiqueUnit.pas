@@ -260,6 +260,14 @@ procedure creerCentrale(zone:Zone; var emplacement:Structure);
       AfficherMessage('Vous n''avez pas les materiaux necessaires');
   end;
 
+{procedure ChangementUsine(zone:Zone; emplacement:Structure; nouveau_materiaux:Materiaux):
+  PAS ENCORE FONCTIONNEL
+  begin
+    // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
+    setEmplacement(emplacement, emplacement.niveau, emplacement.est_decouvert, 
+                    emplacement.type_structure, nouveau_materiaux, PRODUCTION_BASE[nouveau_materiaux], CONSOMMABLE_BASE[nouveau_materiaux]);
+  end;}
+
 procedure UpgradeBatiment(zone:Zone; emplacement:Structure; niveau:Integer);
   {Procedure qui prend en parametre une zone, un emplacement et 
   un niveau et modifie l'emplacement ce qui permet d'augmenter 
