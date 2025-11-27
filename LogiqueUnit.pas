@@ -480,7 +480,7 @@ procedure MainMenu();
     choix:String;
   begin
     choix:='';
-    while (choix<>'2') do
+    while (choix<>'0') do
       begin
       choix:=AfficheMainMenu();
       if (choix='1') then
