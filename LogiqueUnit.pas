@@ -147,13 +147,37 @@ procedure creerUsine(var emplacement:Structure; nouveau_materiaux:Materiaux);
     if emplacement.est_decouvert then
     begin
       setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
-                      Usine, nouveau_materiaux, emplacement.consommable )
+                      Usine, nouveau_materiaux, emplacement.consommable)
     end
     else
       // Affiche le message d'erreur
       AfficherMessage('Vous n''avez pas encore explorer cet emplacement');
   end;
 
+function ProductionElectricite(zone:Zone):Integer;
+  {}
+  var
+    emplacement:Structure;
+  begin
+    ProductionElectricite := 0;
+    for emplacement in zone.emplacements do
+    begin
+      if (emplacement.type_structure = Centrale) then
+        ProductionElectricite := ProductionElectricite + emplacement.production;
+    end;
+  end;
+
+function ConsommationElectricite(zone:Zone):Integer;
+  {}
+  var
+    emplacement:Structure;
+  begin
+    ConsommationElectricite := 0;
+    for emplacement in zone.emplacements do
+    begin
+      ConsommationElectricite := ConsommationElectricite + emplacement.consommable[Electricite];
+    end;
+  end;
 
 
 function MateriauxNecessaire(zone:Zone, emplacement:Structure):Boolean;
@@ -179,8 +203,8 @@ function MateriauxNecessaire(zone:Zone, emplacement:Structure):Boolean;
 
 procedure revenusProduction(zone:Zone);
   {procédure qui prend en parametre une zone et qui ajoute a 
-  chaque materiaux dans l'inventaire les materiaux produit 
-  par les différents batiments}
+  chaque materiaux dans l'inventaire de la zone les materiaux 
+  produit par les différents batiments}
   var
     emplacement:Structure;
     materiaux:Materiaux;
