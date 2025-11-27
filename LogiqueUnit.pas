@@ -66,9 +66,12 @@ function getEmplacementVideAlea(zone:Zone):Structure;
       end;
 
     // Boucle si au moins un emplacement vide existe et tant qu'aucun n'est trouvé.
-    while a_emplacement_vide and (curent_emplacement.type_structure<>Vide) do
+    if a_emplacement_vide then
       begin
-      curent_emplacement:=zone.emplacements[random(8)+1];
+      while a_emplacement_vide and (curent_emplacement.type_structure<>Vide) do
+        begin
+        curent_emplacement:=zone.emplacements[random(8)+1];
+        end;
       end;
     getEmplacementVideAlea:=curent_emplacement;
   end;
@@ -85,7 +88,7 @@ procedure ajouteStructureemplacementAlea(var zone:Zone; niveau:Integer;
     emplacement:=getEmplacementVideAlea(zone);
     if emplacementsSontDifferents(emplacement, zone.emplacements[low(zone.emplacements)]) then
       begin
-      setEmplacement(emplacement, 2, true, Gisement, zone.minerais[1], 0, consommable);
+      setEmplacement(emplacement, niveau, est_decouvert, type_structure, materiaux, production, consommable);
       end;
   end;
 
@@ -472,6 +475,9 @@ procedure JeuPrincipal();
       begin
       AfficherZone(zones[curent_zone]);
       readln(choix);
+      case choix of 
+        '1':;// Lance le programme 1
+        '2':;// Lance le programme 2
       end;  
   end;
 
@@ -480,7 +486,7 @@ procedure MainMenu();
     choix:String;
   begin
     choix:='';
-    while (choix<>'2') do
+    while (choix<>QUITTER) do
       begin
       choix:=AfficheMainMenu();
       if (choix='1') then
