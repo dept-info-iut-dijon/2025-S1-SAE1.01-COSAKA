@@ -594,11 +594,11 @@ procedure AfficherMenuZone();
 
 procedure AfficherMenuMateriauxTransformer();
   var
-    m: Materiaux; // Parcourt les matériaux
-    i, startY: Integer; // Compteur et position Y
+    m: Materiaux;
+    i, startY: Integer; 
   begin
-    startY := (SCREEN_HEIGHT div 2) + 3; // Position de départ
-    i := 1; // Numérotation à partir de 1
+    startY := (SCREEN_HEIGHT div 2) + 3; // Pos de départ
+    i := 1; // Num à partir de 1
     
     // Dessine le cadre
     dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
