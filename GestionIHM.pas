@@ -125,6 +125,7 @@ procedure EcranTitre();
 
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('< Appuyez sur ENTRER pour commencer >')div 2),35);  
     write('< Appuyez sur ENTRER pour commencer >');
+    deplacerCurseurXY(2,SCREEN_HEIGHT-1);
   end;
 
 // ...............................__..__._____._..._._..._.
