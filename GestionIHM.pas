@@ -221,13 +221,19 @@ procedure AfficherInventaireZone();
     i:= 0;
     for m in Materiaux do 
       begin
-          valeur[m] := 0;
-          if (m <> Electricite) and (m <> Fondations) then
+          if (m <> Electricite) then
           begin
           deplacerCurseurXY((SCREEN_WIDTH div 10-15),startY+i);
           writeln(m);
           deplacerCurseurXY((SCREEN_WIDTH div 10+10),startY+i);
+
+          // Affiche les valeurs en rouge si elle sont = 0
+          if valeur[m] = 0 then
+          begin
+            couleurTexte(Red);
+          end;
           writeln(': ',valeur[m]);
+          couleurTexte(White);
           i:= i + 1; 
           end;
       end;
@@ -244,21 +250,28 @@ procedure AfficherInformations(zone:string; time:string);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
     writeln('DATE : ',time);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),10);
+
+    {Si la consommation est plus importante que la production
+    alors la valeur s'affiche en rouge}
+        if (ConsommationElectricite(ZoneTest)) > ProductionElectricite(ZoneTest) then
+      begin
+        couleurTexte(Red);
+      end
+      else
+      begin
+        couleurTexte(Green);
+      end;
     write('Production Electricite');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),10);
-    writeln(': ',valeur[Electricite]);
+
+    writeln(': ',ProductionElectricite(ZoneTest));
+    couleurTexte(White);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),11);
+    couleurTexte(Yellow); // couleur jaune
     write('Consommation Electricite');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),11);
-    couleurTexte(Yellow); // couleur jaune
-    writeln(': ',valeur[Electricite]);
+    writeln(': ',ConsommationElectricite(ZoneTest));
     couleurTexte(White); // Reset de la couleur
-
-
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),13);
-    write('Fondations');
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),13);
-    writeln(': ',valeur[Fondations]);
   end;
 
 procedure AfficherActions();
