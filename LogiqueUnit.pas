@@ -147,7 +147,7 @@ procedure creerUsine(var emplacement:Structure; nouveau_materiaux:Materiaux);
     if emplacement.est_decouvert then
     begin
       setEmplacement(emplacement, NOUVEAU_NIVEAU, emplacement.est_decouvert, 
-                      Usine, nouveau_materiaux, emplacemen.consommable )
+                      Usine, nouveau_materiaux, emplacement.consommable )
     end
     else
       // Affiche le message d'erreur
@@ -163,14 +163,36 @@ procedure revenusProduction(zone:Zone);
   par les différents batiments}
   var
     emplacement:Structure;
+    materiaux:Materiaux;
+    materiauxNecessaire:Boolean;
   begin
     // Boucle sur chaque emplacements de la zone
     for emplacement in zone.emplacements do
     begin
+      materiauxNecessaire := True;
       // Vérifie que l'emplacement a été découvert
       if emplacement.est_decouvert then
-        // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
-        zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + emplacement.production;
+      begin
+        // Boucle sur chaque materiaux du type Materiaux
+        for materiaux in Materiaux do
+        begin
+          // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
+          if (emplacement.consommable[materiaux] > 0) then
+          begin
+            // Vérifie que l'inventaire de la zone possèdent assez de matériaux
+            if (zone.inventaire[materiaux] >= emplacement.consommable[materiaux]) then
+              // Enleve les matériaux consommés à l'inventaire de la zone
+              zone.inventaire[materiaux] := zone.inventaire[materiaux] - emplacement.consommable[materiaux]
+            else
+              // Indique que l'inventaire de la zone ne possède pas assez de matériaux
+              materiauxNecessaire := False
+          end;
+        end;
+        // Vérifie que les materiaux consommé ont bien été retiré de l'inventaire
+        if materiauxNecessaire then
+          // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
+          zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + emplacement.production;
+      end;
     end;
   end;
 
