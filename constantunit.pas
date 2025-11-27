@@ -24,6 +24,7 @@ interface
     end;
 
     Emplacements=Array[0..9] of Structure;
+    Inventaire=Array[Materiaux] of Integer;
 
     // Une zone du jeu, contenant par défaut 10 emplacements
     Zone=record
@@ -31,7 +32,7 @@ interface
       nom:String;
       emplacements:Emplacements;
       minerais:Array[0..2] of Materiaux;
-      inventaire:Array[Materiaux] of Integer;
+      inventaire:Inventaire;
     end;
   
   const
@@ -100,37 +101,9 @@ interface
     NOM_ZONE2='La Caverne Simmonet';
     NOM_ZONE3='La Montagne Coulon';
     
-    StructureTest:Structure = (
-                    type_structure:Hub;
-                    niveau:1;
-                    est_decouvert:True;
-                    materiaux:Fer;
-                    production:800;
-                    consommable:(0,0,0,0,0,0,0,0,0,0,0,0,0,0));
 
-    ZoneTest:Zone = (
-                    numero:1;
-                    nom:'SabineLaGoat';
-                 //   emplacements:();
-                 //   minerais:(Fer,Cuivre,Calcaire);
-                   // inventaire:(0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-                   ); 
-
-    {StructureTest:Structure = (
-                    type_structure:Hub;
-                    niveau:1;
-                    est_decouvert:True;
-                    materiaux:Fer;
-                    production:800;
-                    consommable:(0,0,0,0,0,0,0,0,0,0,0,0,0,0));
-
-    ZoneTest:Zone = (
-                    numero:1;
-                    nom:'SabineLaGoat';
-                 //   emplacements:();
-                 //   minerais:(Fer,Cuivre,Calcaire);
-                   // inventaire:(0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-                   );}
+    // Constantes pour les choix dans les menus
+    QUITTER='9';
 
 implementation
 
