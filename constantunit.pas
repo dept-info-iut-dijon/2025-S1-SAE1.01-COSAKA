@@ -103,7 +103,7 @@ interface
     
 
     // Constantes pour les choix dans les menus
-    QUITTER='9';
+    QUITTER='0';
 
 implementation
 
