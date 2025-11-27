@@ -467,10 +467,10 @@ procedure ConstruireBatiment(zone:Zone);
               begin
                 // AfficherMenuFabrication()
                 readln(choix);
-                if (choix>QUITTER) and (choix<MATERIAUX_TRANSFORMES) then
+                if (choix>0) and (choix<MATERIAUX_TRANSFORMES) then
                   sortie2:=True;
               end;
-              if choix<>QUITTER then
+              if choix<>QUITTER_INT then
                 for materiau in Materiaux do
                 begin
                   if ord(materiau) = (choix+MATERIAUX_PREMIERS) then
@@ -507,9 +507,9 @@ procedure JeuPrincipal();
       begin
       AfficherZone(zones[curent_zone]);
       readln(choix);
-      case choix of 
-        '1':;// Lance le programme 1
-        '2':;// Lance le programme 2
+      if choix='oui'then
+        begin
+        end;
       end;  
   end;
 

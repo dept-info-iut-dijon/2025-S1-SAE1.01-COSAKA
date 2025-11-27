@@ -1,6 +1,8 @@
 unit constantUnit;
 
 interface
+  uses classes,sysutils;
+
   type
     // Materiaux que l'on peut récolter
     Materiaux=(Fer, Cuivre, Calcaire, Charbon, LingotFer, LingotCuivre, 
@@ -101,8 +103,9 @@ interface
     NOM_ZONE2='La Caverne Simmonet';
     NOM_ZONE3='La Montagne Coulon';
     
-    QUITTER=0;
+    QUITTER='0';
 
+    Quitter_INT=0;
     MATERIAUX_PREMIERS=4;
     MATERIAUX_AUTRES=1;
     MATERIAUX_TRANSFORMES=ord(high(Materiaux))-MATERIAUX_PREMIERS-MATERIAUX_AUTRES;
