@@ -54,6 +54,9 @@ procedure ProductionInformationsDroite();
 
 procedure AfficherMenuBilan(currentDate:string;nextDate:string);
 
+procedure AfficherMenuMissions();
+
+
 implementation
 
 uses
@@ -291,6 +294,8 @@ procedure AfficherZone(zone:Zone);
     AfficherInformations(zone,'-');
     AfficherInventaireZone(zone);
     AfficherActions();
+    AfficherMenuMissions();
+    readln();
   end;
 
 // .____.._____.____.____.___._..._._..._._____.____...........................
@@ -854,6 +859,57 @@ procedure ProductionInformationsDroite();
     writeln('      - Quantité produite par lot : 2');
     writeln('      - Ressources nécessaires : Sacs de Régolithe Fixateur (x30)');
     writeln;
+  end;
+
+procedure AfficherMenuMissions();
+  begin
+    effacerEcran();
+    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+
+
+    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| MISSIONS |>')div 2),1);
+    writeln('<| MISSIONS |>');
+
+    // CADRE MISSION 1
+    dessinerCadreXY(5, 2, (SCREEN_WIDTH*4 div 5 - 7) div 4 + 4, SCREEN_HEIGHT-4, simple, white, black);
+    DeplacerCurseurXY((5 + (SCREEN_WIDTH*4 div 5 - 7) div 4 + 4) div 2 - 4, 4);
+    couleurTexte(yellow);
+    write('MISSION 1');
+    couleurTexte(white);
+
+    // CADRE MISSION 2
+    dessinerCadreXY((SCREEN_WIDTH*4 div 5 - 7) div 4 + 5, 2, 2*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 5, SCREEN_HEIGHT-4, simple, white, black);
+    DeplacerCurseurXY(((SCREEN_WIDTH*4 div 5 - 7) div 4 + 5 + 2*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 5) div 2 - 4, 4);
+    couleurTexte(yellow);
+    write('MISSION 2');
+    couleurTexte(white);
+
+    // CADRE MISSION 3
+    dessinerCadreXY(2*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 6, 2, 3*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 6, SCREEN_HEIGHT-4, simple, white, black);
+    DeplacerCurseurXY((2*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 6 + 3*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 6) div 2 - 4, 4);
+    couleurTexte(yellow);
+    write('MISSION 3');
+    couleurTexte(white);
+
+    // CADRE MISSION 4
+    dessinerCadreXY(3*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 7, 2, SCREEN_WIDTH*4 div 5 - 4, SCREEN_HEIGHT-4, simple, white, black);
+    DeplacerCurseurXY((3*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 7 + SCREEN_WIDTH*4 div 5 - 4) div 2 - 4, 4);
+    couleurTexte(yellow);
+    write('MISSION 4');
+    couleurTexte(white);
+
+
+      deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
+        // Titre
+    UTF8(True);
+    writeln('Emetteur : Frank Deher');
+
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+    writeln('[0] Revenir au jeu');
+    UTF8(False);
+    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
 
 procedure AfficherMenuBilan(currentDate:string;nextDate:string);
