@@ -606,6 +606,53 @@ procedure Explorer(var zone:Zone);
 
     end;
   end;
+procedure NavigWiki();
+var 
+  choix, Choix2: integer;
+  quitter: boolean;
+
+begin
+  // Initialisation var sortie
+  quitter := false;
+  // Boucle wiki
+  repeat
+    // wiki bâtiment
+    AfficherMenuWikiBatiment();
+    readln(choix);
+    
+    case choix of
+      // wiki prod
+      1: begin
+           // Boucle menu wiki prod
+           repeat
+             // Affichage wiki prod
+             AfficherMenuWikiProduction();
+             readln(Choix2);
+             case Choix2 of
+               // Retour wiki bâtiment
+               1: ;
+               // Retour
+               2: begin
+                    Scenario();
+                    // Quitter wiki
+                    quitter := true;
+                  end;
+               // Quitter wiki
+               0: quitter := true;
+             end;
+           until (Choix2 = 0) or (Choix2 = 1) or (Choix2 = 2);
+         end;
+      //Retour
+      2: begin
+           Scenario();
+           // quitter du wiki
+           quitter := true;
+         end;
+      // quitter wiki
+      0: quitter := true;
+    end;
+  until quitter;
+end;
 
 procedure JeuPrincipal();
   var
@@ -649,7 +696,8 @@ procedure JeuPrincipal();
         end
       else if (choix='9') then
         begin
-          ConstruireBatiment(zones[curent_zone]);
+          NavigWiki();
+          //ConstruireBatiment(zones[curent_zone]);
         end;
       end;  
   end;
