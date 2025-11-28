@@ -684,6 +684,7 @@ procedure Explore(var zone:Zone);
     decouvre(zone.emplacements[indice]);
     end;
   end;
+
 procedure NavigWiki();
   var 
     choix, Choix2: integer;
@@ -774,6 +775,40 @@ procedure MenuChangementUsine(var zone:Zone);
     end;
   end;
 
+procedure menuChangementZone(var curent_zone:Integer);
+  {Affiche le menu de choix de zone et change la zone en conséquence}
+  var
+    choix:String;
+    choix_valide:Boolean;
+  begin
+  choix_valide:=false;
+  AfficherMenuZone();
+  readln(choix);
+  while (not choix_valide) do
+    begin
+    if choix='0' then
+      choix_valide:=true
+    else if choix='1' then
+      begin
+      choix_valide:=true;
+      curent_zone:=0;
+      end
+    else if choix='2' then
+      begin
+      choix_valide:=true;
+      curent_zone:=1;
+      end
+    else if choix='3' then
+      begin
+      choix_valide:=true;
+      curent_zone:=2;
+      end
+    else
+      AfficherMenuZone();
+      readln(choix);
+    end;
+  end;
+
 procedure JeuPrincipal();
   var
     curent_zone:Integer;
@@ -786,6 +821,8 @@ procedure JeuPrincipal();
     setDate(curent_date);
     curent_zone:=0;
     zones[0]:=initZone(0, NOM_ZONE1, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
+    zones[1]:=initZone(0, NOM_ZONE2, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
+    zones[2]:=initZone(0, NOM_ZONE2, ArgileRegolitique, CarbonePyrolyte, MineraiDHematite);
     while (choix<>QUITTER) do
       begin
       AfficherZone(zones[curent_zone], curent_date);
@@ -809,12 +846,14 @@ procedure JeuPrincipal();
         end
       else if (choix=CHANGER_ZONE) then
         begin
+        menuChangementZone(curent_zone);
         end
       else if (choix=TRANSFERT_RESSOURCES) then
         begin
         end
       else if (choix=PASSER_JOURNEE) then
         begin
+        jourSuivant(zones[curent_zone], curent_date);
         end
       else if (choix=MISSIONS) then
         begin

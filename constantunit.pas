@@ -10,6 +10,7 @@ interface
     MineraiDHematite,
     ArgileRegolitique,
     CarbonePyrolyte,
+
     LingotsDeCuivre,
     LingotsDeFer,
     PlaquesStandard,
