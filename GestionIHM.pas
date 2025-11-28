@@ -52,6 +52,7 @@ procedure ProductionInformationsGauche();
 procedure ProductionInformationsDroite();
 {Informations sur les matériaux de productions colonne de droite du wiki}
 
+procedure AfficherMenuBilan(currentDate:string;nextDate:string);
 
 implementation
 
@@ -802,6 +803,7 @@ procedure AfficherMenuWikiProduction();
   end;
   
   // Tom je te laisse mettre les curseur à ta manière pour afficher le texte dans le wiki    
+ // pas gentil ca Eric
 procedure ProductionInformationsGauche();
 begin
   writeln('    Lingots de cuivre');
@@ -856,6 +858,22 @@ begin
   writeln('      - Quantité produite par lot : 2');
   writeln('      - Ressources nécessaires : Sacs de Régolithe Fixateur (x30)');
   writeln;
+end;
+
+procedure AfficherMenuBilan(currentDate:string;nextDate:string);
+begin
+  effacerEcran();
+  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+
+  // Titre
+  UTF8(True);
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BILAN |>')div 2),1);
+  writeln('<| BILAN |>');
+
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(nextDate + ' -> ' + nextDate)div 2),5);
+  writeln(currentDate,' -> ',nextDate);
+
+  UTF8(False);
 end;
 
 end.
