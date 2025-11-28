@@ -47,6 +47,45 @@ function emplacementsSontDifferents(emplacement1:Structure; emplacement2:Structu
                                 (emplacement1.production<>emplacement2.production);
   end;
 
+procedure decouvre(var emplacement:Structure);
+  {Découvre l'emplacement placé en paramètre}
+  begin
+  emplacement.est_decouvert:=True;
+  end;
+
+function getIndiceEmplacementNonDecouvertAlea(zone:Zone):Integer;
+  {Renvoie un emplacement non découvert de 'zone'.
+  Si il n'y en a pas, renvoie le premier emplacement de 'zone'.}
+  var
+    indice_curent_emplacement:Integer;
+    curent_emplacement:Structure;
+    a_emplacement_non_decouvert:Boolean;   // Indique si la zone contient au moins un emplacement vide.
+  begin
+    // Vérifie si la zone possède au moins un emplacement vide.
+    indice_curent_emplacement:=low(zone.emplacements);
+    curent_emplacement:=zone.emplacements[indice_curent_emplacement];
+    a_emplacement_non_decouvert:=false;
+    for curent_emplacement in zone.emplacements do
+      begin
+      if (not curent_emplacement.est_decouvert) then
+        begin
+        a_emplacement_non_decouvert:=true;
+        end;
+      end;
+    
+    // Boucle si au moins un emplacement vide existe et tant qu'aucun n'est trouvé.
+    if a_emplacement_non_decouvert then
+      begin
+      curent_emplacement:=zone.emplacements[indice_curent_emplacement];
+      while (curent_emplacement.est_decouvert) do
+        begin
+        indice_curent_emplacement:=random(8)+1;
+        curent_emplacement:=zone.emplacements[indice_curent_emplacement];
+        end;
+      end;
+    getIndiceEmplacementNonDecouvertAlea:=indice_curent_emplacement;
+  end;
+
 function getIndiceEmplacementVideAlea(zone:Zone):Integer;
   {Renvoie un emplacement vide de 'zone'.
   Si il n'y en a pas, renvoie le premier emplacement de 'zone'.}
@@ -80,7 +119,7 @@ function getIndiceEmplacementVideAlea(zone:Zone):Integer;
     getIndiceEmplacementVideAlea:=indice_curent_emplacement;
   end;
 
-procedure ajouteStructureemplacementAlea(var zone:Zone; niveau:Integer; 
+procedure ajouteStructureEmplacementAlea(var zone:Zone; niveau:Integer; 
                                          est_decouvert:Boolean; type_structure:Batiment;
                                          materiaux:Materiaux; production:Integer;
                                          consommable:Consommation);
@@ -501,6 +540,19 @@ procedure ConstruireBatiment(zone:Zone);
     end;
   end;
 
+procedure Explorer(var zone:Zone);
+  var
+    indice:Integer;
+    emplacement:Structure;
+  begin
+  if (Random<0.2) or true then
+    begin
+    indice:=getIndiceEmplacementNonDecouvertAlea(zone);
+    decouvre(zone.emplacements[indice]);
+
+    end;
+  end;
+
 procedure JeuPrincipal();
   var
     curent_zone:Integer;
@@ -515,7 +567,33 @@ procedure JeuPrincipal();
       begin
       AfficherZone(zones[curent_zone]);
       readln(choix);
-      if choix='1'then
+      if (choix='1') then
+        begin
+        ConstruireBatiment(zones[curent_zone]);
+        end
+      else if (choix='2') then
+        begin
+        end
+      else if (choix='3') then
+        begin
+        end
+      else if (choix='4') then
+        begin
+        Explorer(zones[curent_zone]);
+        end
+      else if (choix='5') then
+        begin
+        end
+      else if (choix='6') then
+        begin
+        end
+      else if (choix='7') then
+        begin
+        end
+      else if (choix='8') then
+        begin
+        end
+      else if (choix='9') then
         begin
         end;
       end;  
