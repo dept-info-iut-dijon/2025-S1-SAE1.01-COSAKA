@@ -146,10 +146,10 @@ procedure initEmplacements(var zone:Zone);
     // Définie tous les emplacements par des emplacements vides et non découverts
     for i:=low(zone.emplacements) to high(zone.emplacements) do
       begin
-      setEmplacement(zone.emplacements[i], 0, false, Vide, Fer, 0, CONSOMMATION0);
+      setEmplacement(zone.emplacements[i], 0, false, Vide, MineraiDHematite, 0, CONSOMMATION0);
       end;
     // Définie le Hub de la zone
-    setEmplacement(zone.emplacements[0], 0, true, Hub, Fer, 0, CONSOMMATION0);
+    setEmplacement(zone.emplacements[0], 0, true, Hub, MineraiDHematite, 0, CONSOMMATION0);
     // Définie un emplacement avec un gisement du premier minerai de la zone.
     setEmplacement(zone.emplacements[random(8)+1], 3, true, Gisement, zone.minerais[0], 0, CONSOMMATION0);
 
@@ -562,7 +562,7 @@ procedure JeuPrincipal();
     Scenario();
     choix:='';
     curent_zone:=0;
-    zones[0]:=initZone(0, NOM_ZONE1, Fer, Cuivre, Charbon);
+    zones[0]:=initZone(0, NOM_ZONE1, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
     while (choix<>QUITTER) do
       begin
       AfficherZone(zones[curent_zone]);
