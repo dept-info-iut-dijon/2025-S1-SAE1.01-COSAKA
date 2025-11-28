@@ -52,6 +52,7 @@ procedure ProductionInformationsGauche();
 procedure ProductionInformationsDroite();
 {Informations sur les matériaux de productions colonne de droite du wiki}
 
+procedure AfficherMenuBilan(currentDate:string;nextDate:string);
 
 implementation
 
@@ -447,10 +448,6 @@ procedure AfficherInventaireZone(zone:Zone);
 // |___|_|.\_|_|...\___/|_|.\_\_|..|_/_/...\_\_|.|___\___/|_|.\_|____/.
 
 procedure AfficherInformations(zone:Zone; time:string);
-  var
-  m:Materiaux; // Prend la liste des Materiaux
-  valeur:array[Materiaux] of Integer;
-
   begin
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),5);
     writeln('ZONE : ',zone.nom);
@@ -664,10 +661,64 @@ procedure AfficherMenuWikiBatiment();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI BATIMENTS |>')div 2),1);
     writeln('<| WIKI BATIMENTS |>');
 
+    deplacerCurseurXY(5,4);
+    writeln('-Mine');
+    // Niveaux
+    deplacerCurseurXY(8,6);
+    writeln('Niveau');
+    deplacerCurseurXY(8,8);
+    writeln('1');
+    deplacerCurseurXY(8,9);
+    writeln('2');
+    deplacerCurseurXY(8,10);
+    writeln('3');
+    // Prix
+    deplacerCurseurXY(20,6);
+    write('Coût');
+    // Consomation
+    deplacerCurseurXY(32,6);
+    writeln('Consommation');
+
+    deplacerCurseurXY(5,15);
+    writeln('-Usine');
+    // Niveaux
+    deplacerCurseurXY(8,17);
+    writeln('Niveau');
+    deplacerCurseurXY(8,19);
+    writeln('1');
+    deplacerCurseurXY(8,20);
+    writeln('2');
+    deplacerCurseurXY(8,21);
+    writeln('3');
+    // Prix
+    deplacerCurseurXY(20,17);
+    write('Coût');
+    // Consommation
+    deplacerCurseurXY(32,17);
+    writeln('Consommation');
+
+    deplacerCurseurXY(5,25);
+    writeln('-Centrale');
+    // Niveau
+    deplacerCurseurXY(8,27);
+    writeln('Niveau');
+    deplacerCurseurXY(8,29);
+    writeln('1');
+    deplacerCurseurXY(8,30);
+    writeln('2');
+    deplacerCurseurXY(8,31);
+    writeln('3');
+    // Prix
+    deplacerCurseurXY(20,27);
+    write('Coût');
+    // Consommation
+    deplacerCurseurXY(32,27);
+    writeln('Consommation');
+
     deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
     writeln('Source : Karine Serier');
 
-
+    // Navigation ACTIONS
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
     writeln('[1] Wiki PRODUCTION');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
@@ -681,35 +732,35 @@ procedure AfficherMenuWikiBatiment();
 
 // Tom je te laisse mettre les curseur à ta manière pour afficher le texte dans le wiki    
 procedure BatimentInformations();
-begin
-  writeln('Mine Mk.');
-  writeln('  - Coût de construction : Plaques Standard (x10)');
-  writeln('  - Énergie consommée : 100');
-  writeln('  - Coût d''amélioration niv 2 : Plaques Standard (x20) / Sacs de Régolithe Fixateur (x20)');
-  writeln('  - Coût d''amélioration niv 3 : Plaques Standard (x20) / Alliage Cryogénique (x20)');
-  writeln; 
+  begin
+    writeln('Mine Mk.');
+    writeln('  - Coût de construction : Plaques Standard (x10)');
+    writeln('  - Énergie consommée : 100');
+    writeln('  - Coût d''amélioration niv 2 : Plaques Standard (x20) / Sacs de Régolithe Fixateur (x20)');
+    writeln('  - Coût d''amélioration niv 3 : Plaques Standard (x20) / Alliage Cryogénique (x20)');
+    writeln; 
 
-  writeln('Constructeur');
-  writeln('  - Coût de construction : Câbles de cuivre (x10) / Plaques Standard (x10)');
-  writeln('  - Énergie consommée : 200');
-  writeln('  - Coût d''amélioration niv 2 : Plaques Standard (x20) / Sacs de Régolithe Fixateur (x20)');
-  writeln('  - Coût d''amélioration niv 3 : Plaques Standard (x20) / Alliage Cryogénique (x20)');
-  writeln;
+    writeln('Constructeur');
+    writeln('  - Coût de construction : Câbles de cuivre (x10) / Plaques Standard (x10)');
+    writeln('  - Énergie consommée : 200');
+    writeln('  - Coût d''amélioration niv 2 : Plaques Standard (x20) / Sacs de Régolithe Fixateur (x20)');
+    writeln('  - Coût d''amélioration niv 3 : Plaques Standard (x20) / Alliage Cryogénique (x20)');
+    writeln;
 
-  writeln('HUB');
-  writeln('  - Énergie consommée : 100');
-  writeln;
+    writeln('HUB');
+    writeln('  - Énergie consommée : 100');
+    writeln;
 
-  writeln('Centrale électrique');
-  writeln('  - Coût de construction : Câbles de cuivre (x30) / Plaques Standard (x10) / Sacs de Régolithe Fixateur (x20)');
-  writeln('  - Énergie produite : 1200');
-  writeln;
+    writeln('Centrale électrique');
+    writeln('  - Coût de construction : Câbles de cuivre (x30) / Plaques Standard (x10) / Sacs de Régolithe Fixateur (x20)');
+    writeln('  - Énergie produite : 1200');
+    writeln;
 
-  writeln('Ascenseur orbital');
-  writeln('  - Coût de construction : Câbles de cuivre (x200) / Plaques Standard (x200) / Sacs de Régolithe Fixateur (x200)');
-  writeln('  - Énergie consommée : 1000');
-  writeln;
-end;
+    writeln('Ascenseur orbital');
+    writeln('  - Coût de construction : Câbles de cuivre (x200) / Plaques Standard (x200) / Sacs de Régolithe Fixateur (x200)');
+    writeln('  - Énergie consommée : 1000');
+    writeln;
+  end;
 
 // ..............................__........_____._.._____....
 // ..............................\.\.....././_._|.|/./_._|...
@@ -748,60 +799,77 @@ procedure AfficherMenuWikiProduction();
   end;
   
   // Tom je te laisse mettre les curseur à ta manière pour afficher le texte dans le wiki    
+ // pas gentil ca Eric
 procedure ProductionInformationsGauche();
-begin
-  writeln('    Lingots de cuivre');
-  writeln('      - Quantité produite par lot : 15');
-  writeln('      - Ressources nécessaires : Fragment de Chalcocite (x30)');
-  writeln;
+  begin
+    writeln('    Lingots de cuivre');
+    writeln('      - Quantité produite par lot : 15');
+    writeln('      - Ressources nécessaires : Fragment de Chalcocite (x30)');
+    writeln;
 
-  writeln('    Lingots de fer');
-  writeln('      - Quantité produite par lot : 15');
-  writeln('      - Ressources nécessaires : Minerai d''Hématite (x30)');
-  writeln;
+    writeln('    Lingots de fer');
+    writeln('      - Quantité produite par lot : 15');
+    writeln('      - Ressources nécessaires : Minerai d''Hématite (x30)');
+    writeln;
 
-  writeln('    Câbles de cuivre');
-  writeln('      - Quantité produite par lot : 5');
-  writeln('      - Ressources nécessaires : Lingots de cuivre (x15)');
-  writeln;
+    writeln('    Câbles de cuivre');
+    writeln('      - Quantité produite par lot : 5');
+    writeln('      - Ressources nécessaires : Lingots de cuivre (x15)');
+    writeln;
 
-  writeln('    Plaques Standard');
-  writeln('      - Quantité produite par lot : 10');
-  writeln('      - Ressources nécessaires : Lingots de fer (x60)');
-  writeln;
+    writeln('    Plaques Standard');
+    writeln('      - Quantité produite par lot : 10');
+    writeln('      - Ressources nécessaires : Lingots de fer (x60)');
+    writeln;
 
-  writeln('    Conduits de Fluide');
-  writeln('      - Quantité produite par lot : 10');
-  writeln('      - Ressources nécessaires : Lingots de fer (x30)');
-  writeln;
+    writeln('    Conduits de Fluide');
+    writeln('      - Quantité produite par lot : 10');
+    writeln('      - Ressources nécessaires : Lingots de fer (x30)');
+    writeln;
 
-  writeln('    Sacs de Régolithe Fixateur');
-  writeln('      - Quantité produite par lot : 5');
-  writeln('      - Ressources nécessaires : Argile Régolitique (x15)');
-  writeln;
+    writeln('    Sacs de Régolithe Fixateur');
+    writeln('      - Quantité produite par lot : 5');
+    writeln('      - Ressources nécessaires : Argile Régolitique (x15)');
+    writeln;
 
-  writeln('    Alliage Cryogénique');
-  writeln('      - Quantité produite par lot : 15');
-  writeln('      - Ressources nécessaires : Minerai d''Hématite (x30) / Carbone Pyrolyté (x15)');
-  writeln;
-end;
+    writeln('    Alliage Cryogénique');
+    writeln('      - Quantité produite par lot : 15');
+    writeln('      - Ressources nécessaires : Minerai d''Hématite (x30) / Carbone Pyrolyté (x15)');
+    writeln;
+  end;
 
 procedure ProductionInformationsDroite();
+  begin
+    writeln('    Panneaux à Densité Optimale');
+    writeln('      - Quantité produite par lot : 2');
+    writeln('      - Ressources nécessaires : Plaques Standard (x20) / Alliage Cryogénique (x20)');
+    writeln;
+
+    writeln('    Poutres de Soutènement');
+    writeln('      - Quantité produite par lot : 2');
+    writeln('      - Ressources nécessaires : Plaques Standard (x20) / Sacs de Régolithe Fixateur (x15)');
+    writeln;
+
+    writeln('    Dalles de Stabilité');
+    writeln('      - Quantité produite par lot : 2');
+    writeln('      - Ressources nécessaires : Sacs de Régolithe Fixateur (x30)');
+    writeln;
+  end;
+
+procedure AfficherMenuBilan(currentDate:string;nextDate:string);
 begin
-  writeln('    Panneaux à Densité Optimale');
-  writeln('      - Quantité produite par lot : 2');
-  writeln('      - Ressources nécessaires : Plaques Standard (x20) / Alliage Cryogénique (x20)');
-  writeln;
+  effacerEcran();
+  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
 
-  writeln('    Poutres de Soutènement');
-  writeln('      - Quantité produite par lot : 2');
-  writeln('      - Ressources nécessaires : Plaques Standard (x20) / Sacs de Régolithe Fixateur (x15)');
-  writeln;
+  // Titre
+  UTF8(True);
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BILAN |>')div 2),1);
+  writeln('<| BILAN |>');
 
-  writeln('    Dalles de Stabilité');
-  writeln('      - Quantité produite par lot : 2');
-  writeln('      - Ressources nécessaires : Sacs de Régolithe Fixateur (x30)');
-  writeln;
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(nextDate + ' -> ' + nextDate)div 2),5);
+  writeln(currentDate,' -> ',nextDate);
+
+  UTF8(False);
 end;
 
 end.

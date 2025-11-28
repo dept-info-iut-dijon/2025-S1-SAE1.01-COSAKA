@@ -79,7 +79,7 @@ function getIndiceEmplacementNonDecouvertAlea(zone:Zone):Integer;
       curent_emplacement:=zone.emplacements[indice_curent_emplacement];
       while (curent_emplacement.est_decouvert) do
         begin
-        indice_curent_emplacement:=random(8)+1;
+        indice_curent_emplacement:=random(9)+1;
         curent_emplacement:=zone.emplacements[indice_curent_emplacement];
         end;
       end;
@@ -112,7 +112,7 @@ function getIndiceEmplacementVideAlea(zone:Zone):Integer;
       curent_emplacement:=zone.emplacements[indice_curent_emplacement];
       while (curent_emplacement.type_structure<>Vide) do
         begin
-        indice_curent_emplacement:=random(8)+1;
+        indice_curent_emplacement:=random(9)+1;
         curent_emplacement:=zone.emplacements[indice_curent_emplacement];
         end;
       end;
@@ -607,18 +607,64 @@ procedure MenuUpgradeBatiment(var zone:Zone);
     end;
   end;
 
-procedure Explorer(var zone:Zone);
+procedure Explore(var zone:Zone);
   var
     indice:Integer;
-    emplacement:Structure;
   begin
-  if (Random<0.2) or true then
+  if (Random<0.5) or true then
     begin
     indice:=getIndiceEmplacementNonDecouvertAlea(zone);
     decouvre(zone.emplacements[indice]);
 
     end;
   end;
+procedure NavigWiki();
+var 
+  choix, Choix2: integer;
+  quitter: boolean;
+
+begin
+  // Initialisation var sortie
+  quitter := false;
+  // Boucle wiki
+  repeat
+    // wiki bâtiment
+    AfficherMenuWikiBatiment();
+    readln(choix);
+    
+    case choix of
+      // wiki prod
+      1: begin
+           // Boucle menu wiki prod
+           repeat
+             // Affichage wiki prod
+             AfficherMenuWikiProduction();
+             readln(Choix2);
+             case Choix2 of
+               // Retour wiki bâtiment
+               1: ;
+               // Retour
+               2: begin
+                    Scenario();
+                    // Quitter wiki
+                    quitter := true;
+                  end;
+               // Quitter wiki
+               0: quitter := true;
+             end;
+           until (Choix2 = 0) or (Choix2 = 1) or (Choix2 = 2);
+         end;
+      //Retour
+      2: begin
+           Scenario();
+           // quitter du wiki
+           quitter := true;
+         end;
+      // quitter wiki
+      0: quitter := true;
+    end;
+  until quitter;
+end;
 
 procedure MenuChangementUsine(var zone:Zone);
   {}
@@ -654,36 +700,37 @@ procedure JeuPrincipal();
       begin
       AfficherZone(zones[curent_zone]);
       readln(choix);
-      if (choix='1') then
+      if (choix=CONSTRUIRE) then
         begin
         MenuCreerBatiment(zones[curent_zone]);
         end
-      else if (choix='2') then
+      else if (choix=CHANGER_PRODUCTION) then
         begin
         MenuChangementUsine(zones[curent_zone]);
         end
-      else if (choix='3') then
+      else if (choix=AMELIORER) then
         begin
         MenuUpgradeBatiment(zones[curent_zone]);
         end
-      else if (choix='4') then
+      else if (choix=EXPLORER) then
         begin
-        Explorer(zones[curent_zone]);
+        Explore(zones[curent_zone]);
         end
-      else if (choix='5') then
-        begin
-        end
-      else if (choix='6') then
+      else if (choix=CHANGER_ZONE) then
         begin
         end
-      else if (choix='7') then
+      else if (choix=TRANSFERT_RESSOURCES) then
         begin
         end
-      else if (choix='8') then
+      else if (choix=PASSER_JOURNEE) then
         begin
         end
-      else if (choix='9') then
+      else if (choix=MISSIONS) then
         begin
+        end
+      else if (choix=WIKI) then
+        begin
+          NavigWiki();
         end;
       end;  
   end;

@@ -131,7 +131,17 @@ interface
     NOM_ZONE2='La Caverne Simmonet';
     NOM_ZONE3='La Montagne Coulon';
     
+    // Constante utiles pour naviguer dans les menus
     QUITTER='0';
+    CONSTRUIRE='1';
+    CHANGER_PRODUCTION='2';
+    AMELIORER='3';
+    EXPLORER='4';
+    CHANGER_ZONE='5';
+    TRANSFERT_RESSOURCES='6';
+    PASSER_JOURNEE='7';
+    MISSIONS='8';
+    WIKI='9';
 
     MATERIAUX_PREMIERS='4';
     MATERIAUX_AUTRES='1';
