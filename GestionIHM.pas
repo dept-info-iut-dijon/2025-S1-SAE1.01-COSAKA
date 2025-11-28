@@ -27,13 +27,31 @@ procedure AfficherEmplacements(zone:Zone);
 procedure AfficherInventaireZone(zone:Zone);
 procedure AfficherInformations(zone:zone; time:string);
 procedure AfficherActions();
-procedure AfficherMenuWikiBatiment();
-procedure AfficherMenuWikiProduction();
 procedure UTF8(status:Boolean);
+{Moifie le traitement des caractères spéciaux (é, à, ç, etc...) en UTF8 si status = TRUE sinon RESET}
+
 procedure AfficherMenuBatiment();
 procedure AfficherMenuZone();
 procedure AfficherActionInformation(msg:string);
 procedure AfficherMenuMateriauxTransformer();
+
+{---------Wiki---------}
+
+procedure AfficherMenuWikiBatiment();
+{Menu dans Batiment de changement de page du wiki}
+
+procedure BatimentInformations();
+{Informations sur les bâtiments du jeu, (coût de construction, énergie consommée/produite et coût d'amélioration)}
+
+procedure AfficherMenuWikiProduction();
+{Menu dans Production de changement de page du wiki}
+
+procedure ProductionInformationsGauche();
+{Informations sur les matériaux de productions colonne de gauche du wiki}
+
+procedure ProductionInformationsDroite();
+{Informations sur les matériaux de productions colonne de droite du wiki}
+
 
 implementation
 
@@ -610,7 +628,7 @@ procedure AfficherMenuMateriauxTransformer();
     // Affiche les matériaux transformés uniquement
     for m in Materiaux do 
       begin
-        if (m <> Electricite) and (m <> Fer) and (m <> Cuivre) and (m <> Calcaire) and (m <> Charbon) then
+        if (m <> Electricite) and (m <> MineraiDHematite) and (m <> FragmentDeChalcocite) and (m <> ArgileRegolitique) and (m <> CarbonePyrolyte) then
           begin
             deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34), startY + (i - 1));
             writeln('[', i, '] ', m);
@@ -661,6 +679,38 @@ procedure AfficherMenuWikiBatiment();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
 
+// Tom je te laisse mettre les curseur à ta manière pour afficher le texte dans le wiki    
+procedure BatimentInformations();
+begin
+  writeln('Mine Mk.');
+  writeln('  - Coût de construction : Plaques Standard (x10)');
+  writeln('  - Énergie consommée : 100');
+  writeln('  - Coût d''amélioration niv 2 : Plaques Standard (x20) / Sacs de Régolithe Fixateur (x20)');
+  writeln('  - Coût d''amélioration niv 3 : Plaques Standard (x20) / Alliage Cryogénique (x20)');
+  writeln; 
+
+  writeln('Constructeur');
+  writeln('  - Coût de construction : Câbles de cuivre (x10) / Plaques Standard (x10)');
+  writeln('  - Énergie consommée : 200');
+  writeln('  - Coût d''amélioration niv 2 : Plaques Standard (x20) / Sacs de Régolithe Fixateur (x20)');
+  writeln('  - Coût d''amélioration niv 3 : Plaques Standard (x20) / Alliage Cryogénique (x20)');
+  writeln;
+
+  writeln('HUB');
+  writeln('  - Énergie consommée : 100');
+  writeln;
+
+  writeln('Centrale électrique');
+  writeln('  - Coût de construction : Câbles de cuivre (x30) / Plaques Standard (x10) / Sacs de Régolithe Fixateur (x20)');
+  writeln('  - Énergie produite : 1200');
+  writeln;
+
+  writeln('Ascenseur orbital');
+  writeln('  - Coût de construction : Câbles de cuivre (x200) / Plaques Standard (x200) / Sacs de Régolithe Fixateur (x200)');
+  writeln('  - Énergie consommée : 1000');
+  writeln;
+end;
+
 // ..............................__........_____._.._____....
 // ..............................\.\.....././_._|.|/./_._|...
 // ...............................\.\./\././.|.||.'./.|.|....
@@ -695,7 +745,63 @@ procedure AfficherMenuWikiProduction();
 
       dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
       deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
-    end;
+  end;
+  
+  // Tom je te laisse mettre les curseur à ta manière pour afficher le texte dans le wiki    
+procedure ProductionInformationsGauche();
+begin
+  writeln('    Lingots de cuivre');
+  writeln('      - Quantité produite par lot : 15');
+  writeln('      - Ressources nécessaires : Fragment de Chalcocite (x30)');
+  writeln;
 
+  writeln('    Lingots de fer');
+  writeln('      - Quantité produite par lot : 15');
+  writeln('      - Ressources nécessaires : Minerai d''Hématite (x30)');
+  writeln;
+
+  writeln('    Câbles de cuivre');
+  writeln('      - Quantité produite par lot : 5');
+  writeln('      - Ressources nécessaires : Lingots de cuivre (x15)');
+  writeln;
+
+  writeln('    Plaques Standard');
+  writeln('      - Quantité produite par lot : 10');
+  writeln('      - Ressources nécessaires : Lingots de fer (x60)');
+  writeln;
+
+  writeln('    Conduits de Fluide');
+  writeln('      - Quantité produite par lot : 10');
+  writeln('      - Ressources nécessaires : Lingots de fer (x30)');
+  writeln;
+
+  writeln('    Sacs de Régolithe Fixateur');
+  writeln('      - Quantité produite par lot : 5');
+  writeln('      - Ressources nécessaires : Argile Régolitique (x15)');
+  writeln;
+
+  writeln('    Alliage Cryogénique');
+  writeln('      - Quantité produite par lot : 15');
+  writeln('      - Ressources nécessaires : Minerai d''Hématite (x30) / Carbone Pyrolyté (x15)');
+  writeln;
+end;
+
+procedure ProductionInformationsDroite();
+begin
+  writeln('    Panneaux à Densité Optimale');
+  writeln('      - Quantité produite par lot : 2');
+  writeln('      - Ressources nécessaires : Plaques Standard (x20) / Alliage Cryogénique (x20)');
+  writeln;
+
+  writeln('    Poutres de Soutènement');
+  writeln('      - Quantité produite par lot : 2');
+  writeln('      - Ressources nécessaires : Plaques Standard (x20) / Sacs de Régolithe Fixateur (x15)');
+  writeln;
+
+  writeln('    Dalles de Stabilité');
+  writeln('      - Quantité produite par lot : 2');
+  writeln('      - Ressources nécessaires : Sacs de Régolithe Fixateur (x30)');
+  writeln;
+end;
 
 end.
