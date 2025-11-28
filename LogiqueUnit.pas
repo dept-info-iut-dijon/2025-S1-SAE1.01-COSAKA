@@ -617,6 +617,7 @@ procedure setDate(var date:Date);
   end;
 
 function nbJourMois(mois:Mois; annee:Integer):Integer;
+  {Renvoie le nombre de jour dans un mois en fonction du mois et d'une année}
   begin
   if (mois=fevrier) then
     begin
@@ -632,21 +633,29 @@ function nbJourMois(mois:Mois; annee:Integer):Integer;
   end;
 
 procedure suivante(var date:Date);
+  {Augmente la date d'un jour}
   var
     nb_jour_max:Integer;
   begin
+    // Avancement du jour de la semaine
     if (date.jour=high(Jour)) then
       date.jour:=low(Jour)
     else
       date.jour:=succ(date.jour);
 
+    // Vérifie le nombre de jour dans le mois actuelle
     nb_jour_max:=nbJourMois(date.mois, date.annee);
 
+    // Augmente la date
     date.nb_jour:=date.nb_jour+1;
 
+    // Si on est arrivé à la fin du mois
     if (date.nb_jour>nb_jour_max) then
       begin
+      // Remet le jour à 1
       date.nb_jour:=1;
+
+      // Augmente le mois en vérifiant si on est arrivé à la fin de l'année (augmente l'année si c'est le cas)
       if (date.mois=high(Mois)) then
         begin
         date.mois:=low(Mois);
@@ -658,6 +667,7 @@ procedure suivante(var date:Date);
   end;
 
 procedure jourSuivant(var zone:Zone; var date:Date);
+  {Passe au jour suivant en récupérant les ressources produites}
   begin
   suivante(date);
   revenusProduction(zone);
