@@ -857,6 +857,8 @@ procedure JeuPrincipal();
         end
       else if (choix=MISSIONS) then
         begin
+
+        // A CHANGER CAR ON PEUT PAS Y ACCER DANS ASCENSEUR ORBITAL !!!
           AfficherMenuMissions();
           readln();
         end
