@@ -497,7 +497,6 @@ procedure ConstruireBatiment(var zone:Zone);
     choix:String;
     choix_int:Integer;
     choix2:String;
-    emplacement:Structure;
     sortie:Boolean;
     sortie2:Boolean;
     materiau:Materiaux;
@@ -528,7 +527,7 @@ procedure ConstruireBatiment(var zone:Zone);
             begin
               AfficherMenuMateriauxTransformer();
               readln(choix2);
-              if (choix>QUITTER) and (choix<MATERIAUX_TRANSFORMES) then
+              if (choix>=QUITTER) and (choix<=MATERIAUX_TRANSFORMES) then
                 sortie2:=True;
             end;
             if choix<>QUITTER then
@@ -547,6 +546,40 @@ procedure ConstruireBatiment(var zone:Zone);
               sortie:=True;
             end;
         end;
+      end
+      else
+      begin
+        AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un autre batiment');
+        readln;
+      end;
+    end
+    else
+    begin
+      AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
+      readln;
+    end;
+  end;
+
+procedure AmeiorerBatiment(var zone:Zone);
+  {}
+  var
+    choix:string;
+    choix_int:Integer;
+  begin
+    AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
+    readln(choix);
+    choix_int:=StrToInt(choix);
+    if zone.emplacements[choix_int].est_decouvert then
+    begin
+      if (zone.emplacements[choix_int].type_structure = Vide) or (zone.emplacements[choix_int].type_structure = Gisement) then
+      begin
+        
+
+
+
+
+
+
       end
       else
       begin
