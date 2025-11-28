@@ -749,6 +749,8 @@ procedure JeuPrincipal();
         end
       else if (choix=MISSIONS) then
         begin
+          AfficherMenuMissions();
+          readln();
         end
       else if (choix=WIKI) then
         begin
