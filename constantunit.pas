@@ -60,6 +60,7 @@ interface
     Date=record
       annee:Integer;
       mois:Mois;
+      nb_jour:Integer;
       jour:Jour;
     end;
 

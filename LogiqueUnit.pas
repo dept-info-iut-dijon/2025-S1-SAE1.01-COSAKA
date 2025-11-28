@@ -607,7 +607,64 @@ procedure MenuUpgradeBatiment(var zone:Zone);
     end;
   end;
 
+procedure setDate(var date:Date);
+  {Définie la date de départ}
+  begin
+  date.annee:=2025;
+  date.mois:=Septembre;
+  date.nb_jour:=1;
+  date.jour:=Lundi;
+  end;
+
+function nbJourMois(mois:Mois; annee:Integer):Integer;
+  begin
+  if (mois=fevrier) then
+    begin
+    if ((annee mod 4) = 0) and ((annee mod 100) <> 0) then
+      nbJourMois:=29
+    else
+      nbJourMois:=28;
+    end
+  else if (ord(mois) mod 2 = 0) then
+    nbJourMois:=30
+  else
+    nbJourMois:=31;
+  end;
+
+procedure suivante(var date:Date);
+  var
+    nb_jour_max:Integer;
+  begin
+    if (date.jour=high(Jour)) then
+      date.jour:=low(Jour)
+    else
+      date.jour:=succ(date.jour);
+
+    nb_jour_max:=nbJourMois(date.mois, date.annee);
+
+    date.nb_jour:=date.nb_jour+1;
+
+    if (date.nb_jour>nb_jour_max) then
+      begin
+      date.nb_jour:=1;
+      if (date.mois=high(Mois)) then
+        begin
+        date.mois:=low(Mois);
+        inc(date.annee);
+        end
+      else
+        date.mois:=succ(date.mois);
+      end;
+  end;
+
+procedure jourSuivant(var zone:Zone; var date:Date);
+  begin
+  suivante(date);
+  revenusProduction(zone);
+  end;
+
 procedure Explore(var zone:Zone);
+  {Effectue une action 'Explorer'}
   var
     indice:Integer;
   begin
@@ -615,7 +672,6 @@ procedure Explore(var zone:Zone);
     begin
     indice:=getIndiceEmplacementNonDecouvertAlea(zone);
     decouvre(zone.emplacements[indice]);
-
     end;
   end;
 procedure NavigWiki();
@@ -691,14 +747,16 @@ procedure JeuPrincipal();
     curent_zone:Integer;
     zones:Array[0..2] of Zone;
     choix:String;
+    curent_date:Date;
   begin
     Scenario();
     choix:='';
+    setDate(curent_date);
     curent_zone:=0;
     zones[0]:=initZone(0, NOM_ZONE1, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
     while (choix<>QUITTER) do
       begin
-      AfficherZone(zones[curent_zone]);
+      AfficherZone(zones[curent_zone], curent_date);
       readln(choix);
       if (choix=CONSTRUIRE) then
         begin
@@ -715,6 +773,7 @@ procedure JeuPrincipal();
       else if (choix=EXPLORER) then
         begin
         Explore(zones[curent_zone]);
+        jourSuivant(zones[curent_zone], curent_date);
         end
       else if (choix=CHANGER_ZONE) then
         begin

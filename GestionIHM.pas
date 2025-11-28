@@ -22,10 +22,10 @@ procedure EcranTitre();
 function AfficheMainMenu():String;
 procedure Scenario();
 procedure AfficherMessage(msg:string);
-procedure AfficherZone(zone:Zone);
+procedure AfficherZone(zone:Zone; date:Date);
 procedure AfficherEmplacements(zone:Zone);
 procedure AfficherInventaireZone(zone:Zone);
-procedure AfficherInformations(zone:zone; time:string);
+procedure AfficherInformations(zone:zone; time:Date);
 procedure AfficherActions();
 procedure UTF8(status:Boolean);
 {Moifie le traitement des caractères spéciaux (é, à, ç, etc...) en UTF8 si status = TRUE sinon RESET}
@@ -268,7 +268,7 @@ procedure AfficherMessage(msg:string);
   end;
 
 // Affiche le cadre principale du jeu
-procedure AfficherZone(zone:Zone);
+procedure AfficherZone(zone:Zone; date:Date);
   begin
     effacerEcran();
     {1 cadre principale avec deux cadres de chaque coté}
@@ -288,7 +288,7 @@ procedure AfficherZone(zone:Zone);
 
     {Call des procedures pour assembler toutes les interfaces en une}
     AfficherEmplacements(zone);
-    AfficherInformations(zone,'-');
+    AfficherInformations(zone,date);
     AfficherInventaireZone(zone);
     AfficherActions();
   end;
@@ -303,34 +303,37 @@ procedure AfficherZone(zone:Zone);
 // |.|___|.|..|.|..__/|.|___./.___.\.|___|.|___|.|..|.|.|___|.|\..|.|.|..___).|
 // |_____|_|..|_|_|...|_____/_/...\_\____|_____|_|..|_|_____|_|.\_|.|_|.|____/.
 
-procedure dessinerEmplacement(emplacement:Structure; x1:Integer; y1:Integer; x2:Integer; y2:Integer);
+procedure dessinerEmplacement(emplacement:Structure; numero_emplacement:Integer; x1:Integer; y1:Integer; x2:Integer; y2:Integer);
   var
     s:String; // Variable qui stock les chaine de caractères à écrire
   begin
-      dessinerCadreXY(x1, y1, x2, y2, simple, white, black);
-      // Vérifie si l'emplacement est découvert
-      if (not emplacement.est_decouvert) then
-        // Si l'emplacement n'est pas découvert, l'indique
+    dessinerCadreXY(x1, y1, x2, y2, simple, white, black);
+    // Vérifie si l'emplacement est découvert
+    if (not emplacement.est_decouvert) then
+      // Si l'emplacement n'est pas découvert, l'indique
+      begin
+      s:='Emplacement non decouvert';
+      deplacerCurseurXY((x1+x2-Length(s)) div 2, ((y1+y2) div 2));
+      write(s);
+      end
+    else
+      begin
+      deplacerCurseurXY(x1+2, y1+1);
+      write('STRUCTURE : ', emplacement.type_structure);
+      if (emplacement.type_structure<>Vide) and (emplacement.type_structure<>Hub) then
         begin
-        s:='Emplacement non decouvert';
-        deplacerCurseurXY((x1+x2-Length(s)) div 2, ((y1+y2) div 2));
+        s:= 'NIVEAU : ' + IntToStr(emplacement.niveau);
+        deplacerCurseurXY(x2-Length(s)-2, y1+1);
         write(s);
-        end
-      else
-        begin
-        deplacerCurseurXY(x1+2, y1+1);
-        write('STRUCTURE : ', emplacement.type_structure);
-        if (emplacement.type_structure<>Vide) and (emplacement.type_structure<>Hub) then
-          begin
-          s:= 'NIVEAU : ' + IntToStr(emplacement.niveau);
-          deplacerCurseurXY(x2-Length(s)-2, y1+1);
-          write(s);
-          s:= 'PRODUCTION : ' + GetEnumName(TypeInfo(emplacement.materiaux), Ord(emplacement.materiaux));
-          deplacerCurseurXY(x1+2, y2-1);
-          write(s);
-          end;
-
+        s:= 'PRODUCTION : ' + GetEnumName(TypeInfo(emplacement.materiaux), Ord(emplacement.materiaux));
+        deplacerCurseurXY(x1+2, y2-1);
+        write(s);
         end;
+
+      end;
+    s:=' Emplacement ' + IntToStr(numero_emplacement) + ' ';
+    deplacerCurseurXY((x1+x2-Length(s)) div 2, y1);
+    write(s);
   end;
 
 // ...._...._____._____.___.____._..._._____.____..............................
@@ -386,7 +389,7 @@ procedure AfficherEmplacements(zone:Zone);
       bas_cadre:=BORD_HAUT+hauteur_tableau*(i+1);
       emplacement:=listeEmplacements[i];
 
-      dessinerEmplacement(emplacement, gauche_cadre, haut_cadre, droite_cadre, bas_cadre);
+      dessinerEmplacement(emplacement, i, gauche_cadre, haut_cadre, droite_cadre, bas_cadre);
       end;
     
     gauche_cadre:=MILIEU+ESPACEMENT;
@@ -398,7 +401,7 @@ procedure AfficherEmplacements(zone:Zone);
       bas_cadre:=BORD_HAUT+hauteur_tableau*(i-longueur_colonne+1);
       emplacement:=listeEmplacements[i];
 
-      dessinerEmplacement(emplacement, gauche_cadre, haut_cadre, droite_cadre, bas_cadre);
+      dessinerEmplacement(emplacement, i, gauche_cadre, haut_cadre, droite_cadre, bas_cadre);
       end;
     
 
@@ -447,12 +450,12 @@ procedure AfficherInventaireZone(zone:Zone);
 // .|.||.|\..|.._||.|_|.|.._.<|.|..|.|/.___.\|.|..|.|.|_|.|.|\..|___).|
 // |___|_|.\_|_|...\___/|_|.\_\_|..|_/_/...\_\_|.|___\___/|_|.\_|____/.
 
-procedure AfficherInformations(zone:Zone; time:string);
+procedure AfficherInformations(zone:Zone; time:Date);
   begin
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),5);
     writeln('ZONE : ',zone.nom);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
-    writeln('DATE : ',time);
+    writeln('DATE : ',time.jour, ' ', time.nb_jour, ' ', time.mois, ' ', time.annee);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),10);
 
     {Si la consommation est plus importante que la production
