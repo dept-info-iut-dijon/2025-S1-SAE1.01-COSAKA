@@ -79,7 +79,7 @@ function getIndiceEmplacementNonDecouvertAlea(zone:Zone):Integer;
       curent_emplacement:=zone.emplacements[indice_curent_emplacement];
       while (curent_emplacement.est_decouvert) do
         begin
-        indice_curent_emplacement:=random(8)+1;
+        indice_curent_emplacement:=random(9)+1;
         curent_emplacement:=zone.emplacements[indice_curent_emplacement];
         end;
       end;
@@ -112,7 +112,7 @@ function getIndiceEmplacementVideAlea(zone:Zone):Integer;
       curent_emplacement:=zone.emplacements[indice_curent_emplacement];
       while (curent_emplacement.type_structure<>Vide) do
         begin
-        indice_curent_emplacement:=random(8)+1;
+        indice_curent_emplacement:=random(9)+1;
         curent_emplacement:=zone.emplacements[indice_curent_emplacement];
         end;
       end;
@@ -540,12 +540,11 @@ procedure ConstruireBatiment(zone:Zone);
     end;
   end;
 
-procedure Explorer(var zone:Zone);
+procedure Explore(var zone:Zone);
   var
     indice:Integer;
-    emplacement:Structure;
   begin
-  if (Random<0.2) or true then
+  if (Random<0.5) or true then
     begin
     indice:=getIndiceEmplacementNonDecouvertAlea(zone);
     decouvre(zone.emplacements[indice]);
@@ -567,33 +566,33 @@ procedure JeuPrincipal();
       begin
       AfficherZone(zones[curent_zone]);
       readln(choix);
-      if (choix='1') then
+      if (choix=CONSTRUIRE) then
         begin
         ConstruireBatiment(zones[curent_zone]);
         end
-      else if (choix='2') then
+      else if (choix=CHANGER_PRODUCTION) then
         begin
         end
-      else if (choix='3') then
+      else if (choix=AMELIORER) then
         begin
         end
-      else if (choix='4') then
+      else if (choix=EXPLORER) then
         begin
-        Explorer(zones[curent_zone]);
+        Explore(zones[curent_zone]);
         end
-      else if (choix='5') then
-        begin
-        end
-      else if (choix='6') then
+      else if (choix=CHANGER_ZONE) then
         begin
         end
-      else if (choix='7') then
+      else if (choix=TRANSFERT_RESSOURCES) then
         begin
         end
-      else if (choix='8') then
+      else if (choix=PASSER_JOURNEE) then
         begin
         end
-      else if (choix='9') then
+      else if (choix=MISSIONS) then
+        begin
+        end
+      else if (choix=WIKI) then
         begin
         end;
       end;  

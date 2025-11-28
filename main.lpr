@@ -3,9 +3,6 @@ program main;
 uses
   classes,sysutils,constantunit,gestionIHM,LogiqueUnit,windows;
 
-var
-  choix:String;
-
 begin
   Randomize;
   EcranTitre();
