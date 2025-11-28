@@ -290,7 +290,7 @@ procedure dessinerEmplacement(emplacement:Structure; x1:Integer; y1:Integer; x2:
   begin
       dessinerCadreXY(x1, y1, x2, y2, simple, white, black);
       // Vérifie si l'emplacement est découvert
-      if (not emplacement.est_decouvert) and false then
+      if (not emplacement.est_decouvert) then
         // Si l'emplacement n'est pas découvert, l'indique
         begin
         s:='Emplacement non decouvert';
