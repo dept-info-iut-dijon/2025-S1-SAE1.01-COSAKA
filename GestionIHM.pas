@@ -52,6 +52,7 @@ procedure ProductionInformationsGauche();
 procedure ProductionInformationsDroite();
 {Informations sur les matériaux de productions colonne de droite du wiki}
 
+procedure AfficherMenuBilan(currentDate:string;nextDate:string);
 
 implementation
 
@@ -660,10 +661,64 @@ procedure AfficherMenuWikiBatiment();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI BATIMENTS |>')div 2),1);
     writeln('<| WIKI BATIMENTS |>');
 
+    deplacerCurseurXY(5,4);
+    writeln('-Mine');
+    // Niveaux
+    deplacerCurseurXY(8,6);
+    writeln('Niveau');
+    deplacerCurseurXY(8,8);
+    writeln('1');
+    deplacerCurseurXY(8,9);
+    writeln('2');
+    deplacerCurseurXY(8,10);
+    writeln('3');
+    // Prix
+    deplacerCurseurXY(20,6);
+    write('Coût');
+    // Consomation
+    deplacerCurseurXY(32,6);
+    writeln('Consommation');
+
+    deplacerCurseurXY(5,15);
+    writeln('-Usine');
+    // Niveaux
+    deplacerCurseurXY(8,17);
+    writeln('Niveau');
+    deplacerCurseurXY(8,19);
+    writeln('1');
+    deplacerCurseurXY(8,20);
+    writeln('2');
+    deplacerCurseurXY(8,21);
+    writeln('3');
+    // Prix
+    deplacerCurseurXY(20,17);
+    write('Coût');
+    // Consommation
+    deplacerCurseurXY(32,17);
+    writeln('Consommation');
+
+    deplacerCurseurXY(5,25);
+    writeln('-Centrale');
+    // Niveau
+    deplacerCurseurXY(8,27);
+    writeln('Niveau');
+    deplacerCurseurXY(8,29);
+    writeln('1');
+    deplacerCurseurXY(8,30);
+    writeln('2');
+    deplacerCurseurXY(8,31);
+    writeln('3');
+    // Prix
+    deplacerCurseurXY(20,27);
+    write('Coût');
+    // Consommation
+    deplacerCurseurXY(32,27);
+    writeln('Consommation');
+
     deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
     writeln('Source : Karine Serier');
 
-
+    // Navigation ACTIONS
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
     writeln('[1] Wiki PRODUCTION');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
@@ -744,6 +799,7 @@ procedure AfficherMenuWikiProduction();
   end;
   
   // Tom je te laisse mettre les curseur à ta manière pour afficher le texte dans le wiki    
+ // pas gentil ca Eric
 procedure ProductionInformationsGauche();
   begin
     writeln('    Lingots de cuivre');
@@ -799,5 +855,21 @@ procedure ProductionInformationsDroite();
     writeln('      - Ressources nécessaires : Sacs de Régolithe Fixateur (x30)');
     writeln;
   end;
+
+procedure AfficherMenuBilan(currentDate:string;nextDate:string);
+begin
+  effacerEcran();
+  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+
+  // Titre
+  UTF8(True);
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BILAN |>')div 2),1);
+  writeln('<| BILAN |>');
+
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(nextDate + ' -> ' + nextDate)div 2),5);
+  writeln(currentDate,' -> ',nextDate);
+
+  UTF8(False);
+end;
 
 end.
