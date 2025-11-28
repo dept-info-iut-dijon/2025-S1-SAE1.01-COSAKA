@@ -50,6 +50,19 @@ interface
       minerais:Array[0..2] of Materiaux;
       inventaire:Inventaire;
     end;
+
+    Mois=(Janvier, Fevrier, Mars, Avril, 
+          Mai, Juin, Juillet, Aout, Septembre, 
+          Octobre, Novembre, Decembre);
+    
+    Jour=(Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, Dimanche);
+
+    Date=record
+      annee:Integer;
+      mois:Mois;
+      jour:Jour;
+    end;
+
   
   const
     SCREEN_WIDTH=200;
@@ -98,20 +111,20 @@ interface
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)));  // Centrale
 
-    CONSOMMABLE_BASE:Array[Materiaux] of Consommation=((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+    CONSOMMABLE_BASE:Array[Materiaux] of Consommation=((0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,200),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,200),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,200),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,200),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,200),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,200),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,200),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,200),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,200),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,200),
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
 
     NOM_ZONE1='L''Antre de Marzani';
@@ -130,10 +143,10 @@ interface
     MISSIONS='8';
     WIKI='9';
 
-    Quitter_INT=0;
     MATERIAUX_PREMIERS='4';
     MATERIAUX_AUTRES='1';
     MATERIAUX_TRANSFORMES='9'{ord(high(Materiaux))-MATERIAUX_PREMIERS-MATERIAUX_AUTRES};
+    NBR_BATIMENTS_AMELIORABLES='3';
 
 implementation
 
