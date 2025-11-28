@@ -5,9 +5,23 @@ interface
 
   type
     // Materiaux que l'on peut récolter
-    Materiaux=(Fer, Cuivre, Calcaire, Charbon, LingotFer, LingotCuivre, 
-                PlaqueFer, TuyauFer, SacBeton, Acier, PlaqueRenforcee, 
-                PoutreIndustrielle, Fondations, Electricite);
+    Materiaux = (
+    FragmentDeChalcocite,
+    MineraiDHematite,
+    ArgileRegolitique,
+    CarbonePyrolyte,
+    LingotsDeCuivre,
+    LingotsDeFer,
+    PlaquesStandard,
+    CablesDeCuivre,
+    ConduitsDeFluide,
+    SacsDeRegolitheFixateur,
+    AlliageCryogenique,
+    PanneauxADensiteOptimale,
+    PoutresDeSoutenement,
+    DallesDeStabilite,
+    Electricite
+    );
 
     // Batiment que l'ont peut construire
     Batiment=(Vide, Hub, Gisement, Mine, Usine, Centrale);
@@ -52,52 +66,53 @@ interface
     SEPARATION_ECRAN_INFO_PRINCIPAL = (SCREEN_WIDTH div 5)*4;
     
 
-    MINERAI1=Fer;   // Minerai le plus courant
-    MINERAI2=Cuivre;  // 2ème Minerai le plus courant
+    MINERAI1=MineraiDHematite;   // Minerai le plus courant
+    MINERAI2=FragmentDeChalcocite;  // 2ème Minerai le plus courant
 
-    CONSOMMATION0:Consommation=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);  // Un tableau de consommation où rien est consommé (tout = à 0)
+    CONSOMMATION0:Consommation=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);  // Un tableau de consommation où rien est consommé (tout = à 0)
 
     PRODUCTION_BASE:array[Materiaux] of Integer=(10, 15, 10, 10, // La production de base des Mines, Usines et Générateurs
                                                  10, 10, 10, 10, 
                                                  10, 10, 10, 10, 
-                                                 10, 10);
+                                                 10, 10, 10);
 
                                                                                      // Niveau 1
-    CONSTRUCTION_BASE:Array[1..3] of Array[Batiment] of array[Materiaux] of Integer=(((0,0,0,0,0,0,0,0,0,0,0,0,0,0),  // Vide
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0)),   // Centrale
+    CONSTRUCTION_BASE:Array[1..3] of Array[Batiment] of array[Materiaux] of Integer=(((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),  // Vide
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)),   // Centrale
                                                                                      // Niveau 2
-                                                                                     ((0,0,0,0,0,0,0,0,0,0,0,0,0,0),   // Vide
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0)),   // Centrale
+                                                                                     ((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),   // Vide
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)),   // Centrale
                                                                                      // Niveau 3
-                                                                                     ((0,0,0,0,0,0,0,0,0,0,0,0,0,0),   // Vide
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0)));  // Centrale
+                                                                                     ((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),   // Vide
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)));  // Centrale
 
-    CONSOMMABLE_BASE:Array[Materiaux] of Consommation=((0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+    CONSOMMABLE_BASE:Array[Materiaux] of Consommation=((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
 
     NOM_ZONE1='L''Antre de Marzani';
     NOM_ZONE2='La Caverne Simmonet';

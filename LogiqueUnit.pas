@@ -47,48 +47,92 @@ function emplacementsSontDifferents(emplacement1:Structure; emplacement2:Structu
                                 (emplacement1.production<>emplacement2.production);
   end;
 
-function getEmplacementVideAlea(zone:Zone):Structure;
+procedure decouvre(var emplacement:Structure);
+  {Découvre l'emplacement placé en paramètre}
+  begin
+  emplacement.est_decouvert:=True;
+  end;
+
+function getIndiceEmplacementNonDecouvertAlea(zone:Zone):Integer;
+  {Renvoie un emplacement non découvert de 'zone'.
+  Si il n'y en a pas, renvoie le premier emplacement de 'zone'.}
+  var
+    indice_curent_emplacement:Integer;
+    curent_emplacement:Structure;
+    a_emplacement_non_decouvert:Boolean;   // Indique si la zone contient au moins un emplacement vide.
+  begin
+    // Vérifie si la zone possède au moins un emplacement vide.
+    indice_curent_emplacement:=low(zone.emplacements);
+    curent_emplacement:=zone.emplacements[indice_curent_emplacement];
+    a_emplacement_non_decouvert:=false;
+    for curent_emplacement in zone.emplacements do
+      begin
+      if (not curent_emplacement.est_decouvert) then
+        begin
+        a_emplacement_non_decouvert:=true;
+        end;
+      end;
+    
+    // Boucle si au moins un emplacement vide existe et tant qu'aucun n'est trouvé.
+    if a_emplacement_non_decouvert then
+      begin
+      curent_emplacement:=zone.emplacements[indice_curent_emplacement];
+      while (curent_emplacement.est_decouvert) do
+        begin
+        indice_curent_emplacement:=random(8)+1;
+        curent_emplacement:=zone.emplacements[indice_curent_emplacement];
+        end;
+      end;
+    getIndiceEmplacementNonDecouvertAlea:=indice_curent_emplacement;
+  end;
+
+function getIndiceEmplacementVideAlea(zone:Zone):Integer;
   {Renvoie un emplacement vide de 'zone'.
   Si il n'y en a pas, renvoie le premier emplacement de 'zone'.}
   var
+    indice_curent_emplacement:Integer;
     curent_emplacement:Structure;
     a_emplacement_vide:Boolean;   // Indique si la zone contient au moins un emplacement vide.
   begin
     // Vérifie si la zone possède au moins un emplacement vide.
-    curent_emplacement:=zone.emplacements[low(zone.emplacements)];
+    indice_curent_emplacement:=low(zone.emplacements);
+    curent_emplacement:=zone.emplacements[indice_curent_emplacement];
     a_emplacement_vide:=false;
     for curent_emplacement in zone.emplacements do
       begin
-      if (curent_emplacement.type_structure<>Vide) then
+      if (curent_emplacement.type_structure=Vide) then
         begin
         a_emplacement_vide:=true;
         end;
       end;
-
+    
     // Boucle si au moins un emplacement vide existe et tant qu'aucun n'est trouvé.
     if a_emplacement_vide then
       begin
-      while a_emplacement_vide and (curent_emplacement.type_structure<>Vide) do
+      curent_emplacement:=zone.emplacements[indice_curent_emplacement];
+      while (curent_emplacement.type_structure<>Vide) do
         begin
-        curent_emplacement:=zone.emplacements[random(8)+1];
+        indice_curent_emplacement:=random(8)+1;
+        curent_emplacement:=zone.emplacements[indice_curent_emplacement];
         end;
       end;
-    getEmplacementVideAlea:=curent_emplacement;
+    getIndiceEmplacementVideAlea:=indice_curent_emplacement;
   end;
 
-procedure ajouteStructureemplacementAlea(var zone:Zone; niveau:Integer; 
+procedure ajouteStructureEmplacementAlea(var zone:Zone; niveau:Integer; 
                                          est_decouvert:Boolean; type_structure:Batiment;
                                          materiaux:Materiaux; production:Integer;
                                          consommable:Consommation);
   {Ajoute une structure avec des caractéristiques spécifiés en paramètre
   à un emplacement aléatoire d'une zone.}
   var
-    emplacement:Structure;
+    indice:Integer;
   begin
-    emplacement:=getEmplacementVideAlea(zone);
-    if emplacementsSontDifferents(emplacement, zone.emplacements[low(zone.emplacements)]) then
+    indice:=getIndiceEmplacementVideAlea(zone);
+    // Vérifie que l'emplacement ne soit pas un Hub (car getIndiceEmplacementVideAlea renvoie un hub si elle ne trouve pas d'mplacement vide)
+    if emplacementsSontDifferents(zone.emplacements[indice], zone.emplacements[low(zone.emplacements)]) then
       begin
-      setEmplacement(emplacement, niveau, est_decouvert, type_structure, materiaux, production, consommable);
+      setEmplacement(zone.emplacements[indice], niveau, est_decouvert, type_structure, materiaux, production, consommable);
       end;
   end;
 
@@ -102,16 +146,16 @@ procedure initEmplacements(var zone:Zone);
     // Définie tous les emplacements par des emplacements vides et non découverts
     for i:=low(zone.emplacements) to high(zone.emplacements) do
       begin
-      setEmplacement(zone.emplacements[i], 0, false, Vide, Fer, 0, CONSOMMATION0);
+      setEmplacement(zone.emplacements[i], 0, false, Vide, MineraiDHematite, 0, CONSOMMATION0);
       end;
     // Définie le Hub de la zone
-    setEmplacement(zone.emplacements[0], 0, true, Hub, Fer, 0, CONSOMMATION0);
+    setEmplacement(zone.emplacements[0], 0, true, Hub, MineraiDHematite, 0, CONSOMMATION0);
     // Définie un emplacement avec un gisement du premier minerai de la zone.
     setEmplacement(zone.emplacements[random(8)+1], 3, true, Gisement, zone.minerais[0], 0, CONSOMMATION0);
 
     
     // Définie un gisement du deuxième minerai de la zone dans un emplacement aléatoire.
-    ajouteStructureEmplacementAlea(zone, 2, true, Gisement, zone.minerais[1], 0, CONSOMMATION0);
+    ajouteStructureEmplacementAlea(zone, 2, false, Gisement, zone.minerais[1], 0, CONSOMMATION0);
     
     // A 1/5 chance d'ajouter un deuxième gisement d'un minerai y étant déjà.
     if (random<0.2) then
@@ -523,6 +567,19 @@ procedure ConstruireBatiment(var zone:Zone);
     end;
   end;
 
+procedure Explorer(var zone:Zone);
+  var
+    indice:Integer;
+    emplacement:Structure;
+  begin
+  if (Random<0.2) or true then
+    begin
+    indice:=getIndiceEmplacementNonDecouvertAlea(zone);
+    decouvre(zone.emplacements[indice]);
+
+    end;
+  end;
+
 procedure JeuPrincipal();
   var
     curent_zone:Integer;
@@ -532,12 +589,38 @@ procedure JeuPrincipal();
     Scenario();
     choix:='';
     curent_zone:=0;
-    zones[0]:=initZone(0, NOM_ZONE1, Fer, Cuivre, Charbon);
+    zones[0]:=initZone(0, NOM_ZONE1, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
     while (choix<>QUITTER) do
       begin
       AfficherZone(zones[curent_zone]);
       readln(choix);
-      if choix='1'then
+      if (choix='1') then
+        begin
+        ConstruireBatiment(zones[curent_zone]);
+        end
+      else if (choix='2') then
+        begin
+        end
+      else if (choix='3') then
+        begin
+        end
+      else if (choix='4') then
+        begin
+        Explorer(zones[curent_zone]);
+        end
+      else if (choix='5') then
+        begin
+        end
+      else if (choix='6') then
+        begin
+        end
+      else if (choix='7') then
+        begin
+        end
+      else if (choix='8') then
+        begin
+        end
+      else if (choix='9') then
         begin
           ConstruireBatiment(zones[curent_zone]);
         end;

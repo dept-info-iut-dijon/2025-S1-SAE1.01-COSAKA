@@ -7,6 +7,7 @@ var
   choix:String;
 
 begin
+  Randomize;
   EcranTitre();
   readln();
   MainMenu();
