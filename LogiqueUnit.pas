@@ -228,7 +228,7 @@ procedure SuppressionMateriauxConstruction(var zone:Zone; batiment:Batiment; niv
     end;
   end;
 
-procedure creerMine(var zone:Zone; var emplacement:Integer);
+procedure creerMine(var zone:Zone; emplacement:Integer);
   {Procédure qui prend en paramètre un emplacement et 
   une zone et qui modifie ce même emplacement en changeant 
   le type de la structure en 'Mine', en initialisant le 
@@ -256,9 +256,6 @@ procedure creerMine(var zone:Zone; var emplacement:Integer);
         // Calcul de la production selon le niveau du Gisement
         production := round(PRODUCTION_BASE[zone.emplacements[emplacement].materiaux]*(1 + ((zone.emplacements[emplacement].niveau - 1) / 4)));
 
-        // Initialise le coût en éléctricité a 100
-        zone.emplacements[emplacement].consommable[Electricite] := 100;
-
         // Modifie l'emplacement avec les nouveaux paramètres
         setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
                         Mine, zone.emplacements[emplacement].materiaux, production, zone.emplacements[emplacement].consommable);
@@ -278,7 +275,7 @@ procedure creerMine(var zone:Zone; var emplacement:Integer);
     end;
   end;
 
-procedure creerUsine(var zone:Zone; var emplacement:Integer; nouveau_materiaux:Materiaux);
+procedure creerUsine(var zone:Zone; emplacement:Integer; nouveau_materiaux:Materiaux);
   {{Procédure qui prend en paramètre un emplacement, une zone 
   et un nouveau materiau qui modifie ce même emplacement en changeant 
   le type de la structure en 'Usine', en initialisant le 
@@ -297,9 +294,6 @@ procedure creerUsine(var zone:Zone; var emplacement:Integer; nouveau_materiaux:M
     begin
       // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
       SuppressionMateriauxConstruction(zone, Usine, NOUVEAU_NIVEAU);
-
-      // Initialise le coût en éléctricité a 100
-      zone.emplacements[emplacement].consommable[Electricite] := 100;
       
       // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
       setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
@@ -345,15 +339,24 @@ procedure creerCentrale(var zone:Zone; var emplacement:Integer);
     end;
   end;
 
-{procedure ChangementUsine(zone:Zone; emplacement:Structure; nouveau_materiaux:Materiaux):
-  PAS ENCORE FONCTIONNEL
+procedure ChangementUsine(zone:Zone; emplacement:Integer; nouveau_materiaux:Materiaux);
+  {}
+  var
+    niveau:Integer;
+    production:Integer;
   begin
-    // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
-    setEmplacement(emplacement, emplacement.niveau, emplacement.est_decouvert, 
-                    emplacement.type_structure, nouveau_materiaux, PRODUCTION_BASE[nouveau_materiaux], CONSOMMABLE_BASE[nouveau_materiaux]);
-  end;}
+    niveau := zone.emplacements[emplacement].niveau;
 
-procedure UpgradeBatiment(var zone:Zone; emplacement:Structure; niveau:Integer);
+    production := round(PRODUCTION_BASE[zone.emplacements[emplacement].materiaux]*1.5*niveau);
+
+    // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
+    setEmplacement(zone.emplacements[emplacement], zone.emplacements[emplacement].niveau, zone.emplacements[emplacement].est_decouvert, 
+                    zone.emplacements[emplacement].type_structure, nouveau_materiaux, production, CONSOMMABLE_BASE[nouveau_materiaux]);
+    
+    zone.emplacements[emplacement].consommable[Electricite] := round(zone.emplacements[emplacement].consommable[Electricite]*1.5*niveau);
+  end;
+
+procedure UpgradeBatiment(var zone:Zone; emplacement:Integer);
   {Procedure qui prend en parametre une zone, un emplacement et 
   un niveau et modifie l'emplacement ce qui permet d'augmenter 
   le niveau du batiment en augmentant sa consommation d'electricité 
@@ -361,28 +364,38 @@ procedure UpgradeBatiment(var zone:Zone; emplacement:Structure; niveau:Integer);
   var
     possedeMateriauxNecessaires:Boolean;
     production:Integer;
+    niveau:Integer;
   begin
-    // Vérifie que la zone possede les materiaux necessaires a la construction du batiment
-    possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, emplacement.type_structure, niveau);
-    if possedeMateriauxNecessaires then
+    niveau:=zone.emplacements[emplacement].niveau+1;
+    if niveau <= 3 then
     begin
-      // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
-      SuppressionMateriauxConstruction(zone, emplacement.type_structure, niveau);
+      // Vérifie que la zone possede les materiaux necessaires a la construction du batiment
+      possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, zone.emplacements[emplacement].type_structure, niveau);
+      if possedeMateriauxNecessaires then
+      begin
+        // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
+        SuppressionMateriauxConstruction(zone, zone.emplacements[emplacement].type_structure, niveau);
 
-      // Augmente la consommation de l'electricité du batiment
-      emplacement.consommable[Electricite] := round(emplacement.consommable[Electricite]*1.5);
+        // Augmente la consommation de l'electricité du batiment
+        zone.emplacements[emplacement].consommable[Electricite] := round(zone.emplacements[emplacement].consommable[Electricite]*1.5);
 
-      // Augmente la production du batiment
-      production := round(emplacement.production*1.5);
-      
-      // Modifie l'emplacement en mettant nouveaux parametres voulu
-      setEmplacement(emplacement, niveau, emplacement.est_decouvert, 
-                      emplacement.type_structure, emplacement.materiaux, production, emplacement.consommable);
+        // Augmente la production du batiment
+        production := round(zone.emplacements[emplacement].production*1.5);
+        
+        // Modifie l'emplacement en mettant nouveaux parametres voulu
+        setEmplacement(zone.emplacements[emplacement], niveau, zone.emplacements[emplacement].est_decouvert, 
+                        zone.emplacements[emplacement].type_structure, zone.emplacements[emplacement].materiaux, production, zone.emplacements[emplacement].consommable);
+      end
+      else
+      begin
+        // Affiche le message d'erreur
+        AfficherActionInformation('Vous n''avez pas les materiaux necessaires');
+        readln;
+      end;
     end
     else
     begin
-      // Affiche le message d'erreur
-      AfficherActionInformation('Vous n''avez pas les materiaux necessaires');
+      AfficherActionInformation('Vous avez atteint le niveau maximum');
       readln;
     end;
   end;
@@ -445,7 +458,7 @@ function MateriauxNecessaires(zone:Zone; emplacement:Structure):Boolean;
     end;
   end;
 
-procedure revenusProduction(zone:Zone);
+procedure revenusProduction(var zone:Zone);
   {procédure qui prend en parametre une zone et qui ajoute a 
   chaque materiaux dans l'inventaire de la zone les materiaux 
   produit par les différents batiments}
@@ -491,12 +504,13 @@ procedure revenusProduction(zone:Zone);
     end;
   end;
 
-procedure ConstruireBatiment(var zone:Zone);
+procedure MenuCreerBatiment(var zone:Zone);
   {}
   var
     choix:String;
     choix_int:Integer;
     choix2:String;
+    choix2_int:Integer;
     sortie:Boolean;
     sortie2:Boolean;
     materiau:Materiaux;
@@ -528,13 +542,16 @@ procedure ConstruireBatiment(var zone:Zone);
               AfficherMenuMateriauxTransformer();
               readln(choix2);
               if (choix>=QUITTER) and (choix<=MATERIAUX_TRANSFORMES) then
+              begin
+                choix2_int:=StrToInt(choix2);
                 sortie2:=True;
+              end;
             end;
             if choix<>QUITTER then
             begin
               for materiau in Materiaux do
               begin
-                if ord(materiau) = (StrToInt(choix)+StrToInt(MATERIAUX_PREMIERS)) then
+                if ord(materiau) = (choix2_int+StrToInt(MATERIAUX_PREMIERS)) then
                   creerUsine(zone, choix_int, materiau);
               end;
               sortie:=True;
@@ -560,7 +577,7 @@ procedure ConstruireBatiment(var zone:Zone);
     end;
   end;
 
-procedure AmeiorerBatiment(var zone:Zone);
+procedure MenuUpgradeBatiment(var zone:Zone);
   {}
   var
     choix:string;
@@ -571,19 +588,15 @@ procedure AmeiorerBatiment(var zone:Zone);
     choix_int:=StrToInt(choix);
     if zone.emplacements[choix_int].est_decouvert then
     begin
-      if (zone.emplacements[choix_int].type_structure = Vide) or (zone.emplacements[choix_int].type_structure = Gisement) then
+      if (zone.emplacements[choix_int].type_structure = Mine) or 
+          (zone.emplacements[choix_int].type_structure = Usine) or 
+          (zone.emplacements[choix_int].type_structure = Centrale) then
       begin
-        
-
-
-
-
-
-
+        UpgradeBatiment(zone, choix_int);
       end
       else
       begin
-        AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un autre batiment');
+        AfficherActionInformation('Vous devez choisir uniquement un batiment améliorable');
         readln;
       end;
     end
@@ -598,7 +611,7 @@ procedure Explore(var zone:Zone);
   var
     indice:Integer;
   begin
-  if (Random<0.5) or true then
+  if (Random<0.5) then
     begin
     indice:=getIndiceEmplacementNonDecouvertAlea(zone);
     decouvre(zone.emplacements[indice]);
@@ -606,52 +619,72 @@ procedure Explore(var zone:Zone);
     end;
   end;
 procedure NavigWiki();
-var 
-  choix, Choix2: integer;
-  quitter: boolean;
+  var 
+    choix, Choix2: integer;
+    quitter: boolean;
 
-begin
-  // Initialisation var sortie
-  quitter := false;
-  // Boucle wiki
-  repeat
-    // wiki bâtiment
-    AfficherMenuWikiBatiment();
+  begin
+    // Initialisation var sortie
+    quitter := false;
+    // Boucle wiki
+    repeat
+      // wiki bâtiment
+      AfficherMenuWikiBatiment();
+      readln(choix);
+      
+      case choix of
+        // wiki prod
+        1: begin
+            // Boucle menu wiki prod
+            repeat
+              // Affichage wiki prod
+              AfficherMenuWikiProduction();
+              readln(Choix2);
+              case Choix2 of
+                // Retour wiki bâtiment
+                1: ;
+                // Retour
+                2: begin
+                      Scenario();
+                      // Quitter wiki
+                      quitter := true;
+                    end;
+                // Quitter wiki
+                0: quitter := true;
+              end;
+            until (Choix2 = 0) or (Choix2 = 1) or (Choix2 = 2);
+          end;
+        //Retour
+        2: begin
+            Scenario();
+            // quitter du wiki
+            quitter := true;
+          end;
+        // quitter wiki
+        0: quitter := true;
+      end;
+    until quitter;
+  end;
+
+procedure MenuChangementUsine(var zone:Zone);
+  {}
+  var
+    choix:string;
+    choix_int:Integer;
+  begin
+    AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
     readln(choix);
-    
-    case choix of
-      // wiki prod
-      1: begin
-           // Boucle menu wiki prod
-           repeat
-             // Affichage wiki prod
-             AfficherMenuWikiProduction();
-             readln(Choix2);
-             case Choix2 of
-               // Retour wiki bâtiment
-               1: ;
-               // Retour
-               2: begin
-                    Scenario();
-                    // Quitter wiki
-                    quitter := true;
-                  end;
-               // Quitter wiki
-               0: quitter := true;
-             end;
-           until (Choix2 = 0) or (Choix2 = 1) or (Choix2 = 2);
-         end;
-      //Retour
-      2: begin
-           Scenario();
-           // quitter du wiki
-           quitter := true;
-         end;
-      // quitter wiki
-      0: quitter := true;
+    choix_int:=StrToInt(choix);
+    if (zone.emplacements[choix_int].type_structure = Usine) then
+    begin
+
+    end
+    else
+    begin
+      AfficherActionInformation('Vous devez selectionner un emplacement contenant une Usine');
+      readln;
     end;
-  until quitter;
-end;
+  end;
 
 procedure JeuPrincipal();
   var
@@ -669,13 +702,15 @@ procedure JeuPrincipal();
       readln(choix);
       if (choix=CONSTRUIRE) then
         begin
-        ConstruireBatiment(zones[curent_zone]);
+        MenuCreerBatiment(zones[curent_zone]);
         end
       else if (choix=CHANGER_PRODUCTION) then
         begin
+        MenuChangementUsine(zones[curent_zone]);
         end
       else if (choix=AMELIORER) then
         begin
+        MenuUpgradeBatiment(zones[curent_zone]);
         end
       else if (choix=EXPLORER) then
         begin
@@ -696,7 +731,6 @@ procedure JeuPrincipal();
       else if (choix=WIKI) then
         begin
           NavigWiki();
-          //ConstruireBatiment(zones[curent_zone]);
         end;
       end;  
   end;
