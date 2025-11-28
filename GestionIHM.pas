@@ -33,6 +33,7 @@ procedure UTF8(status:Boolean);
 procedure AfficherMenuBatiment();
 procedure AfficherMenuZone();
 procedure AfficherActionInformation(msg:string);
+procedure AfficherMenuMateriauxTransformer();
 
 implementation
 
@@ -587,6 +588,41 @@ procedure AfficherMenuZone();
     UTF8(False);
     dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+  end;
+
+procedure AfficherMenuMateriauxTransformer();
+  var
+    m: Materiaux;
+    i, startY: Integer; 
+  begin
+    startY := (SCREEN_HEIGHT div 2) + 3; // Pos de départ
+    i := 1; // Num à partir de 1
+    
+    // Dessine le cadre
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+    
+    UTF8(True);
+    
+    // Affiche le titre
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34), startY + (i - 1)-2);
+    writeln('Que voulez vous produire ?');
+    
+    // Affiche les matériaux transformés uniquement
+    for m in Materiaux do 
+      begin
+        if (m <> Electricite) and (m <> Fer) and (m <> Cuivre) and (m <> Calcaire) and (m <> Charbon) then
+          begin
+            deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34), startY + (i - 1));
+            writeln('[', i, '] ', m);
+            i := i + 1;
+          end;
+      end;
+    
+    // Option retour
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34), startY + (i - 1));
+    writeln('[0] Retour');
+    
+    UTF8(False);
   end;
 
 // ..............................__........_____._.._____.

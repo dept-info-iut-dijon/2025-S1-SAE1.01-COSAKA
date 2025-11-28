@@ -440,7 +440,7 @@ procedure revenusProduction(zone:Zone);
 procedure ConstruireBatiment(zone:Zone);
   {}
   var
-    choix:Integer;
+    choix:String;
     emplacement:Structure;
     sortie:Boolean;
     sortie2:Boolean;
@@ -448,7 +448,7 @@ procedure ConstruireBatiment(zone:Zone);
   begin
     AfficherMessage('Veuillez choisir un emplacement(entre 0 et 9)');
     readln(choix);
-    emplacement := zone.emplacements[choix];
+    emplacement := zone.emplacements[StrToInt(choix)];
     if emplacement.est_decouvert then
     begin
       if (emplacement.type_structure = Vide) or (emplacement.type_structure = Gisement) then
@@ -458,44 +458,47 @@ procedure ConstruireBatiment(zone:Zone);
         begin
           AfficherMenuBatiment();
           readln(choix);
-          case choix of
-            0: sortie:=True;
-            1:
-            begin 
+          if choix = '0' then
+            sortie:=True
+          else  if choix = '1' then
+          begin 
             creerMine(zone, emplacement);
             sortie:=True;
-            end;
-            2:
+          end
+          else if choix = '2' then
+          begin
+            sortie2:=False;
+            while not sortie2 do
             begin
-              sortie2:=False;
-              while not sortie2 do
-              begin
-                // AfficherMenuFabrication()
-                readln(choix);
-                if (choix>0) and (choix<MATERIAUX_TRANSFORMES) then
-                  sortie2:=True;
-              end;
-              if choix<>QUITTER_INT then
-                for materiau in Materiaux do
-                begin
-                  if ord(materiau) = (choix+MATERIAUX_PREMIERS) then
-                    creerUsine(zone, emplacement, materiau);
-                end;
-                sortie:=True;
+              // AfficherMenuFabrication()
+              readln(choix);
+              if (choix>QUITTER) and (choix<MATERIAUX_TRANSFORMES) then
+                sortie2:=True;
             end;
-            3:
+            if choix<>QUITTER then
+            begin
+              for materiau in Materiaux do
+              begin
+                if ord(materiau) = (StrToInt(choix)+StrToInt(MATERIAUX_PREMIERS)) then
+                  creerUsine(zone, emplacement, materiau);
+              end;
+              sortie:=True;
+            end;
+          end
+          else if choix = '3' then
             begin
               creerCentrale(zone, emplacement);
               sortie:=True;
             end;
-          end;
         end;
       end
       else
         AfficherMessage('Vous ne pouvez pas construire un batiment sur un autre batiment');
     end
     else
+    begin
       AfficherMessage('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
+    end;
   end;
 
 procedure JeuPrincipal();
