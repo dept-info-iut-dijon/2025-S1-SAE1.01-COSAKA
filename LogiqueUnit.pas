@@ -254,11 +254,11 @@ procedure creerMine(var zone:Zone; emplacement:Integer);
         SuppressionMateriauxConstruction(zone, Mine, NOUVEAU_NIVEAU);
 
         // Calcul de la production selon le niveau du Gisement
-        production := round(PRODUCTION_BASE[zone.emplacements[emplacement].materiaux]*(1 + ((zone.emplacements[emplacement].niveau - 1) / 4)));
+        production := round(PRODUCTION_BASE[zone.emplacements[emplacement].materiaux]);
 
         // Modifie l'emplacement avec les nouveaux paramètres
         setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
-                        Mine, zone.emplacements[emplacement].materiaux, production, zone.emplacements[emplacement].consommable);
+                        Mine, zone.emplacements[emplacement].materiaux, production, CONSOMMABLE_BASE[zone.emplacements[emplacement].materiaux]);
       end
       else
       begin
@@ -339,7 +339,7 @@ procedure creerCentrale(var zone:Zone; var emplacement:Integer);
     end;
   end;
 
-procedure ChangementUsine(zone:Zone; emplacement:Integer; nouveau_materiaux:Materiaux);
+procedure ChangementUsine(var zone:Zone; emplacement:Integer; nouveau_materiaux:Materiaux);
   {}
   var
     niveau:Integer;
@@ -547,11 +547,11 @@ procedure MenuCreerBatiment(var zone:Zone);
                 sortie2:=True;
               end;
             end;
-            if choix<>QUITTER then
+            if choix2<>QUITTER then
             begin
               for materiau in Materiaux do
               begin
-                if ord(materiau) = (choix2_int+StrToInt(MATERIAUX_PREMIERS)) then
+                if ord(materiau) = (choix2_int+StrToInt(MATERIAUX_PREMIERS)-1) then
                   creerUsine(zone, choix_int, materiau);
               end;
               sortie:=True;
@@ -727,13 +727,35 @@ procedure MenuChangementUsine(var zone:Zone);
   var
     choix:string;
     choix_int:Integer;
+    choix2:string;
+    choix2_int:Integer;
+    sortie:Boolean;
+    materiau:Materiaux;
   begin
     AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
     readln(choix);
     choix_int:=StrToInt(choix);
     if (zone.emplacements[choix_int].type_structure = Usine) then
     begin
-
+    sortie:=False;
+    while not sortie do
+    begin
+      AfficherMenuMateriauxTransformer();
+      readln(choix2);
+      if (choix>=QUITTER) and (choix<=MATERIAUX_TRANSFORMES) then
+      begin
+        choix2_int:=StrToInt(choix2);
+        sortie:=True;
+      end;
+    end;
+    if choix2<>QUITTER then
+    begin
+      for materiau in Materiaux do
+      begin
+        if ord(materiau) = (choix2_int+StrToInt(MATERIAUX_PREMIERS)-1) then
+          ChangementUsine(zone, choix_int, materiau);
+      end;
+    end;
     end
     else
     begin
@@ -786,6 +808,8 @@ procedure JeuPrincipal();
         end
       else if (choix=MISSIONS) then
         begin
+          AfficherMenuMissions();
+          readln();
         end
       else if (choix=WIKI) then
         begin
