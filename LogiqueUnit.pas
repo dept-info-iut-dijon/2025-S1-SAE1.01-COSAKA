@@ -254,7 +254,7 @@ procedure creerMine(var zone:Zone; emplacement:Integer);
         SuppressionMateriauxConstruction(zone, Mine, NOUVEAU_NIVEAU);
 
         // Calcul de la production selon le niveau du Gisement
-        production := round(PRODUCTION_BASE[zone.emplacements[emplacement].materiaux]*(1 + ((zone.emplacements[emplacement].niveau - 1) / 4)));
+        production := round(PRODUCTION_BASE[zone.emplacements[emplacement].materiaux]);
 
         // Modifie l'emplacement avec les nouveaux paramètres
         setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
@@ -339,7 +339,7 @@ procedure creerCentrale(var zone:Zone; var emplacement:Integer);
     end;
   end;
 
-procedure ChangementUsine(zone:Zone; emplacement:Integer; nouveau_materiaux:Materiaux);
+procedure ChangementUsine(var zone:Zone; emplacement:Integer; nouveau_materiaux:Materiaux);
   {}
   var
     niveau:Integer;
