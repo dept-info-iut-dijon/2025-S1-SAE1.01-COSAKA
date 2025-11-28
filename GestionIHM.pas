@@ -294,8 +294,6 @@ procedure AfficherZone(zone:Zone);
     AfficherInformations(zone,'-');
     AfficherInventaireZone(zone);
     AfficherActions();
-    AfficherMenuMissions();
-    readln();
   end;
 
 // .____.._____.____.____.___._..._._..._._____.____...........................
