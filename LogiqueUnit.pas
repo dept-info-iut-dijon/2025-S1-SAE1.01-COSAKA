@@ -262,12 +262,6 @@ procedure creerMine(var zone:Zone; var emplacement:Integer);
         // Modifie l'emplacement avec les nouveaux paramètres
         setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
                         Mine, zone.emplacements[emplacement].materiaux, production, zone.emplacements[emplacement].consommable);
-        
-        AfficherActionInformation(IntToStr(ord(zone.emplacements[emplacement].type_structure)));
-        readln;
-
-        AfficherActionInformation('La construction de votre Mine s''est bien deroule');
-        readln;
       end
       else
       begin
@@ -284,7 +278,7 @@ procedure creerMine(var zone:Zone; var emplacement:Integer);
     end;
   end;
 
-procedure creerUsine(zone:Zone; var emplacement:Integer; nouveau_materiaux:Materiaux);
+procedure creerUsine(var zone:Zone; var emplacement:Integer; nouveau_materiaux:Materiaux);
   {{Procédure qui prend en paramètre un emplacement, une zone 
   et un nouveau materiau qui modifie ce même emplacement en changeant 
   le type de la structure en 'Usine', en initialisant le 
@@ -319,7 +313,7 @@ procedure creerUsine(zone:Zone; var emplacement:Integer; nouveau_materiaux:Mater
     end;
   end;
 
-procedure creerCentrale(zone:Zone; var emplacement:Integer);
+procedure creerCentrale(var zone:Zone; var emplacement:Integer);
   {{Procédure qui prend en paramètre un emplacement, une zone 
   et un nouveau materiau qui modifie ce même emplacement en changeant 
   le type de la structure en 'Usine', en initialisant le 
@@ -359,7 +353,7 @@ procedure creerCentrale(zone:Zone; var emplacement:Integer);
                     emplacement.type_structure, nouveau_materiaux, PRODUCTION_BASE[nouveau_materiaux], CONSOMMABLE_BASE[nouveau_materiaux]);
   end;}
 
-procedure UpgradeBatiment(zone:Zone; emplacement:Structure; niveau:Integer);
+procedure UpgradeBatiment(var zone:Zone; emplacement:Structure; niveau:Integer);
   {Procedure qui prend en parametre une zone, un emplacement et 
   un niveau et modifie l'emplacement ce qui permet d'augmenter 
   le niveau du batiment en augmentant sa consommation d'electricité 
@@ -532,7 +526,7 @@ procedure ConstruireBatiment(var zone:Zone);
             sortie2:=False;
             while not sortie2 do
             begin
-              // AfficherMenuFabrication()
+              AfficherMenuMateriauxTransformer();
               readln(choix2);
               if (choix>QUITTER) and (choix<MATERIAUX_TRANSFORMES) then
                 sortie2:=True;
