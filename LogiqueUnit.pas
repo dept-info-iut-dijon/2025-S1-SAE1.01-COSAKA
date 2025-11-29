@@ -631,11 +631,10 @@ procedure setPanne(var zone:Zone);
   et qui a une probabilité que chaque mine ou 
   usine puisse tomber en panne}
   var
-    emplacement:Structure;
     nombreAleatoire:Integer;
     i:Integer;
   const
-    POURCENTAGE=10;
+    CHANCE=0.1;
   begin
     // Boucle sur tous les emplacements de la zone
     for i:=1 to Length(zone.emplacements)-1 do
@@ -645,15 +644,10 @@ procedure setPanne(var zone:Zone);
       begin
         if not zone.emplacements[i].panne then
         begin
-          // Créer un nombre aléatoire entre 1 et 100
-          nombreAleatoire:=random(99)+1;
-
-          // Vérifie que le nombre aléatoire fais partie du pourcentage voulu pour pouvoir mettre en panne l'emplacement
-          if nombreAleatoire <= POURCENTAGE then
+          // Vérifie qu'un nombre aléatoire est inférieur à un pourcentage voulu pour pouvoir mettre en panne l'emplacement
+          if (random < CHANCE) then
           begin
             zone.emplacements[i].panne:=TRUE;
-            AfficherActionInformation(IntToStr(i));
-            readln;
           end;
         end;
       end;

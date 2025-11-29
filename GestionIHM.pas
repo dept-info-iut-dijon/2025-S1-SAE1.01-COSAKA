@@ -301,9 +301,17 @@ procedure AfficherZone(zone:Zone; date:Date);
 
 procedure dessinerEmplacement(emplacement:Structure; numero_emplacement:Integer; x1:Integer; y1:Integer; x2:Integer; y2:Integer);
   var
+    col:Byte;
     s:String; // Variable qui stock les chaine de caractères à écrire
   begin
-    dessinerCadreXY(x1, y1, x2, y2, simple, white, black);
+    if not emplacement.est_decouvert then
+      col:=DarkGray
+    else if emplacement.panne then
+      col:=Red
+    else
+      col:=white;
+    couleurTexte(col);
+    dessinerCadreXY(x1, y1, x2, y2, simple, col, black);
     // Vérifie si l'emplacement est découvert
     if (not emplacement.est_decouvert) then
       // Si l'emplacement n'est pas découvert, l'indique
@@ -324,12 +332,19 @@ procedure dessinerEmplacement(emplacement:Structure; numero_emplacement:Integer;
         s:= 'PRODUCTION : ' + GetEnumName(TypeInfo(emplacement.materiaux), Ord(emplacement.materiaux));
         deplacerCurseurXY(x1+2, y2-1);
         write(s);
+        if emplacement.panne then
+          begin
+          s:='EN PANNE';
+          deplacerCurseurXY(x2-Length(s)-2, y2-1);
+          write(s);
+          end;
         end;
 
       end;
     s:=' Emplacement ' + IntToStr(numero_emplacement) + ' ';
     deplacerCurseurXY((x1+x2-Length(s)) div 2, y1);
     write(s);
+    couleurTexte(White);
   end;
 
 // ...._...._____._____.___.____._..._._____.____..............................
