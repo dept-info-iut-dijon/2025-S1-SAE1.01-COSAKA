@@ -946,7 +946,7 @@ procedure JeuPrincipal();
         begin
         menuChangementZone(curent_zone);
         end
-      // Choix 'Transferer des ressources'  (A faire)
+      // Choix 'Transferer des ressources'
       else if (choix=TRANSFERT_RESSOURCES) then
         begin
         menuTransfertRessources(zones, curent_zone);
