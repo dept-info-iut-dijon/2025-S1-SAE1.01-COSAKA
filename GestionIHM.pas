@@ -694,11 +694,11 @@ procedure AfficherMenuWikiBatiment();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI BATIMENTS |>')div 2),1);
     writeln('<| WIKI BATIMENTS |>');
 
-    {---------Extracteur---------}
+    {---------Mine---------}
 
     deplacerCurseurXY(5,3);
     couleurTexte(Blue);
-    writeln('Extracteur');
+    writeln('Mine');
 
     // Niveaux
     deplacerCurseurXY(8,4);
@@ -739,11 +739,11 @@ procedure AfficherMenuWikiBatiment();
     deplacerCurseurXY(112,8);
     writeln('100 énergie');
 
-    {---------Raffinerie d'Assemblage---------}
+    {---------Usine---------}
 
     deplacerCurseurXY(5,11);
     couleurTexte(Blue);
-    writeln('Raffinerie d''Assemblage');
+    writeln('Usine');
 
     // Niveaux
     deplacerCurseurXY(8,12);
