@@ -631,11 +631,10 @@ procedure setPanne(var zone:Zone);
   et qui a une probabilité que chaque mine ou 
   usine puisse tomber en panne}
   var
-    emplacement:Structure;
     nombreAleatoire:Integer;
     i:Integer;
   const
-    POURCENTAGE=10;
+    POURCENTAGE=2;
   begin
     // Boucle sur tous les emplacements de la zone
     for i:=1 to Length(zone.emplacements)-1 do
