@@ -41,13 +41,7 @@ procedure AfficherMenuWikiBatiment();
 {Informations sur les bâtiments du jeu, (coût de construction, énergie consommée/produite et coût d'amélioration)}
 
 procedure AfficherMenuWikiProduction();
-{Menu dans Production de changement de page du wiki}
-
-procedure ProductionInformationsGauche();
-{Informations sur les matériaux de productions colonne de gauche du wiki}
-
-procedure ProductionInformationsDroite();
-{Informations sur les matériaux de productions colonne de droite du wiki}
+{Informations sur les matériaux de productions du jeu}
 
 procedure AfficherMenuBilan(currentDate:string;nextDate:string);
 
@@ -668,7 +662,7 @@ procedure AfficherMenuWikiBatiment();
 
     deplacerCurseurXY(5,3);
     couleurTexte(Blue);
-    writeln('Mine Mk.');
+    writeln('Extracteur');
 
     // Niveaux
     deplacerCurseurXY(8,4);
@@ -696,7 +690,7 @@ procedure AfficherMenuWikiBatiment();
     deplacerCurseurXY(30,8);
     writeln('x20 Plaques Standard / x20 Alliage Cryogénique');
 
-    // Consomation
+    // Consommation
     deplacerCurseurXY(112,4);
     couleurTexte(LightBlue);
     writeln('Consommation');
@@ -871,6 +865,90 @@ procedure AfficherMenuWikiProduction();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI PRODUCTION |>')div 2),1);
     writeln('<| WIKI PRODUCTION |>');
 
+    {---------Matériaux---------}
+
+    deplacerCurseurXY(8,4);
+    couleurTexte(LightBlue);
+    writeln('Matériaux');
+
+    couleurTexte(White);
+    deplacerCurseurXY(8,7);
+    writeln('Lingots de cuivre');
+    deplacerCurseurXY(8,9);
+    writeln('Lingots de fer');
+    deplacerCurseurXY(8,11);
+    writeln('Câbles de cuivre');
+    deplacerCurseurXY(8,13);
+    writeln('Plaques Standard');
+    deplacerCurseurXY(8,15);
+    writeln('Conduits de Fluide');
+    deplacerCurseurXY(8,17);
+    writeln('Sacs de Régolithe Fixateur');
+    deplacerCurseurXY(8,19);
+    writeln('Alliage Cryogénique');
+    deplacerCurseurXY(8,21);
+    writeln('Panneaux à Densité Optimale');
+    deplacerCurseurXY(8,23);
+    writeln('Poutres de Soutènement');
+    deplacerCurseurXY(8,25);
+    writeln('Dalles de Stabilité');
+
+    {---------Quantité produite par lot---------}
+
+    deplacerCurseurXY(50,4);
+    couleurTexte(LightBlue);
+    write('Quantité de production par lot');
+
+    couleurTexte(White);
+    deplacerCurseurXY(50,7);
+    writeln('15 Lingots');
+    deplacerCurseurXY(50,9);
+    writeln('15 Lingots');
+    deplacerCurseurXY(50,11);
+    writeln('5 Câbles');
+    deplacerCurseurXY(50,13);
+    writeln('10 Plaques');
+    deplacerCurseurXY(50,15);
+    writeln('10 Conduits');
+    deplacerCurseurXY(50,17);
+    writeln('5 Sacs');
+    deplacerCurseurXY(50,19);
+    writeln('15 Alliages');
+    deplacerCurseurXY(50,21);
+    writeln('2 Panneaux');
+    deplacerCurseurXY(50,23);
+    writeln('2 Poutres');
+    deplacerCurseurXY(50,25);
+    writeln('2 Dalles');
+
+    {---------Ressources nécessaires à la production---------}
+
+    deplacerCurseurXY(90,4);
+    couleurTexte(LightBlue);
+    writeln('Ressources nécessaires');
+
+    couleurTexte(White);
+    deplacerCurseurXY(90,7);
+    writeln('x30 Fragment de Chalcocite');
+    deplacerCurseurXY(90,9);
+    writeln('x30 Minerai d''Hématite');
+    deplacerCurseurXY(90,11);
+    writeln('x15 Lingots de cuivre');
+    deplacerCurseurXY(90,13);
+    writeln('x60 Lingots de fer');
+    deplacerCurseurXY(90,15);
+    writeln('x30 Lingots de fer');
+    deplacerCurseurXY(90,17);
+    writeln('x15 Argile Régolitique');
+    deplacerCurseurXY(90,19);
+    writeln('x30 Minerai d''Hématite / x15 Carbone Pyrolyté');
+    deplacerCurseurXY(90,21);
+    writeln('x20 Plaques Standard / x20 Alliage Cryogénique');
+    deplacerCurseurXY(90,23);
+    writeln('x20 Plaques Standard / x15 Sacs de Régolithe Fixateur');
+    deplacerCurseurXY(90,25);
+    writeln('x30 Sacs de Régolithe Fixateur');
+
     deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
     writeln('Source : Sabine Vaudeville');
 
@@ -884,65 +962,6 @@ procedure AfficherMenuWikiProduction();
 
       dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
       deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
-  end;
-  
-  // Tom je te laisse mettre les curseur à ta manière pour afficher le texte dans le wiki    
- // pas gentil ca Eric
- // Je m en occupe alors !
-procedure ProductionInformationsGauche();
-  begin
-    writeln('    Lingots de cuivre');
-    writeln('      - Quantité produite par lot : 15');
-    writeln('      - Ressources nécessaires : Fragment de Chalcocite (x30)');
-    writeln;
-
-    writeln('    Lingots de fer');
-    writeln('      - Quantité produite par lot : 15');
-    writeln('      - Ressources nécessaires : Minerai d''Hématite (x30)');
-    writeln;
-
-    writeln('    Câbles de cuivre');
-    writeln('      - Quantité produite par lot : 5');
-    writeln('      - Ressources nécessaires : Lingots de cuivre (x15)');
-    writeln;
-
-    writeln('    Plaques Standard');
-    writeln('      - Quantité produite par lot : 10');
-    writeln('      - Ressources nécessaires : Lingots de fer (x60)');
-    writeln;
-
-    writeln('    Conduits de Fluide');
-    writeln('      - Quantité produite par lot : 10');
-    writeln('      - Ressources nécessaires : Lingots de fer (x30)');
-    writeln;
-
-    writeln('    Sacs de Régolithe Fixateur');
-    writeln('      - Quantité produite par lot : 5');
-    writeln('      - Ressources nécessaires : Argile Régolitique (x15)');
-    writeln;
-
-    writeln('    Alliage Cryogénique');
-    writeln('      - Quantité produite par lot : 15');
-    writeln('      - Ressources nécessaires : Minerai d''Hématite (x30) / Carbone Pyrolyté (x15)');
-    writeln;
-  end;
-
-procedure ProductionInformationsDroite();
-  begin
-    writeln('    Panneaux à Densité Optimale');
-    writeln('      - Quantité produite par lot : 2');
-    writeln('      - Ressources nécessaires : Plaques Standard (x20) / Alliage Cryogénique (x20)');
-    writeln;
-
-    writeln('    Poutres de Soutènement');
-    writeln('      - Quantité produite par lot : 2');
-    writeln('      - Ressources nécessaires : Plaques Standard (x20) / Sacs de Régolithe Fixateur (x15)');
-    writeln;
-
-    writeln('    Dalles de Stabilité');
-    writeln('      - Quantité produite par lot : 2');
-    writeln('      - Ressources nécessaires : Sacs de Régolithe Fixateur (x30)');
-    writeln;
   end;
 
 procedure AfficherMenuMissions();
