@@ -27,7 +27,8 @@ function Minimum(n1:Integer; n2:Integer):Integer;
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
                          new_type_structure:Batiment; new_materiaux:Materiaux;
-                         new_production:Integer; new_consommable:Consommation);
+                         new_production:Integer; new_consommable:Consommation;
+                         new_panne:Boolean);
   {Définit les valeur des paramètres de l'emplacement 'emplacement'.
   Attention, tous les paramètres doivent être renseignés.}
   begin
@@ -37,6 +38,7 @@ procedure setEmplacement(var emplacement:Structure;
     emplacement.materiaux:=new_materiaux;
     emplacement.production:=new_production;
     emplacement.consommable:=new_consommable;
+    emplacement.panne:=new_panne;
   end;
 
 function getEmplacement(zone:Zone):Emplacements;
@@ -60,6 +62,7 @@ procedure decouvre(var emplacement:Structure);
   begin
   emplacement.est_decouvert:=True;
   end;
+
 
 function getIndiceEmplacementNonDecouvertAlea(zone:Zone):Integer;
   {Renvoie un emplacement non découvert de 'zone'.
@@ -130,7 +133,7 @@ function getIndiceEmplacementVideAlea(zone:Zone):Integer;
 procedure ajouteStructureEmplacementAlea(var zone:Zone; niveau:Integer; 
                                          est_decouvert:Boolean; type_structure:Batiment;
                                          materiaux:Materiaux; production:Integer;
-                                         consommable:Consommation);
+                                         consommable:Consommation; panne:Boolean);
   {Ajoute une structure avec des caractéristiques spécifiés en paramètre
   à un emplacement aléatoire d'une zone.}
   var
@@ -140,7 +143,7 @@ procedure ajouteStructureEmplacementAlea(var zone:Zone; niveau:Integer;
     // Vérifie que l'emplacement ne soit pas un Hub (car getIndiceEmplacementVideAlea renvoie un hub si elle ne trouve pas d'mplacement vide)
     if emplacementsSontDifferents(zone.emplacements[indice], zone.emplacements[low(zone.emplacements)]) then
       begin
-      setEmplacement(zone.emplacements[indice], niveau, est_decouvert, type_structure, materiaux, production, consommable);
+      setEmplacement(zone.emplacements[indice], niveau, est_decouvert, type_structure, materiaux, production, consommable, panne);
       end;
   end;
 
@@ -154,26 +157,26 @@ procedure initEmplacements(var zone:Zone);
     // Définie tous les emplacements par des emplacements vides et non découverts
     for i:=low(zone.emplacements) to high(zone.emplacements) do
       begin
-      setEmplacement(zone.emplacements[i], 0, false, Vide, MineraiDHematite, 0, CONSOMMATION0);
+      setEmplacement(zone.emplacements[i], 0, false, Vide, MineraiDHematite, 0, CONSOMMATION0, false);
       end;
     // Définie le Hub de la zone
-    setEmplacement(zone.emplacements[0], 0, true, Hub, MineraiDHematite, 0, CONSOMMATION0);
+    setEmplacement(zone.emplacements[0], 0, true, Hub, MineraiDHematite, 0, CONSOMMATION0, false);
     // Définie un emplacement avec un gisement du premier minerai de la zone.
-    setEmplacement(zone.emplacements[random(8)+1], 3, true, Gisement, zone.minerais[0], 0, CONSOMMATION0);
+    setEmplacement(zone.emplacements[random(8)+1], 3, true, Gisement, zone.minerais[0], 0, CONSOMMATION0, false);
 
     
     // Définie un gisement du deuxième minerai de la zone dans un emplacement aléatoire.
-    ajouteStructureEmplacementAlea(zone, 2, false, Gisement, zone.minerais[1], 0, CONSOMMATION0);
+    ajouteStructureEmplacementAlea(zone, 2, false, Gisement, zone.minerais[1], 0, CONSOMMATION0, false);
     
     // A 1/5 chance d'ajouter un deuxième gisement d'un minerai y étant déjà.
     if (random<0.2) then
       begin
-      ajouteStructureEmplacementAlea(zone, 2, false, Gisement, zone.minerais[random(1)], 0, CONSOMMATION0);
+      ajouteStructureEmplacementAlea(zone, 2, false, Gisement, zone.minerais[random(1)], 0, CONSOMMATION0, false);
       end;
     
     if (random<0.5) then
       begin
-      ajouteStructureEmplacementAlea(zone, 1, false, Gisement, zone.minerais[random(2)], 0, CONSOMMATION0)
+      ajouteStructureEmplacementAlea(zone, 1, false, Gisement, zone.minerais[random(2)], 0, CONSOMMATION0, false)
       end;  
   end;
 
@@ -266,7 +269,8 @@ procedure creerMine(var zone:Zone; emplacement:Integer);
 
         // Modifie l'emplacement avec les nouveaux paramètres
         setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
-                        Mine, zone.emplacements[emplacement].materiaux, production, CONSOMMABLE_BASE[zone.emplacements[emplacement].materiaux]);
+                        Mine, zone.emplacements[emplacement].materiaux, production, CONSOMMABLE_BASE[zone.emplacements[emplacement].materiaux], 
+                        zone.emplacements[emplacement].panne);
       end
       else
       begin
@@ -305,7 +309,8 @@ procedure creerUsine(var zone:Zone; emplacement:Integer; nouveau_materiaux:Mater
       
       // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
       setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
-                      Usine, nouveau_materiaux, PRODUCTION_BASE[nouveau_materiaux], CONSOMMABLE_BASE[nouveau_materiaux]);
+                      Usine, nouveau_materiaux, PRODUCTION_BASE[nouveau_materiaux], CONSOMMABLE_BASE[nouveau_materiaux],
+                      zone.emplacements[emplacement].panne);
     end
     else
     begin
@@ -337,7 +342,8 @@ procedure creerCentrale(var zone:Zone; var emplacement:Integer);
       
       // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
       setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
-                      Centrale, Electricite, PRODUCTION_BASE[Electricite], zone.emplacements[emplacement].consommable);
+                      Centrale, Electricite, PRODUCTION_BASE[Electricite], zone.emplacements[emplacement].consommable,
+                      zone.emplacements[emplacement].panne);
     end
     else
     begin
@@ -359,7 +365,8 @@ procedure ChangementUsine(var zone:Zone; emplacement:Integer; nouveau_materiaux:
 
     // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
     setEmplacement(zone.emplacements[emplacement], zone.emplacements[emplacement].niveau, zone.emplacements[emplacement].est_decouvert, 
-                    zone.emplacements[emplacement].type_structure, nouveau_materiaux, production, CONSOMMABLE_BASE[nouveau_materiaux]);
+                    zone.emplacements[emplacement].type_structure, nouveau_materiaux, production, CONSOMMABLE_BASE[nouveau_materiaux],
+                    zone.emplacements[emplacement].panne);
     
     zone.emplacements[emplacement].consommable[Electricite] := round(zone.emplacements[emplacement].consommable[Electricite]*1.5*niveau);
   end;
@@ -392,7 +399,8 @@ procedure UpgradeBatiment(var zone:Zone; emplacement:Integer);
         
         // Modifie l'emplacement en mettant nouveaux parametres voulu
         setEmplacement(zone.emplacements[emplacement], niveau, zone.emplacements[emplacement].est_decouvert, 
-                        zone.emplacements[emplacement].type_structure, zone.emplacements[emplacement].materiaux, production, zone.emplacements[emplacement].consommable);
+                        zone.emplacements[emplacement].type_structure, zone.emplacements[emplacement].materiaux, 
+                        production, zone.emplacements[emplacement].consommable, zone.emplacements[emplacement].panne);
       end
       else
       begin
@@ -490,22 +498,25 @@ procedure revenusProduction(var zone:Zone);
         // Vérifie que l'emplacement a été découvert
         if emplacement.est_decouvert then
         begin
-          // Vérifie que l'inventaire de la zone possede assez de materiaux
-          possedeMateriauxNecessaires := MateriauxNecessaires(zone, emplacement);
-
-          if possedeMateriauxNecessaires then
+          if not emplacement.panne then
           begin
-            // Boucle sur chaque materiaux
-            for materiau in Materiaux do
-            begin
-              // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
-              if (emplacement.consommable[materiau] > 0) then
-                  // Enleve les matériaux consommés à l'inventaire de la zone
-                  zone.inventaire[materiau] := zone.inventaire[materiau] - emplacement.consommable[materiau];
-            end;
+            // Vérifie que l'inventaire de la zone possede assez de materiaux
+            possedeMateriauxNecessaires := MateriauxNecessaires(zone, emplacement);
 
-            // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
-            zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + emplacement.production;
+            if possedeMateriauxNecessaires then
+            begin
+              // Boucle sur chaque materiaux
+              for materiau in Materiaux do
+              begin
+                // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
+                if (emplacement.consommable[materiau] > 0) then
+                    // Enleve les matériaux consommés à l'inventaire de la zone
+                    zone.inventaire[materiau] := zone.inventaire[materiau] - emplacement.consommable[materiau];
+              end;
+
+              // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
+              zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + emplacement.production;
+            end;
           end;
         end;
       end;
@@ -615,6 +626,42 @@ procedure MenuUpgradeBatiment(var zone:Zone);
     end;
   end;
 
+procedure setPanne(var zone:Zone);
+  {Procedure qui prend en parametre une zone 
+  et qui a une probabilité que chaque mine ou 
+  usine puisse tomber en panne}
+  var
+    emplacement:Structure;
+    nombreAleatoire:Integer;
+    i:Integer;
+  const
+    POURCENTAGE=10;
+  begin
+    // Boucle sur tous les emplacements de la zone
+    for i:=1 to Length(zone.emplacements)-1 do
+    begin
+      // Vérifie que le batiment de l'emplacement est bien une mine ou une usine
+      if (zone.emplacements[i].type_structure = Mine) or (zone.emplacements[i].type_structure = Usine) then
+      begin
+        if not zone.emplacements[i].panne then
+        begin
+          // Créer un nombre aléatoire entre 1 et 100
+          nombreAleatoire:=random(99)+1;
+
+          // Vérifie que le nombre aléatoire fais partie du pourcentage voulu pour pouvoir mettre en panne l'emplacement
+          if nombreAleatoire <= POURCENTAGE then
+          begin
+            zone.emplacements[i].panne:=TRUE;
+            AfficherActionInformation(IntToStr(i));
+            readln;
+          end;
+        end;
+      end;
+
+
+    end;
+  end;
+
 procedure setDate(var date:Date);
   {Définie la date de départ}
   begin
@@ -678,6 +725,7 @@ procedure jourSuivant(var zone:Zone; var date:Date);
   {Passe au jour suivant en récupérant les ressources produites}
   begin
   suivante(date);
+  setPanne(zone);
   revenusProduction(zone);
   end;
 

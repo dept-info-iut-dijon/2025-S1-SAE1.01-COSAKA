@@ -37,6 +37,7 @@ interface
       materiaux:Materiaux;
       production:Integer;
       consommable:Consommation;
+      panne:Boolean;
       // Il faudrat sûrement rajouter des choses par la suite
     end;
 
