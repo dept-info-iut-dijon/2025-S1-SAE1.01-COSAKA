@@ -266,9 +266,10 @@ procedure AfficherZone(zone:Zone; date:Date);
   begin
     effacerEcran();
     {1 cadre principale avec deux cadres de chaque coté}
-    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, BORD_DROIT, BORD_BAS, simple, white, black); // TAILLE DE BASE
-    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL, BORD_BAS, double, white, black);
-    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, BORD_DROIT, BORD_BAS, simple, blue, black); // TAILLE DE BASE
+    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL, BORD_BAS, double, blue, black);
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, blue, black);
+    couleurTexte(White);
     // Titre
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| SATISFACT IUT |>')div 2),1);
     writeln('<| SATISFACT IUT |>');
@@ -301,7 +302,8 @@ procedure dessinerEmplacement(emplacement:Structure; numero_emplacement:Integer;
   var
     s:String; // Variable qui stock les chaine de caractères à écrire
   begin
-    dessinerCadreXY(x1, y1, x2, y2, simple, white, black);
+    dessinerCadreXY(x1, y1, x2, y2, simple, Magenta, black);
+    couleurTexte(White);
     // Vérifie si l'emplacement est découvert
     if (not emplacement.est_decouvert) then
       // Si l'emplacement n'est pas découvert, l'indique
@@ -416,7 +418,7 @@ procedure AfficherInventaireZone(zone:Zone);
   begin
     inventaire_zone:=zone.inventaire;
     count := Ord(High(Materiaux)) - Ord(Low(Materiaux)) + 1;
-    startY := (SCREEN_HEIGHT div 2) - ((count) div 2);
+    startY := (SCREEN_HEIGHT div 2) - ((count) div 2) - 5;
     i:= 0;
     for m in Materiaux do 
       begin
@@ -433,7 +435,7 @@ procedure AfficherInventaireZone(zone:Zone);
               end;
             writeln(': ',inventaire_zone[m]);
             couleurTexte(White);
-            i:= i + 1; 
+            i:= i + 2; 
           end;
       end;
   end;
@@ -650,10 +652,12 @@ procedure AfficherMenuMateriauxTransformer();
 procedure AfficherMenuWikiBatiment();
   begin
     effacerEcran();
-    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
-    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
-
-    // Titre
+    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, blue, black); // TAILLE DE BASE
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,Magenta,black);
+    couleurTexte(White);
+    
+    {---------Titre---------}
+    
     UTF8(True);
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI BATIMENTS |>')div 2),1);
     writeln('<| WIKI BATIMENTS |>');
@@ -857,10 +861,12 @@ procedure AfficherMenuWikiBatiment();
 procedure AfficherMenuWikiProduction();
   begin
     effacerEcran();
-    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
-    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
-
-    // Titre
+    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, blue, black); // TAILLE DE BASE
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,Magenta,black);
+    couleurTexte(White);
+    
+    {---------Titre---------}
+    
     UTF8(True);
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI PRODUCTION |>')div 2),1);
     writeln('<| WIKI PRODUCTION |>');
