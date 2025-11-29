@@ -16,6 +16,14 @@ implementation
   uses
     SysUtils, Classes, GestionIHM;
 
+function Minimum(n1:Integer; n2:Integer):Integer;
+  begin
+  if n1<n2 then
+    Minimum:=n1
+  else
+    Minimum:=n2;
+  end;
+
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
                          new_type_structure:Batiment; new_materiaux:Materiaux;
@@ -775,14 +783,14 @@ procedure MenuChangementUsine(var zone:Zone);
     end;
   end;
 
-procedure menuChangementZone(var curent_zone:Integer);
-  {Affiche le menu de choix de zone et change la zone en conséquence}
+function menuChoixZone(msg:String):Integer;
+  {Permet au joueur de choisir une zone en affichant un message et un menu et renvoie l'indice de l'emplacement choisis}
   var
     choix:String;
     choix_valide:Boolean;
   begin
   choix_valide:=false;
-  AfficherMenuZone();
+  AfficherMenuZoneAvecMessage(msg);
   readln(choix);
   while (not choix_valide) do
     begin
@@ -791,77 +799,171 @@ procedure menuChangementZone(var curent_zone:Integer);
     else if choix='1' then
       begin
       choix_valide:=true;
-      curent_zone:=0;
+      menuChoixZone:=0;
       end
     else if choix='2' then
       begin
       choix_valide:=true;
-      curent_zone:=1;
+      menuChoixZone:=1;
       end
     else if choix='3' then
       begin
       choix_valide:=true;
-      curent_zone:=2;
+      menuChoixZone:=2;
       end
     else
-      AfficherMenuZone();
+      begin
+      AfficherMenuZoneAvecMessage(msg);
       readln(choix);
+      end;
     end;
+  end;
+
+function menuChoixMateriaux(msg:String):Materiaux;
+  {Permet au joueur de choisir un matériaux en affichant un message et un menu et renvoie le matériaux choisis}
+  var
+    choix_valide:Boolean;
+    choix:String;   // Valeur entrée par l'utilisateur
+    indice_premier_materiaux,    // Indice du matériaux à afficher en haut de la liste, permet d'afficher la liste en plusieurs fois.
+    indice_materiaux_choisi:Integer;    // Indice du matériaux choisis par l'utilisateur.
+  begin
+  choix_valide:=false;
+  indice_premier_materiaux:=0;
+
+  while not choix_valide do
+    begin
+    // Demande a l'utilisateur de choisir parmi les 5 matériaux qui suivent le celui d'indice 'indice_premier_materiaux'.
+    AfficherMenuMateriauxAvecMessage('Quel matériaux transferer ?', indice_premier_materiaux);
+    readln(choix);
+
+    // Si le joueur veut afficher d'autres ressources
+    if (choix=AUTRE) then
+      begin
+      // Avance le premier élément à afficher de 5
+      indice_premier_materiaux:=(indice_premier_materiaux+5);
+      if (indice_premier_materiaux>ord(high(Materiaux))) then
+        // Si l'élément dépasse l'élément maximum permis, le remet à 0
+        indice_premier_materiaux:=0;
+      end
+    
+    //Sinon, si le choix est valide
+    else if ('0'<=choix) and (choix<IntToStr(Minimum(5, ord(high(Materiaux))-indice_premier_materiaux))) then
+      begin
+      // Renvoie l'indice de l'élément séléctionné
+      indice_materiaux_choisi:=indice_premier_materiaux+StrToInt(choix);
+      choix_valide:=true;
+      end;
+    end;
+  
+  menuChoixMateriaux:=Materiaux(indice_materiaux_choisi);
+  end;
+
+procedure menuChangementZone(var curent_zone:Integer);
+  {Affiche le menu de choix de zone et change la zone en conséquence}
+  begin
+  curent_zone:=menuChoixZone('Où allons nous ?');
+  end;
+
+procedure menuTransfertRessources(var zones:ZonesJeu; curent_zone:Integer);
+  {Affiche le menu du transfert de ressources et transfert les ressources choisits}
+  var
+    zone_transfert,   // La zone vers laquelle on transfert les matériaux.
+    max_transmissibles,   // Le nombre de matériaux maximum que le joueur peut transmettre
+    nb_a_transmettre:Integer;   // La quantité de matériaux à transmettre.
+    nb_a_transmettre_str:String;
+    materiaux_transfert:Materiaux; // Le type de matériaux à transferer.
+  begin
+    // Demande au joueur vers quelle zone transférer les ressources
+    zone_transfert:=menuChoixZone('Vers quelle zone transferer ?');
+
+    // Demande au joueur quel type de matériaux transférer
+    materiaux_transfert:=menuChoixMateriaux('Quel matériaux transferer ?');
+
+    max_transmissibles:=zones[curent_zone].inventaire[materiaux_transfert];
+
+    // Boucle tant que le joueur n'a pas saisit une valeur valide (=entre 0 et nb du matériaux dans l'inventaire)
+    nb_a_transmettre_str:='';
+    while (nb_a_transmettre_str<'0') or (nb_a_transmettre_str>IntToStr(max_transmissibles)) do
+      begin
+      AfficherQuestionInformation('Combien en transmettre ? (max='+IntToStr(max_transmissibles)+')');
+      readln(nb_a_transmettre_str);
+      end;
+    // Convertit la réponse du joueur en entier
+    nb_a_transmettre:=StrToInt(nb_a_transmettre_str);
+
+    // Transmet les matériaux d'une zone à l'autre
+    zones[curent_zone].inventaire[materiaux_transfert]:=zones[curent_zone].inventaire[materiaux_transfert]-nb_a_transmettre;
+    zones[zone_transfert].inventaire[materiaux_transfert]:=zones[zone_transfert].inventaire[materiaux_transfert]+nb_a_transmettre;
   end;
 
 procedure JeuPrincipal();
   var
-    curent_zone:Integer;
-    zones:Array[0..2] of Zone;
-    choix:String;
-    curent_date:Date;
+    curent_zone:Integer;  // Zone actuel du jeu
+    zones:ZonesJeu;  // Les 3 zones dans lesquels le joueur peut se déplacer
+    choix:String; // Sert à enregistrer les données saisits par l'utilisateir
+    curent_date:Date; // La date actuelle du jeu
   begin
+    // Affiche le scénarion avant de lancer le jeu
     Scenario();
+    
     choix:='';
     setDate(curent_date);
     curent_zone:=0;
+
+    // Définition des 3 zones de jeu
     zones[0]:=initZone(0, NOM_ZONE1, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
     zones[1]:=initZone(0, NOM_ZONE2, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
-    zones[2]:=initZone(0, NOM_ZONE2, ArgileRegolitique, CarbonePyrolyte, MineraiDHematite);
+    zones[2]:=initZone(0, NOM_ZONE3, ArgileRegolitique, CarbonePyrolyte, MineraiDHematite);
+    
+    // Boucle du menu principal, s'arrête que l'utilisateur entre '0'.
     while (choix<>QUITTER) do
       begin
       AfficherZone(zones[curent_zone], curent_date);
       readln(choix);
+      // Choix 'Construire un bâtiment'
       if (choix=CONSTRUIRE) then
         begin
         MenuCreerBatiment(zones[curent_zone]);
         end
+      // Choix 'Changer de production'
       else if (choix=CHANGER_PRODUCTION) then
         begin
         MenuChangementUsine(zones[curent_zone]);
         end
+      // Choix 'Améliorer un bâtiment'
       else if (choix=AMELIORER) then
         begin
         MenuUpgradeBatiment(zones[curent_zone]);
         end
+      // Choix 'Explorer la zone'
       else if (choix=EXPLORER) then
         begin
         Explore(zones[curent_zone]);
         jourSuivant(zones[curent_zone], curent_date);
         end
+      // Choix 'Changer de zone'
       else if (choix=CHANGER_ZONE) then
         begin
         menuChangementZone(curent_zone);
         end
+      // Choix 'Transferer des ressources'  (A faire)
       else if (choix=TRANSFERT_RESSOURCES) then
         begin
+        menuTransfertRessources(zones, curent_zone);
         end
+      // Choix 'Passer la journée'
       else if (choix=PASSER_JOURNEE) then
         begin
         jourSuivant(zones[curent_zone], curent_date);
         end
+      // Choix 'Missions'                   (Aouter la logique)
       else if (choix=MISSIONS) then
         begin
-
         // A CHANGER CAR ON PEUT PAS Y ACCER DANS ASCENSEUR ORBITAL !!!
           AfficherMenuMissions();
           readln();
         end
+      // Choix 'Wiki'                       (Finir entrer les données)
       else if (choix=WIKI) then
         begin
           NavigWiki();

@@ -31,8 +31,10 @@ procedure UTF8(status:Boolean);
 {Moifie le traitement des caractères spéciaux (é, à, ç, etc...) en UTF8 si status = TRUE sinon RESET}
 
 procedure AfficherMenuBatiment();
-procedure AfficherMenuZone();
+procedure AfficherMenuZoneAvecMessage(msg:String);
+procedure AfficherMenuMateriauxAvecMessage(msg:String; n:Integer);
 procedure AfficherActionInformation(msg:string);
+procedure AfficherQuestionInformation(msg:String);
 procedure AfficherMenuMateriauxTransformer();
 
 {---------Wiki---------}
@@ -591,13 +593,22 @@ procedure AfficherActionInformation(msg: string);
       end;
   end;
 
+procedure AfficherQuestionInformation(msg:String);
+  {Affiche un message ainsi qu'un boite de réponse}
+  begin
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    writeln(msg);
+    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-8),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-6),simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-7));
+  end;
 
-procedure AfficherMenuZone();
+procedure AfficherMenuZoneAvecMessage(msg:String);
   begin
     dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
     UTF8(True);
-    writeln('Où allons nous ?');
+    writeln(msg);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
     writeln('[1] ',NOM_ZONE1);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
@@ -606,6 +617,30 @@ procedure AfficherMenuZone();
     writeln('[3] ',NOM_ZONE3);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
     writeln('[0] Retour');
+    UTF8(False);
+    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+  end;
+
+procedure AfficherMenuMateriauxAvecMessage(msg:String; n:Integer);
+  {Affiche un menu permettant au joueur de séléctionner un matériaux (sauf éléctricité), ainsi qu'un message}
+  var
+  i:Integer;
+  begin
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    UTF8(True);
+    writeln(msg);
+    i:=n;
+    while (i<5+n) and (i<ord(high(Materiaux))) do
+      begin
+      deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9+i-n));
+      writeln('[', i-n,'] ',Materiaux(i));
+      inc(i);
+      end;
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9+i-n));
+    writeln('[5] Autre');
+
     UTF8(False);
     dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
@@ -914,19 +949,19 @@ procedure AfficherMenuMissions();
   end;
 
 procedure AfficherMenuBilan(currentDate:string;nextDate:string);
-begin
-  effacerEcran();
-  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+  begin
+    effacerEcran();
+    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
 
-  // Titre
-  UTF8(True);
-  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BILAN |>')div 2),1);
-  writeln('<| BILAN |>');
+    // Titre
+    UTF8(True);
+    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BILAN |>')div 2),1);
+    writeln('<| BILAN |>');
 
-  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(nextDate + ' -> ' + nextDate)div 2),5);
-  writeln(currentDate,' -> ',nextDate);
+    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(nextDate + ' -> ' + nextDate)div 2),5);
+    writeln(currentDate,' -> ',nextDate);
 
-  UTF8(False);
-end;
+    UTF8(False);
+  end;
 
 end.

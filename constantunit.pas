@@ -65,6 +65,7 @@ interface
       jour:Jour;
     end;
 
+    ZonesJeu=Array[0..2] of Zone;
   
   const
     SCREEN_WIDTH=200;
@@ -149,6 +150,9 @@ interface
     MATERIAUX_AUTRES='1';
     MATERIAUX_TRANSFORMES='9'{ord(high(Materiaux))-MATERIAUX_PREMIERS-MATERIAUX_AUTRES};
     NBR_BATIMENTS_AMELIORABLES='3';
+
+    // Sert dans les menus affichés en plusieurs fois.
+    AUTRE='5';
 
 implementation
 
