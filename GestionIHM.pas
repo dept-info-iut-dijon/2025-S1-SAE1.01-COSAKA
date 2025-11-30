@@ -1119,8 +1119,24 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
   writeln('<| MISSIONS |>');
 
   // CADRES
+     if (miss[0].accompli) = True then
+     begin
+       couleurTexte(Green);
+     end;
+
+
   dessinerCadreXY((SCREEN_WIDTH div 5)+3, 2, ((SCREEN_WIDTH div 5)*2-2), SCREEN_HEIGHT-4, simple, white, black);
+    // CADRES
+     if (miss[1].accompli) = True then
+     begin
+       couleurTexte(Green);
+     end;
   dessinerCadreXY(((SCREEN_WIDTH div 5)*2+1), 2, ((SCREEN_WIDTH div 5)*3-2), SCREEN_HEIGHT-4, simple, white, black);
+    // CADRES
+     if (miss[2].accompli) = True then
+     begin
+       couleurTexte(Green);
+     end;
   dessinerCadreXY(((SCREEN_WIDTH div 5)*3)+1, 2, ((SCREEN_WIDTH div 5)*4-3), SCREEN_HEIGHT-4, simple, white, black);
   UTF8(True);
   
@@ -1129,7 +1145,7 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
   begin
   
    // 1. TITRE DE LA MISSION
-     DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 5, 4);
+   DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 5, 4);
    couleurTexte(yellow);
    write('MISSION ', i + 1);
    couleurTexte(white);
