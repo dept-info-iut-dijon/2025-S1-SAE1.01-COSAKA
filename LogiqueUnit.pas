@@ -623,16 +623,11 @@ procedure revenusProduction(var zone:Zone; bonus:Bonuses);
               prod_emplacement:=emplacement.production;
 
               // Ajoute les bonus si ils sont actifs
-              if (emplacement.type_structure<>Vide) then
+              if (emplacement.type_structure<>Vide) and (emplacement.type_structure<>Centrale) then
                 begin
                 for e in Effet do
                   begin
                   if bonus[e].actif then
-                    begin
-                    write(prod_emplacement);
-                    readln;
-                    write(Round(prod_emplacement*BONUS_MULT[e]));
-                    readln;
                     prod_emplacement:=Round(prod_emplacement*BONUS_MULT[e]);
                     end;
                   end;
