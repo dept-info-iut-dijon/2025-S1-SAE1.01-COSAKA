@@ -24,7 +24,7 @@ interface
     );
 
     // Batiment que l'ont peut construire
-    Batiment=(Vide, Hub, Gisement, Mine, Usine, Centrale);
+    Batiment=(Vide, Hub, Gisement, Mine, Usine, Centrale, AscenseurOrbital);
 
     Consommation=Array[Materiaux] of Integer;
     
@@ -93,26 +93,29 @@ interface
                                                  10, 10, 1000);
 
                                                                                      // Niveau 1
-    CONSTRUCTION_BASE:Array[1..3] of Array[Batiment] of array[Materiaux] of Integer=(((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),  // Vide
+    CONSTRUCTION_BASE:Array[1..3] of Array[Batiment] of array[Materiaux] of Integer=(((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Vide
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)),   // Centrale
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Centrale
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)),    // AscenseurOrbital
                                                                                      // Niveau 2
-                                                                                     ((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),   // Vide
+                                                                                     ((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Vide
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)),   // Centrale
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Centrale
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)),    // AscenseurOrbital
                                                                                      // Niveau 3
-                                                                                     ((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),   // Vide
+                                                                                     ((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Vide
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)));  // Centrale
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Centrale
+                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)));  // AscenseurOrbital
 
     CONSOMMABLE_BASE:Array[Materiaux] of Consommation=((0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),

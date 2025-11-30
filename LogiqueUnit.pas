@@ -370,6 +370,72 @@ procedure creerCentrale(var zone:Zone; var emplacement:Integer);
     end;
   end;
 
+function ExisteAscenseurOrbital(zones:ZonesJeu):Boolean;
+  {Fonction qui renvoie True si elle un batiment 
+  AscenseurOrbital existe dans les zones du jeu, False sinon}
+  var
+    zoneActuelle:Zone;
+    emplacement:Structure;
+  begin
+    // Initialise la variable de retour a Faux
+    ExisteAscenseurOrbital := False;
+    // Boucle sur chaque zone
+    for zoneActuelle in zones do
+    begin
+      // Boucle sur chaque emplacement
+      for emplacement in zoneActuelle.emplacements do
+      begin
+        // Vérifie que le batiment présent sur l'emplacement est un AscenseurOrbital
+        if (emplacement.type_structure = AscenseurOrbital) then
+          // Déclare la variable de retour Vrai
+          ExisteAscenseurOrbital := True;
+      end;
+    end;
+  end;
+
+procedure creerAscenseurOrbitale(zones:ZonesJeu; var zone:Zone; var emplacement:Integer);
+  {{Procédure qui prend en paramètre un emplacement, une zone 
+  et un nouveau materiau qui modifie ce même emplacement en changeant 
+  le type de la structure en 'Usine', en initialisant le 
+  niveau de la structure à 1, en supprimant les coûts de 
+  la construction de l'inventaire de la zone, en initialisant 
+  l'énergie consommé du batiment et en initialisant la production 
+  de base du batiment }
+  const
+    NOUVEAU_NIVEAU = 1;
+  var
+    possedeMateriauxNecessaires:Boolean;
+  begin
+    if not ExisteAscenseurOrbital(zones) then
+    begin
+      // Vérifie que la zone possede les materiaux necessaires a la construction du batiment
+      possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, AscenseurOrbital, NOUVEAU_NIVEAU);
+      if possedeMateriauxNecessaires then
+      begin
+        // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
+        SuppressionMateriauxConstruction(zone, AscenseurOrbital, NOUVEAU_NIVEAU);
+        
+        // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
+        setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
+                        AscenseurOrbital, zone.emplacements[emplacement].materiaux, zone.emplacements[emplacement].production, zone.emplacements[emplacement].consommable,
+                        False);
+      end
+      else
+      begin
+        // Affiche le message d'erreur
+        AfficherActionInformation('Vous n''avez pas les materiaux necessaires');
+        readln;
+      end;
+    end
+    else
+    begin
+      AfficherActionInformation('Il existe deja un Ascenseur Orbital');
+      readln;
+    end;
+  end;
+
+
+
 procedure ChangementUsine(var zone:Zone; emplacement:Integer; nouveau_materiaux:Materiaux);
   {}
   var
@@ -540,7 +606,7 @@ procedure revenusProduction(var zone:Zone);
     end;
   end;
 
-procedure MenuCreerBatiment(var zone:Zone);
+procedure MenuCreerBatiment(zones:ZonesJeu; var zone:Zone);
   {}
   var
     choix:String;
@@ -594,10 +660,15 @@ procedure MenuCreerBatiment(var zone:Zone);
             end;
           end
           else if choix = '3' then
-            begin
-              creerCentrale(zone, choix_int);
-              sortie:=True;
-            end;
+          begin
+            creerCentrale(zone, choix_int);
+            sortie:=True;
+          end
+          else if choix = '4' then
+          begin
+            creerAscenseurOrbitale(zones, zone, choix_int);
+            sortie:=True;
+          end;
         end;
       end
       else
@@ -643,12 +714,13 @@ procedure MenuUpgradeBatiment(var zone:Zone);
     end;
   end;
 
+
+
 procedure setPanne(var zone:Zone);
   {Procedure qui prend en parametre une zone 
   et qui a une probabilité que chaque mine ou 
   usine puisse tomber en panne}
   var
-    nombreAleatoire:Integer;
     i:Integer;
   const
     CHANCE=0.1;
@@ -1029,7 +1101,7 @@ procedure JeuPrincipal();
       // Choix 'Construire un bâtiment'
       if (choix=CONSTRUIRE) then
         begin
-        MenuCreerBatiment(zones[curent_zone]);
+        MenuCreerBatiment(zones, zones[curent_zone]);
         end
       // Choix 'Changer de production'
       else if (choix=CHANGER_PRODUCTION) then
