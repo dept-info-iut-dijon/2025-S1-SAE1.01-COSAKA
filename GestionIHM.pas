@@ -488,7 +488,7 @@ procedure AfficherInformations(zone:Zone; time:Date; montant_argent:Integer);
     writeln('DATE : ',time.jour, ' ', time.nb_jour, ' ', time.mois, ' ', time.annee);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),9);
     couleurTexte(LightMagenta);
-    write(NOM_MONNAIE, ' : ', montant_argent,'€');
+    write(NOM_MONNAIE, ' : ', montant_argent);
     couleurTexte(white);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),12);
 
@@ -1221,7 +1221,7 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
    
    // 4. RÉCOMPENSE
    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 14, 32);
-   write('Récompense : ',miss[i].points,'€');
+   write('Récompense : ',miss[i].points, ' ', NOM_MONNAIE);
 
    // 5. ÉTAT
    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 14, 35);
@@ -1256,22 +1256,22 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
 
 
 procedure AfficherMenuBoutique();
-begin
-  SonInteraction();
+  begin
+    SonInteraction();
 
-  effacerEcran();
-  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
-  dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
-  UTF8(True);
-  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BOUTIQUE |>')div 2),1);
-  writeln('<| BOUTIQUE |>');
-  UTF8(False);
-  // Cadre 1
-  dessinerCadreXY(4,2,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3),simple,white,black);
-  // Cadre 2
-  dessinerCadreXY(4,(SCREEN_HEIGHT div 3)+1,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3)*2-1,simple,white,black);
-  // cadre 3
-  dessinerCadreXY(4,(SCREEN_HEIGHT-(SCREEN_HEIGHT div 3)-1),(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,SCREEN_HEIGHT-3,simple,white,black);
-end;
+    effacerEcran();
+    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+    UTF8(True);
+    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BOUTIQUE |>')div 2),1);
+    writeln('<| BOUTIQUE |>');
+    UTF8(False);
+    // Cadre 1
+    dessinerCadreXY(4,2,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3),simple,white,black);
+    // Cadre 2
+    dessinerCadreXY(4,(SCREEN_HEIGHT div 3)+1,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3)*2-1,simple,white,black);
+    // cadre 3
+    dessinerCadreXY(4,(SCREEN_HEIGHT-(SCREEN_HEIGHT div 3)-1),(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,SCREEN_HEIGHT-3,simple,white,black);
+  end;
 
 end.
