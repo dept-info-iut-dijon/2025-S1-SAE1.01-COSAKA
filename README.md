@@ -3,9 +3,4 @@ Dépôt de rendu SAE 1.01
 
 
 TO DO LIST :
-rip cette to do list qui n'a jamais été utlisée
-(force à elle)
-
-
-interface boutique 
 
