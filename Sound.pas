@@ -47,7 +47,7 @@ end;
 
 procedure SonInteraction();
 begin
-  Beep(250, 60);
+  Beep(250, 120);
 end;
 
 end.
