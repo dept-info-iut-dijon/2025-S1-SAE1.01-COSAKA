@@ -1235,8 +1235,31 @@ procedure menuTransfertRessources(var zones:ZonesJeu; curent_zone:Integer);
 
 procedure menuGestionMissions(var zone:Zone);
   {}
+  var
+    choix:string;
+    choix_int:Integer;
   begin
-    
+    if ExisteAscenseurOrbital(zones) then
+    begin
+      AfficherMenuMissions();
+      readln(choix);
+      choix_int:=StrToInt(choix);
+      while (choix<>QUITTER) do
+      begin
+        if (choix = '1') then
+        begin
+          
+        end
+        else if (choix = '2') then
+        begin
+        end;
+      end;
+    end
+    else
+    begin
+      AfficherActionInformation('Vous devez construire l''ascenseur orbital pour pouvoir acceder aux missions');
+      readln;
+    end;
   end;
 
 // Menu Principal du jeu
@@ -1305,11 +1328,7 @@ procedure JeuPrincipal();
       // Choix 'Missions'                   (Aouter la logique)
       else if (choix=MISSIONS) then
         begin
-          if ExisteAscenseurOrbital(zones) then
-          begin
-            AfficherMenuMissions();
-            readln();
-          end;
+          menuGestionMissions(zones[curent_zone]);
         end
       // Choix 'Wiki'                       (Finir entrer les données)
       else if (choix=WIKI) then
