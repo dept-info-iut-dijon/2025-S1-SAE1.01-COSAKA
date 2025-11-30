@@ -1302,8 +1302,13 @@ procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives;
 
 procedure MenuReparerBatiment(var zone:Zone);
   {}
-  AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
+  var
+    choix:string;
+    choix_int:Integer;
+  begin
+    AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
     readln(choix);
+    choix_int:=StrToInt(choix);
     choix_int:=StrToInt(choix);
     if (zone.emplacements[choix_int].type_structure=Mine) or (zone.emplacements[choix_int].type_structure=Usine) then
     begin
