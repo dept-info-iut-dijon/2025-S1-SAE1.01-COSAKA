@@ -499,7 +499,7 @@ procedure AfficherInformations(zone:Zone; time:Date; montant_argent:Integer);
 
 procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date);
   var
-    production:Inventaire;
+    production:TableauMateriaux;
     materiau:Materiaux;
     total_materiaux_a_afficher:Integer;
     s:String;
