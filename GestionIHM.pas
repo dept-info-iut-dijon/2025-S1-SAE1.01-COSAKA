@@ -4,9 +4,9 @@ unit gestionIHM;
 
 {
 RÔLE : L’unité gère l’affichage console de manière structurée,
- notamment le positionnement précis du curseur,
- le centrage dynamique de textes et la prise en charge facultative de l’encodage UTF-8.
- Elle fournit des procédures permettant de contrôler la mise en page,
+notamment le positionnement précis du curseur,
+le centrage dynamique de textes et la prise en charge facultative de l’encodage UTF-8.
+Elle fournit des procédures permettant de contrôler la mise en page,
 de calculer automatiquement les positions en fonction de la taille de l’écran et d’assurer un rendu propre,
 quelle que soit la quantité de contenu affiché.
 L’activation temporaire de l’UTF-8 garantit un affichage correct des caractères accentués sans perturber les autres interfaces du programme,
@@ -47,8 +47,10 @@ procedure AfficherMenuWikiProduction();
 {Informations sur les matériaux de productions du jeu}
 
 procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
+{Affiche les missions disponibles}
 
 procedure AfficherMenuBoutique();
+{Affiche la boutique via les missions}
 
 
 implementation
@@ -1203,7 +1205,6 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
   dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
  end;
-
 
 procedure AfficherMenuBoutique();
 begin
