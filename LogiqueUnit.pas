@@ -985,8 +985,7 @@ procedure jourSuivant(var zone:Zone; var date:Date; var missionsA:MissionsActive
 
 // Gestion des menus
 procedure MenuCreerBatiment(zones:ZonesJeu; var zone:Zone);
-
-  {}
+  {Procedure qui permet de gerer la création de batiments}
   var
     choix:String;
     choix_int:Integer;
@@ -998,67 +997,80 @@ procedure MenuCreerBatiment(zones:ZonesJeu; var zone:Zone);
   begin
     AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
     readln(choix);
-    choix_int:=StrToInt(choix);
-    if zone.emplacements[choix_int].est_decouvert then
+    if (choix>='0') and (choix<='9') then
     begin
-      if (zone.emplacements[choix_int].type_structure = Vide) or (zone.emplacements[choix_int].type_structure = Gisement) then
+      choix_int:=StrToInt(choix);
+      if zone.emplacements[choix_int].est_decouvert then
       begin
-        sortie:=False;
-        while not sortie do
+        if (zone.emplacements[choix_int].type_structure = Vide) or (zone.emplacements[choix_int].type_structure = Gisement) then
         begin
-          AfficherMenuBatiment();
-          readln(choix);
-          if choix = '0' then
-            sortie:=True
-          else  if choix = '1' then
-          begin 
-            creerMine(zone, choix_int);
-            sortie:=True;
-          end
-          else if choix = '2' then
+          sortie:=False;
+          while not sortie do
           begin
-            sortie2:=False;
-            while not sortie2 do
+            AfficherMenuBatiment();
+            readln(choix);
+            // Quitter
+            if choix = '0' then
+              sortie:=True
+            // Créer une Mine
+            else  if choix = '1' then
+            begin 
+              creerMine(zone, choix_int);
+              sortie:=True;
+            end
+            // Créer une Usine
+            else if choix = '2' then
             begin
-              AfficherMenuMateriauxTransformer();
-              readln(choix2);
-              if (choix2>=QUITTER) and (StrToInt(choix2)<=StrToInt(MATERIAUX_TRANSFORMES)) then
+              sortie2:=False;
+              while not sortie2 do
               begin
-                choix2_int:=StrToInt(choix2);
-                sortie2:=True;
+                AfficherMenuMateriauxTransformer();
+                readln(choix2);
+                if (choix2>=QUITTER) and (StrToInt(choix2)<=StrToInt(MATERIAUX_TRANSFORMES)) then
+                begin
+                  choix2_int:=StrToInt(choix2);
+                  sortie2:=True;
+                end;
               end;
-            end;
-            if (choix2<>QUITTER) then
+              if (choix2<>QUITTER) then
+              begin
+                for materiau in Materiaux do
+                begin
+                  if ord(materiau) = (choix2_int+StrToInt(MATERIAUX_PREMIERS)-1) then
+                    creerUsine(zone, choix_int, materiau);
+                end;
+                sortie:=True;
+              end;
+            end
+            // Créer une Centrale
+            else if choix = '3' then
             begin
-              for materiau in Materiaux do
-              begin
-                if ord(materiau) = (choix2_int+StrToInt(MATERIAUX_PREMIERS)-1) then
-                  creerUsine(zone, choix_int, materiau);
-              end;
+              creerCentrale(zone, choix_int);
+              sortie:=True;
+            end
+            // Créer un Ascenseur Orbitale
+            else if choix = '4' then
+            begin
+              creerAscenseurOrbitale(zones, zone, choix_int);
               sortie:=True;
             end;
-          end
-          else if choix = '3' then
-          begin
-            creerCentrale(zone, choix_int);
-            sortie:=True;
-          end
-          else if choix = '4' then
-          begin
-            creerAscenseurOrbitale(zones, zone, choix_int);
-            sortie:=True;
           end;
+        end
+        else
+        begin
+          AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un autre batiment');
+          readln;
         end;
       end
       else
       begin
-        AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un autre batiment');
+        AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
         readln;
       end;
     end
     else
     begin
-      AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
+      AfficherActionInformation('Vous devez choisir un nombre correspondant a un emplacement entre 0 et 9 Compris');
       readln;
     end;
   end;
@@ -1071,24 +1083,32 @@ procedure MenuUpgradeBatiment(var zone:Zone);
   begin
     AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
     readln(choix);
-    choix_int:=StrToInt(choix);
-    if zone.emplacements[choix_int].est_decouvert then
+    if (choix>='0') and (choix<='9') then
     begin
-      if (zone.emplacements[choix_int].type_structure = Mine) or 
-          (zone.emplacements[choix_int].type_structure = Usine) or 
-          (zone.emplacements[choix_int].type_structure = Centrale) then
+      choix_int:=StrToInt(choix);
+      if zone.emplacements[choix_int].est_decouvert then
       begin
-        UpgradeBatiment(zone, choix_int);
+        if (zone.emplacements[choix_int].type_structure = Mine) or 
+            (zone.emplacements[choix_int].type_structure = Usine) or 
+            (zone.emplacements[choix_int].type_structure = Centrale) then
+        begin
+          UpgradeBatiment(zone, choix_int);
+        end
+        else
+        begin
+          AfficherActionInformation('Vous devez choisir uniquement un batiment améliorable');
+          readln;
+        end;
       end
       else
       begin
-        AfficherActionInformation('Vous devez choisir uniquement un batiment améliorable');
+        AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
         readln;
       end;
     end
     else
     begin
-      AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
+      AfficherActionInformation('Vous devez choisir un nombre correspondant a un emplacement entre 0 et 9 Compris');
       readln;
     end;
   end;
@@ -1166,32 +1186,40 @@ procedure MenuChangementUsine(var zone:Zone);
   begin
     AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
     readln(choix);
-    choix_int:=StrToInt(choix);
-    if (zone.emplacements[choix_int].type_structure = Usine) then
+    if (choix>='0') and (choix<='9') then
     begin
-    sortie:=False;
-    while not sortie do
-    begin
-      AfficherMenuMateriauxTransformer();
-      readln(choix2);
-      if (choix>=QUITTER) and (StrToInt(choix)<=StrToInt(MATERIAUX_TRANSFORMES)) then
+      choix_int:=StrToInt(choix);
+      if (zone.emplacements[choix_int].type_structure = Usine) then
       begin
-        choix2_int:=StrToInt(choix2);
-        sortie:=True;
-      end;
-    end;
-    if choix2<>QUITTER then
-    begin
-      for materiau in Materiaux do
+        sortie:=False;
+        while not sortie do
+        begin
+          AfficherMenuMateriauxTransformer();
+          readln(choix2);
+          if (choix>=QUITTER) and (StrToInt(choix)<=StrToInt(MATERIAUX_TRANSFORMES)) then
+          begin
+            choix2_int:=StrToInt(choix2);
+            sortie:=True;
+          end;
+        end;
+        if choix2<>QUITTER then
+        begin
+          for materiau in Materiaux do
+          begin
+            if ord(materiau) = (choix2_int+StrToInt(MATERIAUX_PREMIERS)-1) then
+              ChangementUsine(zone, choix_int, materiau);
+          end;
+        end;
+      end
+      else
       begin
-        if ord(materiau) = (choix2_int+StrToInt(MATERIAUX_PREMIERS)-1) then
-          ChangementUsine(zone, choix_int, materiau);
+        AfficherActionInformation('Vous devez selectionner un emplacement contenant une Usine');
+        readln;
       end;
-    end;
     end
     else
     begin
-      AfficherActionInformation('Vous devez selectionner un emplacement contenant une Usine');
+      AfficherActionInformation('Vous devez choisir un nombre correspondant a un emplacement entre 0 et 9 Compris');
       readln;
     end;
   end;
@@ -1329,11 +1357,18 @@ procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives;
         if (choix = '1') then
         begin
           // CHoisir la mission
-          AfficherActionInformation('Veuillez choisir une mission (entre 0 et 2)');
+          AfficherActionInformation('Veuillez choisir une mission (entre 1 et 3)');
           readln(Choix2);
-          choix2_int:=StrToInt(choix2);
-          if (choix2 >= '0') and (choix2 <= '2') then
+          if (choix2 >= '1') and (choix2 <= '3') then
+          begin
+            choix2_int:=StrToInt(choix2)-1;
             termineMission(zones[curent_zone], missionsA[choix2_int], pognon);
+          end
+          else
+          begin
+            AfficherActionInformation('Vous devez choisir un nombre correspondant a une mission entre 1 et 3 Compris');
+            readln;
+          end;
         end
         // Boutique Si-monnaie
         else if (choix = '2') then
@@ -1356,23 +1391,30 @@ procedure MenuReparerBatiment(var zone:Zone);
   begin
     AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
     readln(choix);
-    choix_int:=StrToInt(choix);
-    choix_int:=StrToInt(choix);
-    if (zone.emplacements[choix_int].type_structure=Mine) or (zone.emplacements[choix_int].type_structure=Usine) then
+    if (choix >= '0') and (choix <= '9') then
     begin
-      if zone.emplacements[choix_int].panne then
+      choix_int:=StrToInt(choix);
+      if (zone.emplacements[choix_int].type_structure=Mine) or (zone.emplacements[choix_int].type_structure=Usine) then
       begin
-        ReparerBatiment(zone, choix_int);
+        if zone.emplacements[choix_int].panne then
+        begin
+          ReparerBatiment(zone, choix_int);
+        end
+        else
+        begin
+          AfficherActionInformation('Vous devez reparer uniquement des batiments en panne');
+          readln;
+        end;
       end
       else
       begin
-        AfficherActionInformation('Vous devez reparer uniquement des batiments en panne');
+        AfficherActionInformation('Vous devez choisir un emplacement d''un batiment reparable');
         readln;
       end;
     end
     else
     begin
-      AfficherActionInformation('Vous devez choisir un emplacement d''un batiment reparable');
+      AfficherActionInformation('Vous devez choisir un nombre correspondant a une mission entre 0 et 9 Compris');
       readln;
     end;
   end;
