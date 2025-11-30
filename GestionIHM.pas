@@ -1083,49 +1083,64 @@ procedure AfficherMenuWikiProduction();
   end;
 
 procedure AfficherMenuMissions();
-  begin
-    effacerEcran();
-    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
-    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+  var
 
+  curent_zone:Integer;  // Zone actuel du jeu
+  zones:ZonesJeu;  // Les 3 zones dans lesquels le joueur peut se déplacer
+  
+  begin
+      curent_zone:=0;
+
+    // Définition des 3 zones de jeu
+    zones[0]:=initZone(0, NOM_ZONE1, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
+    zones[1]:=initZone(0, NOM_ZONE2, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
+    zones[2]:=initZone(0, NOM_ZONE3, ArgileRegolitique, CarbonePyrolyte, MineraiDHematite);
+    
+    effacerEcran();
+    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, BORD_DROIT, BORD_BAS, simple, white, black); // TAILLE DE BASE
+    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL, BORD_BAS, double, white, black);
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+
+    AfficherInventaireZone(zones[curent_zone]);
 
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| MISSIONS |>')div 2),1);
     writeln('<| MISSIONS |>');
 
-    // CADRE MISSION 1
-    dessinerCadreXY(5, 2, (SCREEN_WIDTH*4 div 5 - 7) div 4 + 4, SCREEN_HEIGHT-4, simple, white, black);
-    DeplacerCurseurXY((5 + (SCREEN_WIDTH*4 div 5 - 7) div 4 + 4) div 2 - 4, 4);
+    // CADRES
+    dessinerCadreXY((SCREEN_WIDTH div 5)+3, 2, ((SCREEN_WIDTH div 5)*2-2), SCREEN_HEIGHT-4, simple, white, black);
+    dessinerCadreXY(((SCREEN_WIDTH div 5)*2+1), 2, ((SCREEN_WIDTH div 5)*3-2), SCREEN_HEIGHT-4, simple, white, black);
+    dessinerCadreXY(((SCREEN_WIDTH div 5)*3)+1, 2, ((SCREEN_WIDTH div 5)*4-3), SCREEN_HEIGHT-4, simple, white, black);
+    UTF8(True);
+    DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*3) div 2 - 5, 4);
     couleurTexte(yellow);
     write('MISSION 1');
+    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*3) div 2 - 14, 35);
     couleurTexte(white);
+    write('Etat : null');
 
-    // CADRE MISSION 2
-    dessinerCadreXY((SCREEN_WIDTH*4 div 5 - 7) div 4 + 5, 2, 2*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 5, SCREEN_HEIGHT-4, simple, white, black);
-    DeplacerCurseurXY(((SCREEN_WIDTH*4 div 5 - 7) div 4 + 5 + 2*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 5) div 2 - 4, 4);
+    DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*5) div 2 - 6, 4);
     couleurTexte(yellow);
     write('MISSION 2');
-    couleurTexte(white);
 
-    // CADRE MISSION 3
-    dessinerCadreXY(2*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 6, 2, 3*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 6, SCREEN_HEIGHT-4, simple, white, black);
-    DeplacerCurseurXY((2*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 6 + 3*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 6) div 2 - 4, 4);
+    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*5) div 2 - 16, 35);
+    couleurTexte(white);
+    write('Etat : En cours...');
+
+    DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*7) div 2 - 6, 4);
     couleurTexte(yellow);
     write('MISSION 3');
     couleurTexte(white);
-
-    // CADRE MISSION 4
-    dessinerCadreXY(3*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 7, 2, SCREEN_WIDTH*4 div 5 - 4, SCREEN_HEIGHT-4, simple, white, black);
-    DeplacerCurseurXY((3*((SCREEN_WIDTH*4 div 5 - 7) div 4) + 7 + SCREEN_WIDTH*4 div 5 - 4) div 2 - 4, 4);
-    couleurTexte(yellow);
-    write('MISSION 4');
-    couleurTexte(white);
-
+    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*7) div 2 - 16, 35);
+    write('Etat : terminé');
 
       deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
         // Titre
-    UTF8(True);
     writeln('Emetteur : Frank Deher');
 
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
+    writeln('[1] Accomplir une mission');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+    writeln('[2] Boutique');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
     writeln('[0] Revenir au jeu');
     UTF8(False);

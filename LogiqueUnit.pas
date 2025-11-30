@@ -13,6 +13,8 @@ function ConsommationElectricite(zone:Zone):Integer;
 
 procedure MainMenu();
 
+function initZone(numero:Integer; nom:String; minerai1:Materiaux; minerai2:Materiaux; minerai3:Materiaux):Zone;
+
 implementation
   uses
     SysUtils, Classes, GestionIHM;

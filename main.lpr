@@ -7,5 +7,7 @@ begin
   Randomize;
   EcranTitre();
   readln();
+  AfficherMenuMissions();
+  readln();
   MainMenu();
 end.
