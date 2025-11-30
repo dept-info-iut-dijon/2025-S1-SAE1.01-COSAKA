@@ -662,6 +662,162 @@ function getProduction(zone:Zone):TableauMateriaux;
     getProduction:=res;
   end;
 
+// Gestion des missions
+procedure setMission(var mission:Mission);
+  {Procedure qui permet de créer une mission avec un nombre
+  aléatoire de matériaux entre 1 et 4 ainsi qu'un nombres 
+  aléatoire entre 5 et 15 de chacun de ces matériaux}
+  var
+    i:Integer;
+    nbMateriaux:Integer;
+    materiau:Materiaux;
+    nbAleatoire:Integer;
+    sortie:Boolean;
+  const
+    CHANCE=0.5;
+  begin
+    mission.accompli := False;
+
+    // Initialise le nombre de materiaux minimum a 1
+    nbMateriaux:=1;
+    for i:=1 to 3 do
+    begin
+      // Si le nombre aléatoire de la fonction random est plus petit que le seuil définis, le nombre de materiaux augmente de 1
+      if random < CHANCE then
+        inc(nbMateriaux);
+    end;
+
+    // Initialise le tableau des ressources de la mission à 0
+    for materiau in Materiaux do
+    begin
+      mission.ressources[materiau]:=0;
+    end;
+
+    mission.points := 0;
+
+    // Boucle sur le nombres de materiaux de la mission
+    for i:=1 to nbMateriaux do
+    begin
+      // Initialise la sortie a False
+      sortie:=False;
+      while not sortie do
+      begin
+        // Choisit un nombre aléatoire afin de choisir uniquement des materiaux transformés
+        nbAleatoire := random(StrToInt(MATERIAUX_TRANSFORMES)) + StrToInt(MATERIAUX_PREMIERS);
+        // Boucle sur tous les materiaux
+        for materiau in Materiaux do
+        begin
+          // Vérifie si le materiau sur lequel on boucle correspond au nombre aléatoire
+          if (ord(materiau) = nbAleatoire) then
+          begin
+            // Vérifie que le materiau n'a pas déjà de ressources attribués
+            if (mission.ressources[materiau] = 0) then
+            begin
+              // Créer un nombre aléatoire de nombres d'un matériau entre 5 et 15 compris
+              mission.ressources[materiau] := (5 + (random(10)+1));
+              // Ajoute pour chaque matériau le nombre de points de la hierarchie du matériaux transformé
+              mission.points := mission.points + nbAleatoire;
+              sortie := True;
+            end;
+          end;
+        end;
+      end;
+    end;
+    // Multiplie le nombre de points de la mission par rapport aux nombres de matériaux différents de la missions
+    mission.points := round(mission.points * (0.9 + (nbMateriaux / 10)));
+  end;
+  
+procedure initMissions(var missions:MissionsActives);
+  {Procedure qui initialise toutes les missions}
+  var
+    i:Integer;
+  begin
+    // Boucle sur chaque mission
+    for i:=low(missions) to high(missions) do
+    begin
+      // Initialise la nouvelle mission
+      setMission(missions[i]);
+    end;
+  end;
+
+procedure actualiseMissions(var missionsA:MissionsActives);
+  {Procedure qui actualise les missions si elles sont accomplies}
+  var
+    i:Integer;
+  begin
+    // Boucle sur chaque mission
+    for i:=low(missionsA) to high(missionsA) do
+    begin
+      // Vérifie que la mission est accompli
+      if missionsA[i].accompli then
+      begin
+        // Initialise la nouvelle mission
+        setMission(missionsA[i]);
+        AfficherActionInformation(IntToStr(i));
+        readln;
+      end;
+    end;
+  end;
+
+function MateriauxNecessairesMission(zone:Zone; mission:Mission):Boolean;
+  {Fonction qui renvoie Vrai si les materiaux necessaires a l'accomplissement 
+  de la mission sont présent dans l'inventaire de la zone et Faux sinon}
+  var
+    materiau:Materiaux;
+  begin
+    MateriauxNecessairesMission := True;
+    // Boucle sur chaque materiaux du type Materiaux
+    for materiau in Materiaux do
+    begin
+      // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
+      if (mission.ressources[materiau] > 0) then
+      begin
+        AfficherActionInformation(IntToStr(mission.ressources[materiau]));
+        readln;
+        // Vérifie que l'inventaire de la zone possèdent assez de matériaux
+        if (zone.inventaire[materiau] < mission.ressources[materiau]) then
+          MateriauxNecessairesMission := False;
+      end;
+    end;
+  end;
+
+procedure SuppressionMateriauxMission(var zone:Zone; var mission:Mission);
+  {Procedure qui supprime les materiaux necessaires a une mission}
+  var
+    materiau:Materiaux;
+  begin
+    // Boucle sur chaque materiaux du type Materiaux
+    for materiau in Materiaux do
+    begin
+      // Vérifie que le materiau sur lequel on boucle est necessaire au batiment
+      if (mission.ressources[materiau] > 0) then
+      begin
+          // Supprime les matériaux nécessaire de l'inventaire
+          zone.inventaire[materiau] :=  zone.inventaire[materiau] - mission.ressources[materiau];
+      end;
+    end;
+  end;
+
+procedure termineMission(var zone:Zone; var mission:Mission; var pognon:Integer);
+  {Procedure qui accompli une mission et supprime les materiaux necessaires de l'inventaire de}
+  begin
+    // Vérifie que les matériaux nécessaires sont présent dans l'inventaire de la zone
+    if MateriauxNecessairesMission(zone, mission) then
+    begin
+      // Supprime les matériaux nécessaires de la zone
+      SuppressionMateriauxMission(zone, mission);
+
+      // Définie la mission comme accompli      
+      mission.accompli := True;
+      pognon := pognon + mission.points;
+    end
+    else
+    begin
+      AfficherActionInformation('Vous n''avez pas les materiaux necessaires pour accomplir cette mission');
+      readln;
+    end;
+  end;
+
 // Procedure et fonctions supplémentaires
 procedure setPanne(var zone:Zone);
   {Procedure qui prend en parametre une zone 
@@ -704,6 +860,7 @@ procedure setDate(var date:Date);
 procedure setBonus();
   {}
   begin
+    
   end;
 
 function nbJourMois(mois:Mois; annee:Integer):Integer;
@@ -756,163 +913,14 @@ procedure suivante(var date:Date);
       end;
   end;
 
-procedure jourSuivant(var zone:Zone; var date:Date);
+procedure jourSuivant(var zone:Zone; var date:Date; var missionsA:MissionsActives);
   {Passe au jour suivant en récupérant les ressources produites}
   begin
   suivante(date);
   revenusProduction(zone);
   AfficheRecapJournee(zone, date);
+  actualiseMissions(missionsA);
   setPanne(zone);
-  end;
-
-// Gestion des missions
-procedure setMission(var mission:Mission);
-  {Procedure qui permet de créer une mission avec un nombre
-  aléatoire de matériaux entre 1 et 4 ainsi qu'un nombres 
-  aléatoire entre 5 et 15 de chacun de ces matériaux}
-  var
-    i:Integer;
-    nbMateriaux:Integer;
-    materiau:Materiaux;
-    nbAleatoire:Integer;
-    sortie:Boolean;
-  const
-    CHANCE=0.5;
-  begin
-    mission.accompli := False;
-
-    // Initialise le nombre de materiaux minimum a 1
-    nbMateriaux:=1;
-    for i:=1 to 3 do
-    begin
-      // Si le nombre aléatoire de la fonction random est plus petit que le seuil définis, le nombre de materiaux augmente de 1
-      if random < CHANCE then
-        inc(nbMateriaux);
-    end;
-
-    // Initialise le tableau des ressources de la mission à 0
-    for materiau in Materiaux do
-    begin
-      mission.ressources[materiau]:=0;
-    end;
-
-    // Boucle sur le nombres de materiaux de la mission
-    for i:=1 to nbMateriaux do
-    begin
-      // Initialise la sortie a False
-      sortie:=False;
-      while not sortie do
-      begin
-        // Choisit un nombre aléatoire afin de choisir uniquement des materiaux transformés
-        nbAleatoire := random(StrToInt(MATERIAUX_TRANSFORMES)) + StrToInt(MATERIAUX_PREMIERS) + 1;
-        // Boucle sur tous les materiaux
-        for materiau in Materiaux do
-        begin
-          // Vérifie si le materiau sur lequel on boucle correspond au nombre aléatoire
-          if (ord(materiau) = nbAleatoire) then
-          begin
-            // Vérifie que le materiau n'a pas déjà de ressources attribués
-            if (mission.ressources[materiau] = 0) then
-            begin
-              // Créer un nombre aléatoire de nombres d'un matériau entre 5 et 15 compris
-              mission.ressources[materiau] := (5 + (random(10)+1));
-              // Ajoute pour chaque matériau le nombre de points de la hierarchie du matériaux transformé
-              mission.points := mission.points + nbAleatoire;
-              sortie := True;
-            end;
-          end;
-        end;
-      end;
-    end;
-    // Multiplie le nombre de points de la mission par rapport aux nombres de matériaux différents de la missions
-    mission.points := round(mission.points * (0.9 + (nbMateriaux / 10)));
-  end;
-  
-procedure initMissions(var missions:MissionsActives);
-  {Procedure qui initialise toutes les missions}
-  var
-    i:Integer;
-  begin
-    // Boucle sur chaque mission
-    for i:=low(missions) to high(missions) do
-    begin
-      // Initialise la nouvelle mission
-      setMission(missions[i]);
-    end;
-  end;
-
-procedure actualiseMissions(var missions:MissionsActives);
-  {Procedure qui actualise les missions si elles sont accomplies}
-  var
-    i:Integer;
-  begin
-    // Boucle sur chaque mission
-    for i:=low(missions) to high(missions) do
-    begin
-      // Vérifie que la mission est accompli
-      if missions[i].accompli then
-      begin
-        // Initialise la nouvelle mission
-        setMission(missions[i]);
-      end;
-    end;
-  end;
-
-function MateriauxNecessairesMission(zone:Zone; mission:Mission):Boolean;
-  {Fonction qui renvoie Vrai si les materiaux necessaires a l'accomplissement 
-  de la mission sont présent dans l'inventaire de la zone et Faux sinon}
-  var
-    materiau:Materiaux;
-  begin
-    MateriauxNecessairesMission := True;
-    // Boucle sur chaque materiaux du type Materiaux
-    for materiau in Materiaux do
-    begin
-      // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
-      if (mission.ressources[materiau] > 0) then
-      begin
-        // Vérifie que l'inventaire de la zone possèdent assez de matériaux
-        if (zone.inventaire[materiau] < mission.ressources[materiau]) then
-          MateriauxNecessairesMission := False;
-      end;
-    end;
-  end;
-
-procedure SuppressionMateriauxMission(var zone:Zone; var mission:Mission);
-  {Procedure qui supprime les materiaux necessaires a une mission}
-  var
-    materiau:Materiaux;
-  begin
-    // Boucle sur chaque materiaux du type Materiaux
-    for materiau in Materiaux do
-    begin
-      // Vérifie que le materiau sur lequel on boucle est necessaire au batiment
-      if (mission.ressources[materiau] > 0) then
-      begin
-          // Supprime les matériaux nécessaire de l'inventaire
-          zone.inventaire[materiau] :=  zone.inventaire[materiau] - mission.ressources[materiau];
-      end;
-    end;
-  end;
-
-procedure termineMission(var zone:Zone; var mission:Mission; var pognon:Integer);
-  {Procedure qui accompli une mission et supprime les materiaux necessaires de l'inventaire de}
-  begin
-    // Vérifie que les matériaux nécessaires sont présent dans l'inventaire de la zone
-    if MateriauxNecessairesMission(zone, mission) then
-    begin
-      // Supprime les matériaux nécessaires de la zone
-      SuppressionMateriauxMission(zone, mission);
-
-      // Définie la mission comme accompli      
-      mission.accompli := True;
-      pognon := pognon + mission.points;
-    end
-    else
-    begin
-      AfficherActionInformation('Vous n''avez pas les materiaux necessaires pour accomplir cette mission');
-      readln;
-    end;
   end;
 
 // Gestion des menus
@@ -954,7 +962,7 @@ procedure MenuCreerBatiment(zones:ZonesJeu; var zone:Zone);
             begin
               AfficherMenuMateriauxTransformer();
               readln(choix2);
-              if (choix2>=QUITTER) and (choix2<=MATERIAUX_TRANSFORMES) then
+              if (choix2>=QUITTER) and (StrToInt(choix2)<=StrToInt(MATERIAUX_TRANSFORMES)) then
               begin
                 choix2_int:=StrToInt(choix2);
                 sortie2:=True;
@@ -1106,7 +1114,7 @@ procedure MenuChangementUsine(var zone:Zone);
     begin
       AfficherMenuMateriauxTransformer();
       readln(choix2);
-      if (choix>=QUITTER) and (choix<=MATERIAUX_TRANSFORMES) then
+      if (choix>=QUITTER) and (StrToInt(choix)<=StrToInt(MATERIAUX_TRANSFORMES)) then
       begin
         choix2_int:=StrToInt(choix2);
         sortie:=True;
@@ -1255,7 +1263,7 @@ procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives;
     begin
       while (choix<>QUITTER) do
       begin
-        AfficherMenuMissions(missionsA,zones[curent_zone]);
+        AfficherMenuMissions(missionsA, zones[curent_zone]);
         readln(choix);
         // Accomplir une mission
         if (choix = '1') then
@@ -1263,7 +1271,7 @@ procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives;
           // CHoisir la mission
           AfficherActionInformation('Veuillez choisir une mission (entre 0 et 2)');
           readln(Choix2);
-          choix2_int:=StrToInt(choix);
+          choix2_int:=StrToInt(choix2);
           if (choix2 >= '0') and (choix2 <= '2') then
             termineMission(zones[curent_zone], missionsA[choix2_int], pognon);
         end
@@ -1330,7 +1338,7 @@ procedure JeuPrincipal();
       else if (choix=EXPLORER) then
         begin
         Explore(zones[curent_zone]);
-        jourSuivant(zones[curent_zone], curent_date);
+        jourSuivant(zones[curent_zone], curent_date, missionsA);
         end
       // Choix 'Changer de zone'
       else if (choix=CHANGER_ZONE) then
@@ -1345,7 +1353,7 @@ procedure JeuPrincipal();
       // Choix 'Passer la journée'
       else if (choix=PASSER_JOURNEE) then
         begin
-        jourSuivant(zones[curent_zone], curent_date);
+        jourSuivant(zones[curent_zone], curent_date, missionsA);
         end
       // Choix 'Missions'                   (Aouter la logique)
       else if (choix=MISSIONS) then
