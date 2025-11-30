@@ -799,7 +799,7 @@ procedure setMission(var mission:Mission);
       while not sortie do
       begin
         // Choisit un nombre aléatoire afin de choisir uniquement des materiaux transformés
-        nbAleatoire := random(StrToInt(MATERIAUX_TRANSFORMES)) + StrToInt(MATERIAUX_PREMIERS);
+        nbAleatoire := random(StrToInt(MATERIAUX_TRANSFORMES)) + StrToInt(MATERIAUX_PREMIERS) + 1;
         // Boucle sur tous les materiaux
         for materiau in Materiaux do
         begin
@@ -948,13 +948,13 @@ procedure MenuCreerBatiment(zones:ZonesJeu; var zone:Zone);
             begin
               AfficherMenuMateriauxTransformer();
               readln(choix2);
-              if (choix>=QUITTER) and (choix<=MATERIAUX_TRANSFORMES) then
+              if (choix2>=QUITTER) and (choix2<=MATERIAUX_TRANSFORMES) then
               begin
                 choix2_int:=StrToInt(choix2);
                 sortie2:=True;
               end;
             end;
-            if choix2<>QUITTER then
+            if (choix2<>QUITTER) then
             begin
               for materiau in Materiaux do
               begin
@@ -1235,22 +1235,27 @@ procedure menuTransfertRessources(var zones:ZonesJeu; curent_zone:Integer);
     zones[zone_transfert].inventaire[materiaux_transfert]:=zones[zone_transfert].inventaire[materiaux_transfert]+nb_a_transmettre;
   end;
 
-procedure menuGestionMissions(var zone:Zone);
+procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives; curent_zone:Integer);
   {}
   var
     choix:string;
-    choix_int:Integer;
+    choix2:string;
+    choix2_int:Integer;
   begin
+    choix:='-1';
     if ExisteAscenseurOrbital(zones) then
     begin
-      AfficherMenuMissions();
-      readln(choix);
-      choix_int:=StrToInt(choix);
       while (choix<>QUITTER) do
       begin
+        AfficherMenuMissions();
+        readln(choix);
         if (choix = '1') then
         begin
-          
+          AfficherActionInformation('Veuillez choisir une mission (entre 0 et 2)');
+          readln(Choix2);
+          choix2_int:=StrToInt(choix);
+          if (choix2 >= '0') and (choix2 <= '2') then
+            termineMission(zones[curent_zone], missionsA[choix2_int]);
         end
         else if (choix = '2') then
         begin
@@ -1272,6 +1277,7 @@ procedure JeuPrincipal();
     choix:String; // Sert à enregistrer les données saisits par l'utilisateir
     curent_date:Date; // La date actuelle du jeu
     pognon:Integer;
+    missionsA:MissionsActives;
   begin
     // Affiche le scénarion avant de lancer le jeu
     Scenario();
@@ -1285,6 +1291,9 @@ procedure JeuPrincipal();
     zones[0]:=initZone(0, NOM_ZONE1, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
     zones[1]:=initZone(0, NOM_ZONE2, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
     zones[2]:=initZone(0, NOM_ZONE3, ArgileRegolitique, CarbonePyrolyte, MineraiDHematite);
+
+    // Initialisation des Missions
+    initMissions(missionsA);
     
     // Boucle du menu principal, s'arrête que l'utilisateur entre '0'.
     while (choix<>QUITTER) do
@@ -1330,7 +1339,7 @@ procedure JeuPrincipal();
       // Choix 'Missions'                   (Aouter la logique)
       else if (choix=MISSIONS) then
         begin
-          menuGestionMissions(zones[curent_zone]);
+          menuGestionMissions(zones, missionsA, curent_zone);
         end
       // Choix 'Wiki'                       (Finir entrer les données)
       else if (choix=WIKI) then
