@@ -503,6 +503,21 @@ procedure UpgradeBatiment(var zone:Zone; emplacement:Integer);
     end;
   end;
 
+procedure ReparerBatiment(var zone:Zone; emplacement:Integer);
+  {}
+  begin
+    if MateriauxNecessairesConstruction(zone, zone.emplacements[emplacement].type_structure, zone.emplacements[emplacement].niveau, True) then
+    begin
+      SuppressionMateriauxConstruction(zone, zone.emplacements[emplacement].type_structure, zone.emplacements[emplacement].niveau, True);
+
+      zone.emplacements[emplacement].panne := False;
+    end
+    else
+    begin
+      AfficherActionInformation('Vous n''avez pas les materiaux necessaires');
+        readln;
+    end;
+  end;
 
 // Gestion de la production de ressources
 function ProductionElectricite(zone:Zone):Integer;
@@ -1285,13 +1300,73 @@ procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives;
     end;
   end;
 
+procedure MenuReparerBatiment(var zone:Zone);
+  {}
+  var
+    choix:string;
+    choix_int:Integer;
+  begin
+    AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
+    readln(choix);
+    choix_int:=StrToInt(choix);
+    choix_int:=StrToInt(choix);
+    if (zone.emplacements[choix_int].type_structure=Mine) or (zone.emplacements[choix_int].type_structure=Usine) then
+    begin
+      if zone.emplacements[choix_int].panne then
+      begin
+        ReparerBatiment(zone, choix_int);
+      end
+      else
+      begin
+        AfficherActionInformation('Vous devez reparer uniquement des batiments en panne');
+        readln;
+      end;
+    end
+    else
+    begin
+      AfficherActionInformation('Vous devez choisir un emplacement d''un batiment reparable');
+      readln;
+    end;
+  end;
+
+procedure menuActionBatiments(var zones:ZonesJeu; curent_zone:Integer);
+  var
+    choix:String;
+  begin
+    choix:='';
+    while (choix<>QUITTER) do
+      begin
+      AfficherMenuActionBatiments();
+      readln(choix);
+      // Choix 'Construire un bâtiment'
+      if (choix=CONSTRUIRE) then
+        begin
+        MenuCreerBatiment(zones, zones[curent_zone]);
+        end
+      // Choix 'Changer de production'
+      else if (choix=CHANGER_PRODUCTION) then
+        begin
+        MenuChangementUsine(zones[curent_zone]);
+        end
+      // Choix 'Améliorer un bâtiment'
+      else if (choix=AMELIORER) then
+        begin
+        MenuUpgradeBatiment(zones[curent_zone]);
+        end
+      // Choix 'Réparer un bâtiment'
+      else if (choix=REPARER) then
+        begin
+        MenuReparerBatiment(zones[curent_zone]);
+        end;
+      AfficherEmplacements(zones[curent_zone]);
+      end;
+  end;
 // Menu Principal du jeu
 procedure JeuPrincipal();
   var
     curent_zone:Integer;  // Zone actuel du jeu
     zones:ZonesJeu;  // Les 3 zones dans lesquels le joueur peut se déplacer
     choix:String; // Sert à enregistrer les données saisits par l'utilisateir
-    choix2:String;
     curent_date:Date; // La date actuelle du jeu
     pognon:Integer;
     missionsA:MissionsActives;
@@ -1300,7 +1375,6 @@ procedure JeuPrincipal();
     Scenario();
     
     choix:='';
-    choix2:='';
     setDate(curent_date);
     pognon:=0;
     curent_zone:=0;
@@ -1320,33 +1394,7 @@ procedure JeuPrincipal();
       readln(choix);
       // Choix 'Gestion des batiments'
       if (choix=MENU_BATIMENTS) then
-      begin
-        while (choix2<>QUITTER) do
-        begin
-          AfficherMenuActionBatiments();
-          readln(choix2);
-          // Choix 'Construire un bâtiment'
-          if (choix2=CONSTRUIRE) then
-          begin
-            MenuCreerBatiment(zones, zones[curent_zone]);
-          end
-          // Choix 'Changer de production'
-          else if (choix2=CHANGER_PRODUCTION) then
-          begin
-            MenuChangementUsine(zones[curent_zone]);
-          end
-          // Choix 'Améliorer un bâtiment'
-          else if (choix2=AMELIORER) then
-          begin
-            MenuUpgradeBatiment(zones[curent_zone]);
-          end
-          // Choix 'Réparer un bâtiment'
-          else if (choix2=REPARER) then
-          begin
-            
-          end;
-        end;
-      end
+        menuActionBatiments(zones, curent_zone)
       // Choix 'Explorer la zone'
       else if (choix=EXPLORER) then
         begin
