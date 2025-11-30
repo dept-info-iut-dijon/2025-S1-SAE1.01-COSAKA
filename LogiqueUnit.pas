@@ -633,7 +633,6 @@ procedure revenusProduction(var zone:Zone; bonus:Bonuses);
         end;
       end;
     end;
-  end;
 
 
 function getProduction(zone:Zone; bonus:Bonuses):TableauMateriaux;
@@ -994,7 +993,7 @@ procedure verifBonusActif(var bonus:Bonuses; curent_date:Date);
         begin
         date_fin:=bonus[e].date_activation;
         // Calcule à quelle date le bonus doit s'arrêter.
-        for i:=1 to bonus[e].duree do
+        for i:=1 to bonus[e].duree-1 do
           suivante(date_fin);
 
         // Vérifie si le bonus doit s'arrêter
