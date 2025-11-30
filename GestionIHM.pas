@@ -1134,6 +1134,13 @@ procedure AfficherMenuMissions();
     DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*3) div 2 - 5, 4);
     couleurTexte(yellow);
     write('MISSION 1');
+    couleurTexte(white);
+    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*3) div 2 - 14, 8);
+    write('Ressources necessaires');
+
+    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*3) div 2 - 14, 32);
+    write('Récompense : ');
+
     DeplacerCurseurXY(((SCREEN_WIDTH div 5)*3) div 2 - 14, 35);
     couleurTexte(white);
     write('Etat : null');
