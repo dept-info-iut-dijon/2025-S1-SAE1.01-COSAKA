@@ -48,7 +48,7 @@ procedure AfficherMenuWikiProduction();
 
 procedure AfficherMenuBilan(currentDate:string;nextDate:string);
 
-procedure AfficherMenuMissions();
+procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
 
 
 implementation
@@ -315,6 +315,16 @@ procedure dessinerEmplacement(emplacement:Structure; numero_emplacement:Integer;
       col:=DarkGray
     else if emplacement.panne then
       col:=Red
+    else if emplacement.type_structure = Hub then
+      col:=LightBlue
+    else if emplacement.type_structure = Gisement then
+      col:=Yellow
+    else if emplacement.type_structure = Mine then
+    col:=Brown
+    else if emplacement.type_structure = Centrale then
+    col:=LightGreen
+    else if (emplacement.type_structure = Usine) or (emplacement.type_structure = AscenseurOrbital) then
+    col:=LightCyan
     else
       col:=white;
     couleurTexte(col);
@@ -470,13 +480,14 @@ procedure AfficherInventaireZone(zone:Zone);
 
 procedure AfficherInformations(zone:Zone; time:Date; montant_argent:Integer);
   begin
+    UTF8(True);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),5);
     writeln('ZONE : ',zone.nom);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
     writeln('DATE : ',time.jour, ' ', time.nb_jour, ' ', time.mois, ' ', time.annee);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),9);
     couleurTexte(LightMagenta);
-    write(NOM_MONNAIE, ' : ', montant_argent);
+    write(NOM_MONNAIE, ' : ', montant_argent,'€');
     couleurTexte(white);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),12);
 
@@ -490,7 +501,6 @@ procedure AfficherInformations(zone:Zone; time:Date; montant_argent:Integer);
       begin
         couleurTexte(Green);
       end;
-      UTF8(True);
     write('Production Electricité');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),12);
 
@@ -749,7 +759,7 @@ procedure AfficherMenuMateriauxTransformer();
     // Affiche les matériaux transformés uniquement
     for m in Materiaux do 
       begin
-        if (m <> Electricite) and (m <> MineraiDHematite) and (m <> FragmentDeChalcocite) and (m <> ArgileRegolitique) and (m <> CarbonePyrolyte) then
+        if (m <> Electricite) and (m <> Hematite) and (m <> Chalcocite) and (m <> Regolitique) and (m <> Pyrolyte) then
           begin
             deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34), startY + (i - 1));
             writeln('[', i, '] ', m);
@@ -772,10 +782,6 @@ procedure AfficherMenuMateriauxTransformer();
 // ...............................\.\./\././.|.||.'./.|.|.
 // ................................\.V..V./..|.||...\.|.|.
 // .____...._.._____.___.__..__.____\_/\_/_.|___|_|\_\___|
-// |.__.)../.\|_..._|_._|..\/..|.____|.\.|.|_..._/.___|...
-// |.._.\./._.\.|.|..|.||.|\/|.|.._|.|..\|.|.|.|.\___.\...
-// |.|_)./.___.\|.|..|.||.|..|.|.|___|.|\..|.|.|..___).|..
-// |____/_/...\_\_|.|___|_|..|_|_____|_|.\_|.|_|.|____/...
 
 procedure AfficherMenuWikiBatiment();
   begin
@@ -817,11 +823,11 @@ procedure AfficherMenuWikiBatiment();
 
     couleurTexte(White);
     deplacerCurseurXY(30,6);
-    writeln('x10 Plaques Standard');
+    writeln('x10 Plaque');
     deplacerCurseurXY(30,7);
-    writeln('x20 Plaques Standard / x20 Sacs de Régolithe Fixateur');
+    writeln('x20 Plaque / x20 Régolithe');
     deplacerCurseurXY(30,8);
-    writeln('x20 Plaques Standard / x20 Alliage Cryogénique');
+    writeln('x20 Plaque / x20 Alliage');
 
     // Consommation
     deplacerCurseurXY(112,4);
@@ -862,11 +868,11 @@ procedure AfficherMenuWikiBatiment();
 
     couleurTexte(White);
     deplacerCurseurXY(30,14);
-    writeln('x10 Câbles de cuivre / x10 Plaques Standard');
+    writeln('x10 Câbles / x10 Plaque');
     deplacerCurseurXY(30,15);
-    writeln('x20 Plaques Standard / x20 Sacs de Régolithe Fixateur');
+    writeln('x20 Plaque / x20 Régolithe');
     deplacerCurseurXY(30,16);
-    writeln('x20 Plaques Standard / x20 Alliage Cryogénique');
+    writeln('x20 Plaque / x20 Alliage ');
 
     // Consommation
     deplacerCurseurXY(112,12);
@@ -918,7 +924,7 @@ procedure AfficherMenuWikiBatiment();
 
     couleurTexte(White);
     deplacerCurseurXY(30,27);
-    writeln('x30 Câbles de cuivre / x10 Plaques Standard / x20 Sacs de Régolithe Fixateur');
+    writeln('x30 Câbles / x10 Plaque  / x20 Régolithe');
 
     // Consommation
     deplacerCurseurXY(112,25);
@@ -951,7 +957,7 @@ procedure AfficherMenuWikiBatiment();
 
     couleurTexte(White);
     deplacerCurseurXY(30,34);
-    writeln('x200 Câbles de cuivre / x200 Plaques Standard / x200 Sacs de Régolithe Fixateur');
+    writeln('x200 Câbles / x200 Plaque / x200 Régolithe');
 
     // Consommation
     deplacerCurseurXY(112,32);
@@ -977,15 +983,7 @@ procedure AfficherMenuWikiBatiment();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
 
-// ..............................__........_____._.._____....
-// ..............................\.\.....././_._|.|/./_._|...
-// ...............................\.\./\././.|.||.'./.|.|....
-// ................................\.V..V./..|.||...\.|.|....
-// .____..____...___..____.._..._.._\_/\_/__|___|_|\_\___|._.
-// |.._.\|.._.\./._.\|.._.\|.|.|.|/.___|_..._|_._/._.\|.\.|.|
-// |.|_).|.|_).|.|.|.|.|.|.|.|.|.|.|.....|.|..|.|.|.|.|..\|.|
-// |..__/|.._.<|.|_|.|.|_|.|.|_|.|.|___..|.|..|.|.|_|.|.|\..|
-// |_|...|_|.\_\\___/|____/.\___/.\____|.|_|.|___\___/|_|.\_|
+
 
 procedure AfficherMenuWikiProduction();
   begin
@@ -1009,25 +1007,25 @@ procedure AfficherMenuWikiProduction();
 
     couleurTexte(White);
     deplacerCurseurXY(8,7);
-    writeln('Lingots de cuivre');
+    writeln('Cuivre');
     deplacerCurseurXY(8,9);
-    writeln('Lingots de fer');
+    writeln('Fer');
     deplacerCurseurXY(8,11);
-    writeln('Câbles de cuivre');
+    writeln('Câbles');
     deplacerCurseurXY(8,13);
-    writeln('Plaques Standard');
+    writeln('Plaque');
     deplacerCurseurXY(8,15);
-    writeln('Conduits de Fluide');
+    writeln('Conduits');
     deplacerCurseurXY(8,17);
-    writeln('Sacs de Régolithe Fixateur');
+    writeln('Fixateur');
     deplacerCurseurXY(8,19);
-    writeln('Alliage Cryogénique');
+    writeln('Alliage');
     deplacerCurseurXY(8,21);
-    writeln('Panneaux à Densité Optimale');
+    writeln('Panneaux');
     deplacerCurseurXY(8,23);
-    writeln('Poutres de Soutènement');
+    writeln('Poutres');
     deplacerCurseurXY(8,25);
-    writeln('Dalles de Stabilité');
+    writeln('Dalles');
 
     {---------Quantité produite par lot---------}
 
@@ -1043,7 +1041,7 @@ procedure AfficherMenuWikiProduction();
     deplacerCurseurXY(50,11);
     writeln('5 Câbles');
     deplacerCurseurXY(50,13);
-    writeln('10 Plaques');
+    writeln('10 Plaque');
     deplacerCurseurXY(50,15);
     writeln('10 Conduits');
     deplacerCurseurXY(50,17);
@@ -1065,25 +1063,25 @@ procedure AfficherMenuWikiProduction();
 
     couleurTexte(White);
     deplacerCurseurXY(90,7);
-    writeln('x30 Fragment de Chalcocite');
+    writeln('x30 Chalcocite');
     deplacerCurseurXY(90,9);
-    writeln('x30 Minerai d''Hématite');
+    writeln('x30 Hématite');
     deplacerCurseurXY(90,11);
-    writeln('x15 Lingots de cuivre');
+    writeln('x15 Cuivre');
     deplacerCurseurXY(90,13);
-    writeln('x60 Lingots de fer');
+    writeln('x60 Fer');
     deplacerCurseurXY(90,15);
-    writeln('x30 Lingots de fer');
+    writeln('x30 Fer');
     deplacerCurseurXY(90,17);
-    writeln('x15 Argile Régolitique');
+    writeln('x15 Régolitique');
     deplacerCurseurXY(90,19);
-    writeln('x30 Minerai d''Hématite / x15 Carbone Pyrolyté');
+    writeln('x30 Hématite / x15 Pyrolyté');
     deplacerCurseurXY(90,21);
-    writeln('x20 Plaques Standard / x20 Alliage Cryogénique');
+    writeln('x20 Plaque / x20 Alliage');
     deplacerCurseurXY(90,23);
-    writeln('x20 Plaques Standard / x15 Sacs de Régolithe Fixateur');
+    writeln('x20 Plaque / x15 Régolithe');
     deplacerCurseurXY(90,25);
-    writeln('x30 Sacs de Régolithe Fixateur');
+    writeln('x30 Régolithe');
 
     deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
     writeln('Source : Sabine Vaudeville');
@@ -1100,80 +1098,105 @@ procedure AfficherMenuWikiProduction();
       deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
   end;
 
-procedure AfficherMenuMissions();
-  var
+procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
+ var
+   i: Integer; // Compteur pour les missions (0 à 2)
+   j: Materiaux; // Itérateur sur le type Materiaux
+   LigneRessource: Integer; // Gère la position verticale pour l'affichage des ressources
+   Quantite: Integer; // Pour stocker la quantité requise
+ 
+ begin
+  SonInteraction();
 
-  curent_zone:Integer;  // Zone actuel du jeu
-  zones:ZonesJeu;  // Les 3 zones dans lesquels le joueur peut se déplacer
+  effacerEcran();
+  dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, BORD_DROIT, BORD_BAS, simple, white, black); 
+  dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL, BORD_BAS, double, white, black);
+  dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+
+  AfficherInventaireZone(zone_actuelle);
+
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| MISSIONS |>')div 2),1);
+  writeln('<| MISSIONS |>');
+
+  // CADRES
+  dessinerCadreXY((SCREEN_WIDTH div 5)+3, 2, ((SCREEN_WIDTH div 5)*2-2), SCREEN_HEIGHT-4, simple, white, black);
+  dessinerCadreXY(((SCREEN_WIDTH div 5)*2+1), 2, ((SCREEN_WIDTH div 5)*3-2), SCREEN_HEIGHT-4, simple, white, black);
+  dessinerCadreXY(((SCREEN_WIDTH div 5)*3)+1, 2, ((SCREEN_WIDTH div 5)*4-3), SCREEN_HEIGHT-4, simple, white, black);
+  UTF8(True);
   
+   // --- BOUCLE PRINCIPALE POUR LES 3 MISSIONS (i=0, 1, 2) ---
+  for i := 0 to 2 do
   begin
-    curent_zone:=0;
+  
+   // 1. TITRE DE LA MISSION
+     DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 5, 4);
+   couleurTexte(yellow);
+   write('MISSION ', i + 1);
+   couleurTexte(white);
 
-    // Définition des 3 zones de jeu
-    zones[0]:=initZone(0, NOM_ZONE1, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
-    zones[1]:=initZone(0, NOM_ZONE2, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
-    zones[2]:=initZone(0, NOM_ZONE3, ArgileRegolitique, CarbonePyrolyte, MineraiDHematite);
+   // 2. TITRE DES RESSOURCES
+   DeplacerCurseurXY(((SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 14, 8);
+   write('Ressources necessaires');
+   
+   // 3. AFFICHAGE DES RESSOURCES NÉCESSAIRES
+   LigneRessource := 10; 
+   couleurTexte(White);
+   
+   // Itération sur l'énumération Materiaux
+   for j in Materiaux do
+   begin
+     if j <> Electricite then
+     begin
+       Quantite := miss[i].ressources[j];
+       
+       // On affiche la ressource seulement si la quantité requise est > 0
+       if Quantite > 0 then
+       begin
+         DeplacerCurseurXY(((SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 14, LigneRessource);
+         writeln(' - ', j, ' x', Quantite); 
+         
+         LigneRessource := LigneRessource + 1;
+       end;
+     end;
+   end;
+     
+   // Ajout d'une ligne de séparation
+   LigneRessource := LigneRessource + 1; 
+   
+   // 4. RÉCOMPENSE
+   DeplacerCurseurXY(((SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 14, 32);
+   write('Récompense : ',miss[i].points,'€');
 
-    SonInteraction();
-
-    effacerEcran();
-    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, BORD_DROIT, BORD_BAS, simple, white, black); // TAILLE DE BASE
-    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL, BORD_BAS, double, white, black);
-    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
-
-    AfficherInventaireZone(zones[curent_zone]);
-
-    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| MISSIONS |>')div 2),1);
-    writeln('<| MISSIONS |>');
-
-    // CADRES
-    dessinerCadreXY((SCREEN_WIDTH div 5)+3, 2, ((SCREEN_WIDTH div 5)*2-2), SCREEN_HEIGHT-4, simple, white, black);
-    dessinerCadreXY(((SCREEN_WIDTH div 5)*2+1), 2, ((SCREEN_WIDTH div 5)*3-2), SCREEN_HEIGHT-4, simple, white, black);
-    dessinerCadreXY(((SCREEN_WIDTH div 5)*3)+1, 2, ((SCREEN_WIDTH div 5)*4-3), SCREEN_HEIGHT-4, simple, white, black);
-    UTF8(True);
-    DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*3) div 2 - 5, 4);
-    couleurTexte(yellow);
-    write('MISSION 1');
-    couleurTexte(white);
-    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*3) div 2 - 14, 8);
-    write('Ressources necessaires');
-
-    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*3) div 2 - 14, 32);
-    write('Récompense : ');
-
-    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*3) div 2 - 14, 35);
-    couleurTexte(white);
-    write('Etat : null');
-
-    DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*5) div 2 - 6, 4);
-    couleurTexte(yellow);
-    write('MISSION 2');
-
-    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*5) div 2 - 16, 35);
-    couleurTexte(white);
-    write('Etat : En cours...');
-
-    DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*7) div 2 - 6, 4);
-    couleurTexte(yellow);
-    write('MISSION 3');
-    couleurTexte(white);
-    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*7) div 2 - 16, 35);
-    write('Etat : terminé');
-
-      deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
-        // Titre
-    writeln('Emetteur : Frank Deher');
-
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
-    writeln('[1] Accomplir une mission');
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
-    writeln('[2] Boutique');
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
-    writeln('[0] Revenir au jeu');
-    UTF8(False);
-    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
-  end;
+   // 5. ÉTAT
+   DeplacerCurseurXY(((SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 14, 35);
+   couleurTexte(white);
+   write('Etat : ');
+   if (miss[i].accompli) = True then
+   begin
+   couleurTexte(Green);
+   writeln('Terminé');
+   end
+   else
+   begin
+   couleurTexte(Red);
+   writeln('En cours...');
+      couleurTexte(White);
+   end;
+  end; // Fin de la boucle For i
+   
+   // --- SECTION DU BAS (Commandes) ---
+  deplacerCurseurXY((SCREEN_WIDTH div 4)-7,(SCREEN_HEIGHT-3));
+  writeln('Emetteur : Frank Deher');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
+  writeln('[1] Accomplir une mission');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+  writeln('[2] Boutique');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+  writeln('[0] Revenir au jeu');
+  UTF8(False);
+  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+ end;
 
 procedure AfficherMenuBilan(currentDate:string;nextDate:string);
   begin

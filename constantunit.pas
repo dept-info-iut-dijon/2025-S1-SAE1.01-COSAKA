@@ -6,21 +6,20 @@ interface
   type
     // Materiaux que l'on peut récolter
     Materiaux = (
-    FragmentDeChalcocite,
-    MineraiDHematite,
-    ArgileRegolitique,
-    CarbonePyrolyte,
-    
-    LingotsDeCuivre,
-    LingotsDeFer,
-    PlaquesStandard,
-    CablesDeCuivre,
-    ConduitsDeFluide,
-    SacsDeRegolitheFixateur,
-    AlliageCryogenique,
-    PanneauxADensiteOptimale,
-    PoutresDeSoutenement,
-    DallesDeStabilite,
+    Chalcocite,
+    Hematite,
+    Regolitique,
+    Pyrolyte,
+    Cuivre,
+    Fer,
+    Plaques,
+    Cables,
+    Conduits,
+    Fixateur,
+    Alliage,
+    Panneaux,
+    Poutres,
+    Dalles,
     Electricite
     );
 
@@ -90,8 +89,8 @@ interface
     SEPARATION_ECRAN_INFO_PRINCIPAL = (SCREEN_WIDTH div 5)*4;
     
 
-    MINERAI1=MineraiDHematite;   // Minerai le plus courant
-    MINERAI2=FragmentDeChalcocite;  // 2ème Minerai le plus courant
+    MINERAI1=Hematite;   // Minerai le plus courant
+    MINERAI2=Chalcocite;  // 2ème Minerai le plus courant
 
     CONSOMMATION0:TableauMateriaux=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);  // Un tableau de consommation où rien est consommé (tout = à 0)
 

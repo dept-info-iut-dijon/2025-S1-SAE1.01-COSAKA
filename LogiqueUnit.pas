@@ -161,10 +161,10 @@ procedure initEmplacements(var zone:Zone);
     // Définie tous les emplacements par des emplacements vides et non découverts
     for i:=low(zone.emplacements) to high(zone.emplacements) do
       begin
-      setEmplacement(zone.emplacements[i], 0, false, Vide, MineraiDHematite, 0, CONSOMMATION0, false);
+      setEmplacement(zone.emplacements[i], 0, false, Vide, Hematite, 0, CONSOMMATION0, false);
       end;
     // Définie le Hub de la zone
-    setEmplacement(zone.emplacements[0], 0, true, Hub, MineraiDHematite, 0, CONSOMMATION0, false);
+    setEmplacement(zone.emplacements[0], 0, true, Hub, Hematite, 0, CONSOMMATION0, false);
     // Définie un emplacement avec un gisement du premier minerai de la zone.
     setEmplacement(zone.emplacements[random(8)+1], 3, true, Gisement, zone.minerais[0], 0, CONSOMMATION0, false);
 
@@ -1247,7 +1247,7 @@ procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives;
     begin
       while (choix<>QUITTER) do
       begin
-        AfficherMenuMissions();
+        AfficherMenuMissions(missionsA,zones[curent_zone]);
         readln(choix);
         if (choix = '1') then
         begin
@@ -1288,9 +1288,9 @@ procedure JeuPrincipal();
     curent_zone:=0;
 
     // Définition des 3 zones de jeu
-    zones[0]:=initZone(0, NOM_ZONE1, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
-    zones[1]:=initZone(0, NOM_ZONE2, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
-    zones[2]:=initZone(0, NOM_ZONE3, ArgileRegolitique, CarbonePyrolyte, MineraiDHematite);
+    zones[0]:=initZone(0, NOM_ZONE1, Hematite, Chalcocite, Pyrolyte);
+    zones[1]:=initZone(0, NOM_ZONE2, Hematite, Chalcocite, Pyrolyte);
+    zones[2]:=initZone(0, NOM_ZONE3, Regolitique, Pyrolyte, Hematite);
 
     // Initialisation des Missions
     initMissions(missionsA);
