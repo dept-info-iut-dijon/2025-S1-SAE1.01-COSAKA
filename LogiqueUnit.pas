@@ -1456,7 +1456,6 @@ procedure menuActionBatiments(var zones:ZonesJeu; curent_zone:Integer);
   var
     choix:String;
     curent_date:Date; // La date actuelle du jeu
-    pognon:Integer;
   begin
     setDate(curent_date);
     choix:='';

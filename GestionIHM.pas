@@ -1248,6 +1248,8 @@ procedure AfficherMenuBoutique();
     deplacerCurseurXY(8,28);
     couleurTexte(Red);
     writeln('MARZA-EVOLUTION');
+    deplacerCurseurXY(100, 28);
+    writeln('ATTENTION !!! Fait crash le jeu...');
     deplacerCurseurXY(8,30);
     writeln('MULTIPLICATEUR DE PRODUCTION : x10 000');
     deplacerCurseurXY(8,32);
