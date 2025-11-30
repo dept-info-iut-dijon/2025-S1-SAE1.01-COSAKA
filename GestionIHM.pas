@@ -1191,4 +1191,5 @@ procedure AfficherMenuBilan(currentDate:string;nextDate:string);
     UTF8(False);
   end;
 
+
 end.

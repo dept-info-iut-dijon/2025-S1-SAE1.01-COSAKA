@@ -161,7 +161,7 @@ interface
 
     MATERIAUX_PREMIERS='4';
     MATERIAUX_AUTRES='1';
-    MATERIAUX_TRANSFORMES='10'{ord(high(Materiaux))-MATERIAUX_PREMIERS-MATERIAUX_AUTRES};
+    MATERIAUX_TRANSFORMES='9';
     NBR_BATIMENTS_AMELIORABLES='3';
 
     // Sert dans les menus affichés en plusieurs fois.
