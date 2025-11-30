@@ -25,7 +25,7 @@ procedure AfficherZone(zone:Zone; date:Date; argent:Integer);
 procedure AfficherEmplacements(zone:Zone);
 procedure AfficherInventaireZone(zone:Zone);
 procedure AfficherInformations(zone:zone; time:Date; montant_argent:Integer);
-procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date);
+procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date;bonus:Bonuses);
 procedure AfficherActions();
 procedure UTF8(status:Boolean);
 {Moifie le traitement des caractères spéciaux (é, à, ç, etc...) en UTF8 si status = TRUE sinon RESET}
@@ -498,7 +498,7 @@ procedure AfficherInformations(zone:Zone; time:Date; montant_argent:Integer);
     UTF8(False);
   end;
 
-procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date);
+procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date;bonus:Bonuses);
   var
     production:TableauMateriaux;
     materiau:Materiaux;
@@ -513,7 +513,7 @@ procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date);
 
     i:Integer;
   begin
-  production:=getProduction(curent_zone);
+  production:=getProduction(curent_zone, bonus);
   
   total_materiaux_a_afficher:=0;
   for materiau in Materiaux do
@@ -590,6 +590,8 @@ procedure AfficherActions();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
     writeln('[7] Wiki');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
+    writeln('[8] Boutique');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+13));
     writeln('[0] Quitter la partie');
     UTF8(False);
     dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
@@ -606,9 +608,9 @@ procedure AfficherMenuActionBatiments();
     UTF8(True);
     writeln('[1] Construire un bâtiment');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+5));
-    writeln('[2] Améliorer un bâtiment');
+    writeln('[2] Changer la production');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+6));
-    writeln('[3] Changer la production');
+    writeln('[3] Améliorer un bâtiment');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
     writeln('[4] Réparer un bâtiment');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
@@ -1241,64 +1243,64 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
 
 
 procedure AfficherMenuBoutique();
-begin
-  SonInteraction();
-  effacerEcran();
-  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
-  dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
-  UTF8(True);
-  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BOUTIQUE |>')div 2),1);
-  writeln('<| BOUTIQUE |>');
-  UTF8(False);
-  // Cadre 1
-  dessinerCadreXY(4,2,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3),simple,white,black);
-  deplacerCurseurXY(8,4);
-  couleurTexte(Yellow);
-  writeln('HERESIE');
-  deplacerCurseurXY(8,6);
-  writeln('MULTIPLICATEUR DE PRODUCTION : x15');
-  deplacerCurseurXY(8,8);
-  writeln('DUREE : 2 JOURS');
-  deplacerCurseurXY(8,10);
-  writeln('PRIX : 300 SI-MONNAIE');
+  begin
+    SonInteraction();
+    effacerEcran();
+    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+    UTF8(True);
+    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BOUTIQUE |>')div 2),1);
+    writeln('<| BOUTIQUE |>');
+    UTF8(False);
+    // Cadre 1
+    dessinerCadreXY(4,2,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3),simple,white,black);
+    deplacerCurseurXY(8,4);
+    couleurTexte(Yellow);
+    writeln('HERESIE');
+    deplacerCurseurXY(8,6);
+    writeln('MULTIPLICATEUR DE PRODUCTION : x15');
+    deplacerCurseurXY(8,8);
+    writeln('DUREE : 2 JOURS');
+    deplacerCurseurXY(8,10);
+    writeln('PRIX : 300 SI-MONNAIE');
 
-  // Cadre 2
-  dessinerCadreXY(4,(SCREEN_HEIGHT div 3)+1,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3)*2-1,simple,white,black);
-  deplacerCurseurXY(8,16);
-  couleurTexte(LightCyan);
-  writeln('HEALTHCARE');
-  deplacerCurseurXY(8,18);
-  writeln('MULTIPLICATEUR DE PRODUCTION : x1.5');
-  deplacerCurseurXY(8,20);
-  writeln('DUREE : 15 JOURS');
-  deplacerCurseurXY(8,22);
-  writeln('PRIX : 150 SI-MONNAIE');
-  // cadre 3
-  dessinerCadreXY(4,(SCREEN_HEIGHT-(SCREEN_HEIGHT div 3)-1),(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,SCREEN_HEIGHT-3,simple,white,black);
-  UTF8(True);
-  deplacerCurseurXY(8,28);
-  couleurTexte(Red);
-  writeln('MARZA-EVOLUTION');
-  deplacerCurseurXY(8,30);
-  writeln('MULTIPLICATEUR DE PRODUCTION : x10 000');
-  deplacerCurseurXY(8,32);
-  writeln('DUREE : 2 JOURS');
-  deplacerCurseurXY(8,34);
-  writeln('PRIX : 1500 SI-MONNAIE');  
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
-  couleurTexte(White);
-  writeln('Que voulez-vous acheter?'); 
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
-  writeln('[1] Hérésie');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
-  writeln('[2] HealthCare');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
-  writeln('[3] Marza-Evolution');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
-  writeln('[0] Revenir au jeu');
-  UTF8(False);
-  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+    // Cadre 2
+    dessinerCadreXY(4,(SCREEN_HEIGHT div 3)+1,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3)*2-1,simple,white,black);
+    deplacerCurseurXY(8,16);
+    couleurTexte(LightCyan);
+    writeln('HEALTHCARE');
+    deplacerCurseurXY(8,18);
+    writeln('MULTIPLICATEUR DE PRODUCTION : x1.5');
+    deplacerCurseurXY(8,20);
+    writeln('DUREE : 15 JOURS');
+    deplacerCurseurXY(8,22);
+    writeln('PRIX : 150 SI-MONNAIE');
+    // cadre 3
+    dessinerCadreXY(4,(SCREEN_HEIGHT-(SCREEN_HEIGHT div 3)-1),(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,SCREEN_HEIGHT-3,simple,white,black);
+    UTF8(True);
+    deplacerCurseurXY(8,28);
+    couleurTexte(Red);
+    writeln('MARZA-EVOLUTION');
+    deplacerCurseurXY(8,30);
+    writeln('MULTIPLICATEUR DE PRODUCTION : x10 000');
+    deplacerCurseurXY(8,32);
+    writeln('DUREE : 2 JOURS');
+    deplacerCurseurXY(8,34);
+    writeln('PRIX : 1500 SI-MONNAIE');  
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    couleurTexte(White);
+    writeln('Que voulez-vous acheter?'); 
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
+    writeln('[1] Hérésie');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+    writeln('[2] HealthCare');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
+    writeln('[3] Marza-Evolution');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+    writeln('[0] Revenir au jeu');
+    UTF8(False);
+    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
 end;
 
 end.

@@ -6,7 +6,7 @@ uses
   constantunit;
 
 function getEmplacement(zone:Zone):Emplacements;
-function getProduction(zone:Zone):TableauMateriaux;
+function getProduction(zone:Zone;bonus:Bonuses):TableauMateriaux;
 
 function ProductionElectricite(zone:Zone):Integer;
 function ConsommationElectricite(zone:Zone):Integer;
@@ -589,7 +589,7 @@ procedure revenusProduction(var zone:Zone; bonus:Bonuses);
     pElectricite:Integer;
     cElectricite:Integer;
     prod_emplacement:Integer;
-    b:Bonus;
+    e:Effet;
   begin
     // Calcule la production en Electricite d'une zone
     pElectricite := ProductionElectricite(zone);
@@ -623,15 +623,23 @@ procedure revenusProduction(var zone:Zone; bonus:Bonuses);
               prod_emplacement:=emplacement.production;
 
               // Ajoute les bonus si ils sont actifs
-              for b in Bonus do
+              if (emplacement.type_structure<>Vide) then
                 begin
-                if bonus[Heresie].actif then
-                  prod_emplacement:=Round(prod_emplacement*BONUS_MULT[b.type_bonus]);
+                for e in Effet do
+                  begin
+                  if bonus[e].actif then
+                    begin
+                    write(prod_emplacement);
+                    readln;
+                    write(Round(prod_emplacement*BONUS_MULT[e]));
+                    readln;
+                    prod_emplacement:=Round(prod_emplacement*BONUS_MULT[e]);
+                    end;
+                  end;
                 end;
                               
               // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
               zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + prod_emplacement;
-              
             end;
           end;
         end;
@@ -640,7 +648,7 @@ procedure revenusProduction(var zone:Zone; bonus:Bonuses);
   end;
 
 
-function getProduction(zone:Zone):TableauMateriaux;
+function getProduction(zone:Zone; bonus:Bonuses):TableauMateriaux;
   {Renvoie une liste contenant pour chaque matériaux produit, sa quantité produite}
   var
     emplacement:Structure;
@@ -649,6 +657,8 @@ function getProduction(zone:Zone):TableauMateriaux;
     pElectricite:Integer;
     cElectricite:Integer;
     res:TableauMateriaux;
+    prod_emplacement:Integer;
+    e:Effet;
   begin
     for materiau in Materiaux do
       begin
@@ -681,8 +691,17 @@ function getProduction(zone:Zone):TableauMateriaux;
                   res[materiau] := res[materiau] - emplacement.consommable[materiau];
               end;
 
+            prod_emplacement:=emplacement.production;
+
+              // Ajoute les bonus si ils sont actifs
+              for e in Effet do
+                begin
+                if bonus[e].actif then
+                  prod_emplacement:=Round(prod_emplacement*BONUS_MULT[e]);
+                end;
+
             // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
-            res[emplacement.materiaux] := res[emplacement.materiaux] + emplacement.production;
+            res[emplacement.materiaux] := res[emplacement.materiaux] + prod_emplacement;
           end;
         end;
       end;
@@ -890,9 +909,19 @@ procedure setBonuses(var bonus:Bonuses);
       begin
       bonus[eff].type_bonus:=eff;
       bonus[eff].actif:=False;
-      bonus[eff].duree:=2;    // Durée du bonus en jour
+      bonus[eff].duree:=BONUS_DUREE[eff];    // Durée du bonus en jour
       setDate(bonus[eff].date_activation);
       end;
+  end;
+
+procedure acheteBonus(var bonus:Bonuses; type_bonus:Effet; date:Date; var argent:Integer);
+  begin
+  if (argent>=BONUS_COUT[type_bonus]) then
+    begin
+    bonus[type_bonus].actif:=True;
+    bonus[type_bonus].date_activation:=date;
+    argent:=argent-BONUS_COUT[type_bonus];
+    end;
   end;
 
 function nbJourMois(mois:Mois; annee:Integer):Integer;
@@ -945,16 +974,24 @@ procedure suivante(var date:Date);
       end;
   end;
 
-function dateDepasseOuEgale(date1:Date; date2:Date):Boolean;
+function dateDepasse(date1:Date; date2:Date):Boolean;
   begin
-  if (date1.annee>=date2.annee) then
-    dateDepasseOuEgale:=true
-  else if ord(date1.mois)>=ord(date2.mois) then
-    dateDepasseOuEgale:=true
-  else if date1.nb_jour>=date2.nb_jour then
-    dateDepasseOuEgale:=true
+  if (date1.annee>date2.annee) then
+    begin
+    dateDepasse:=true;
+    end
+  else if (ord(date1.mois)>ord(date2.mois)) then
+    begin
+    dateDepasse:=true;
+    end
+  else if (date1.nb_jour>date2.nb_jour) then
+    begin
+    dateDepasse:=true;
+    end
   else
-    dateDepasseOuEgale:=false;
+    begin
+    dateDepasse:=false;
+    end;
   end;
 
 procedure verifBonusActif(var bonus:Bonuses; curent_date:Date);
@@ -967,27 +1004,29 @@ procedure verifBonusActif(var bonus:Bonuses; curent_date:Date);
       begin
       if bonus[e].actif then
         begin
-        date_fin:=curent_date;
+        date_fin:=bonus[e].date_activation;
         // Calcule à quelle date le bonus doit s'arrêter.
         for i:=1 to bonus[e].duree do
           suivante(date_fin);
 
         // Vérifie si le bonus doit s'arrêter
-        if dateDepasseOuEgale(bonus[e].date_activation, date_fin) then
+        if dateDepasse(curent_date, date_fin) then
+          begin
           bonus[e].actif:=False;
           end;
+        end;
       end;
   end;
 
 procedure jourSuivant(var zone:Zone; var date:Date; var missionsA:MissionsActives; var bonus:Bonuses);
   {Passe au jour suivant en récupérant les ressources produites}
   begin
+  verifBonusActif(bonus, date);
   suivante(date);
   revenusProduction(zone, bonus);
-  AfficheRecapJournee(zone, date);
+  AfficheRecapJournee(zone, date, bonus);
   actualiseMissions(missionsA);
   setPanne(zone);
-  verifBonusActif(bonus, date);
   end;
 
 // Gestion des menus
@@ -1416,6 +1455,28 @@ procedure menuActionBatiments(var zones:ZonesJeu; curent_zone:Integer);
       AfficherEmplacements(zones[curent_zone]);
       end;
   end;
+
+procedure menuBoutique(var argent:Integer; var bonus:Bonuses; date:Date);
+  var
+    choix:String;
+  begin
+    choix:='';
+    while (choix<>QUITTER) do
+      begin
+      AfficherMenuBoutique();
+      readln(choix);
+      if (choix='1') then
+        acheteBonus(bonus, Effet(0), date, argent)
+      else if (choix='2') then
+        acheteBonus(bonus, Effet(1), date, argent)
+      else if (choix='3') then
+        acheteBonus(bonus, Effet(2), date, argent)
+      else
+        begin
+        end;
+      end;
+  end;
+
 // Menu Principal du jeu
 procedure JeuPrincipal();
   var
@@ -1477,7 +1538,11 @@ procedure JeuPrincipal();
       // Choix 'Missions'                   (Aouter la logique)
       else if (choix=MISSIONS) then
         begin
-          menuGestionMissions(zones, missionsA, curent_zone, pognon);
+        menuGestionMissions(zones, missionsA, curent_zone, pognon);
+        end
+      else if (choix=BOUTIQUE) then
+        begin
+        menuBoutique(pognon, bonus, curent_date);
         end
       // Choix 'Wiki'                       (Finir entrer les données)
       else if (choix=WIKI) then
