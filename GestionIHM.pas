@@ -844,11 +844,11 @@ procedure AfficherMenuWikiBatiment();
 
     couleurTexte(White);
     deplacerCurseurXY(30,6);
-    writeln('x10 Plaque');
+    writeln('x10 Plaques de Fer');
     deplacerCurseurXY(30,7);
-    writeln('x20 Plaque / x20 Régolithe');
+    writeln('x20 Plaques de Fer / x20 Sacs de Beton');
     deplacerCurseurXY(30,8);
-    writeln('x20 Plaque / x20 Alliage');
+    writeln('x20 Plaques de Fer / x20 Acier');
 
     // Consommation
     deplacerCurseurXY(112,4);
@@ -859,9 +859,9 @@ procedure AfficherMenuWikiBatiment();
     deplacerCurseurXY(112,6);
     writeln('100 énergie');
     deplacerCurseurXY(112,7);
-    writeln('100 énergie');
+    writeln('150 énergie');
     deplacerCurseurXY(112,8);
-    writeln('100 énergie');
+    writeln('225 énergie');
 
     {---------Usine---------}
 
@@ -889,11 +889,11 @@ procedure AfficherMenuWikiBatiment();
 
     couleurTexte(White);
     deplacerCurseurXY(30,14);
-    writeln('x10 Câbles / x10 Plaque');
+    writeln('x10 Cables de Cuivres / x10 Plaques de fer');
     deplacerCurseurXY(30,15);
-    writeln('x20 Plaque / x20 Régolithe');
+    writeln('x20 Plaques de Fer / x20 Sacs de Beton');
     deplacerCurseurXY(30,16);
-    writeln('x20 Plaque / x20 Alliage ');
+    writeln('x20 Plaques de Fer / x20 Acier ');
 
     // Consommation
     deplacerCurseurXY(112,12);
@@ -902,17 +902,29 @@ procedure AfficherMenuWikiBatiment();
     
     couleurTexte(White);
     deplacerCurseurXY(112,14);
-    writeln('200 énergie');
+    writeln('150 énergie');
     deplacerCurseurXY(112,15);
-    writeln('200 énergie');
+    writeln('225 énergie');
     deplacerCurseurXY(112,16);
-    writeln('200 énergie');
+    writeln('337 énergie');
 
     {---------QG Spacial---------}
 
     deplacerCurseurXY(5,19);
     couleurTexte(Blue);
     writeln('Ascenseur Orbital');
+
+    couleurTexte(LightBlue);
+    deplacerCurseurXY(8,20);
+    writeln('Niveau');
+
+    couleurTexte(White);
+    deplacerCurseurXY(8,22);
+    writeln('1');
+
+    couleurTexte(White);
+    deplacerCurseurXY(30,22);
+    writeln('x200 Cables de Cuivre / x200 Plaques de Fer  / x200 Sacs de Beton');
 
     // Consommation
     deplacerCurseurXY(112,20);
@@ -921,7 +933,7 @@ procedure AfficherMenuWikiBatiment();
     
     couleurTexte(White);
     deplacerCurseurXY(112,22);
-    writeln('100 énergie');
+    writeln('0 énergie');
 
     {---------Générateur Thermique F-1---------}
 
@@ -937,6 +949,10 @@ procedure AfficherMenuWikiBatiment();
     couleurTexte(White);
     deplacerCurseurXY(8,27);
     writeln('1');
+    deplacerCurseurXY(8,28);
+    writeln('2');
+    deplacerCurseurXY(8,29);
+    writeln('3');
 
     // Prix
     deplacerCurseurXY(30,25);
@@ -945,16 +961,24 @@ procedure AfficherMenuWikiBatiment();
 
     couleurTexte(White);
     deplacerCurseurXY(30,27);
-    writeln('x30 Câbles / x10 Plaque  / x20 Régolithe');
+    writeln('x30 Cables de Cuivre / x10 Plaques de Fer  / x20 Sacs de Beton');
+    deplacerCurseurXY(30,28);
+    writeln('x40 Cables de Cuivre / x40 Plaques de Fer  / x20 Sacs de Beton');
+    deplacerCurseurXY(30,29);
+    writeln('x50 Cables de Cuivre / x50 Plaques de Fer  / x40 Sacs de Beton');
 
-    // Consommation
+    // Production
     deplacerCurseurXY(112,25);
     couleurTexte(LightBlue);
-    writeln('Consommation');
+    writeln('Production');
 
     couleurTexte(White);
     deplacerCurseurXY(112,27);
-    writeln('1200 énergie');
+    writeln('1000 énergie');
+    deplacerCurseurXY(112,28);
+    writeln('1500 énergie');
+    deplacerCurseurXY(112,29);
+    writeln('2250 énergie');
 
     deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
     writeln('Source : Karine Serier');
