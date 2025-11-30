@@ -2,3 +2,5 @@
 Dépôt de rendu SAE 1.01 
 
 SatisFact'IUT by COSAKA
+
+DUPUIS Gabin  NAVELOT-GENET Anatole  SUCCAR Eric  WAGNER Tom
