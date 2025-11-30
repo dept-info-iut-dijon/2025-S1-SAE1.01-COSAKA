@@ -74,6 +74,17 @@ interface
     end;
 
     MissionsActives=Array[0..2] of Mission;
+
+    Effet=(Heresie, Healthcare, MarzaEvolution);
+
+    Bonus=record
+      type_bonus:Effet;
+      actif:Boolean;
+      duree:Integer;
+    end;
+
+
+
   
   const
     SCREEN_WIDTH=200;
