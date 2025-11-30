@@ -16,7 +16,7 @@ cohérents et adaptés à différents contextes d’utilisation.
 }
 
 interface
-uses constantunit;
+uses constantunit,Sound;
 // Liste des procédures et fonctions
 procedure EcranTitre();
 function AfficheMainMenu():String;
@@ -140,6 +140,8 @@ procedure EcranTitre();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('DUPUIS Gabin | NAVELOT-GENET Anatole | SUCCAR Eric | WAGNER Tom')div 2)+12,28); // deplacer le curseur
     writeln('DUPUIS Gabin | NAVELOT-GENET Anatole | SUCCAR Eric | WAGNER Tom'); // Les meilleurs
 
+    StartSound(); // ajoute le son
+
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('< Appuyez sur ENTRER pour commencer >')div 2),35);  
     write('< Appuyez sur ENTRER pour commencer >');
     deplacerCurseurXY(2,SCREEN_HEIGHT-1);
@@ -187,6 +189,7 @@ function AfficheMainMenu():String;
 
     readln(res);
     AfficheMainMenu:=res;
+    SonInteraction();
 
   end;
 
@@ -244,7 +247,6 @@ procedure Scenario();
     writeln('Appuyez sur ENTRER pour continuer');
     deplacerCurseurXY(2,SCREEN_HEIGHT-1);
     readln();
-
     UTF8(False);
   end;
 
@@ -267,6 +269,9 @@ procedure AfficherMessage(msg:string);
 // Affiche le cadre principale du jeu
 procedure AfficherZone(zone:Zone; date:Date; argent:Integer);
   begin
+        
+    SonInteraction();
+    
     effacerEcran();
     {1 cadre principale avec deux cadres de chaque coté}
     dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, BORD_DROIT, BORD_BAS, simple, white, black); // TAILLE DE BASE
@@ -288,6 +293,7 @@ procedure AfficherZone(zone:Zone; date:Date; argent:Integer);
     AfficherInformations(zone, date, argent);
     AfficherInventaireZone(zone);
     AfficherActions();
+
   end;
 
 // .____.._____.____.____.___._..._._..._._____.____...........................
@@ -469,7 +475,9 @@ procedure AfficherInformations(zone:Zone; time:Date; montant_argent:Integer);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
     writeln('DATE : ',time.jour, ' ', time.nb_jour, ' ', time.mois, ' ', time.annee);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),9);
+    couleurTexte(LightMagenta);
     write(NOM_MONNAIE, ' : ', montant_argent);
+    couleurTexte(white);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),12);
 
     {Si la consommation est plus importante que la production
@@ -550,6 +558,7 @@ procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date);
       inc(i);
       end;
     end;
+  SonBilan();
   readln;
   end;
 
@@ -591,8 +600,9 @@ procedure AfficherActions();
 
 procedure AfficherMenuBatiment();
   begin
-   dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
-   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    SonInteraction();
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
     writeln('Que voulez vous construire ?');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
     writeln('[1] Mine');
@@ -616,8 +626,7 @@ procedure AfficherActionInformation(msg: string);
       // Nouveau Cadre
       dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
       deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
-      couleurTexte(Red); // couleur Rouge
-      
+      couleurTexte(Red); // couleur Rouge      
       compteur := 0;
       ligne := '';
       j := 1;
@@ -660,10 +669,11 @@ procedure AfficherActionInformation(msg: string);
               Inc(j);
           end;
       end;
+      SonErreur();
   end;
 
 procedure AfficherQuestionInformation(msg:String);
-  {Affiche un message ainsi qu'un boite de réponse}
+  {Affiche un message ainsi qu'une boite de réponse}
   begin
     dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
@@ -674,6 +684,7 @@ procedure AfficherQuestionInformation(msg:String);
 
 procedure AfficherMenuZoneAvecMessage(msg:String);
   begin
+    SonInteraction();
     dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
     UTF8(True);
@@ -696,6 +707,7 @@ procedure AfficherMenuMateriauxAvecMessage(msg:String; n:Integer);
   var
   i:Integer;
   begin
+    SonInteraction();
     dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
     UTF8(True);
@@ -722,7 +734,9 @@ procedure AfficherMenuMateriauxTransformer();
   begin
     startY := (SCREEN_HEIGHT div 2) + 3; // Pos de départ
     i := 1; // Num à partir de 1
-    
+
+    SonInteraction();
+
     // Dessine le cadre
     dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
     
@@ -765,6 +779,8 @@ procedure AfficherMenuMateriauxTransformer();
 
 procedure AfficherMenuWikiBatiment();
   begin
+    SonInteraction();
+
     effacerEcran();
     dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
     dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
@@ -973,6 +989,8 @@ procedure AfficherMenuWikiBatiment();
 
 procedure AfficherMenuWikiProduction();
   begin
+    SonInteraction();
+
     effacerEcran();
     dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
     dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
@@ -1089,13 +1107,15 @@ procedure AfficherMenuMissions();
   zones:ZonesJeu;  // Les 3 zones dans lesquels le joueur peut se déplacer
   
   begin
-      curent_zone:=0;
+    curent_zone:=0;
 
     // Définition des 3 zones de jeu
     zones[0]:=initZone(0, NOM_ZONE1, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
     zones[1]:=initZone(0, NOM_ZONE2, MineraiDHematite, FragmentDeChalcocite, CarbonePyrolyte);
     zones[2]:=initZone(0, NOM_ZONE3, ArgileRegolitique, CarbonePyrolyte, MineraiDHematite);
-    
+
+    SonInteraction();
+
     effacerEcran();
     dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, BORD_DROIT, BORD_BAS, simple, white, black); // TAILLE DE BASE
     dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL, BORD_BAS, double, white, black);
