@@ -9,5 +9,3 @@ rip cette to do list qui n'a jamais été utlisée
 
 interface boutique 
 
-actions regrouper GESTION Batiments
-

@@ -32,6 +32,7 @@ procedure UTF8(status:Boolean);
 {Moifie le traitement des caractères spéciaux (é, à, ç, etc...) en UTF8 si status = TRUE sinon RESET}
 
 procedure AfficherMenuBatiment();
+procedure AfficherMenuActionBatiments();
 procedure AfficherMenuZoneAvecMessage(msg:String);
 procedure AfficherMenuMateriauxAvecMessage(msg:String; n:Integer);
 procedure AfficherActionInformation(msg:string);
@@ -1241,6 +1242,13 @@ begin
   UTF8(True);
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BOUTIQUE |>')div 2),1);
   writeln('<| BOUTIQUE |>');
+  UTF8(False);
+  // Cadre 1
+  dessinerCadreXY(4,2,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3),simple,white,black);
+  // Cadre 2
+  dessinerCadreXY(4,(SCREEN_HEIGHT div 3)+1,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3)*2-1,simple,white,black)
+  // cadre 3
+  // dessinerCadreXY(4, SCREEN_HEIGHT-(SCREEN_HEIGHT div 4),)
 end;
 
 end.
