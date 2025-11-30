@@ -160,8 +160,8 @@ interface
     // Constante utiles pour naviguer dans les menus
     QUITTER='0';
     CONSTRUIRE='1';
-    CHANGER_PRODUCTION='4';
-    AMELIORER='3';
+    CHANGER_PRODUCTION='3';
+    AMELIORER='2';
     REPARER='4';
     EXPLORER='2';
     CHANGER_ZONE='3';

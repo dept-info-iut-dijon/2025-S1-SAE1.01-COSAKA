@@ -912,7 +912,7 @@ procedure AfficherMenuWikiBatiment();
 
     deplacerCurseurXY(5,19);
     couleurTexte(Blue);
-    writeln('QG Spacial');
+    writeln('Ascenseur Orbital');
 
     // Consommation
     deplacerCurseurXY(112,20);
@@ -927,7 +927,7 @@ procedure AfficherMenuWikiBatiment();
 
     deplacerCurseurXY(5,24);
     couleurTexte(Blue);
-    writeln('Générateur Thermique F-1');
+    writeln('Centrale');
 
     // Niveau
     deplacerCurseurXY(8,25);
@@ -955,39 +955,6 @@ procedure AfficherMenuWikiBatiment();
     couleurTexte(White);
     deplacerCurseurXY(112,27);
     writeln('1200 énergie');
-
-    {---------Structure d'Expédition Sol-Orbital---------}
-
-    deplacerCurseurXY(5,31);
-    couleurTexte(Blue);
-    writeln('Structure d''Expédition Sol-Orbital');
-
-    // Niveau
-    deplacerCurseurXY(8,32);
-    couleurTexte(LightBlue);
-    writeln('Niveau');
-
-    couleurTexte(White);
-    deplacerCurseurXY(8,34);
-    writeln('1');
-
-    // Prix
-    deplacerCurseurXY(30,32);
-    couleurTexte(LightBlue);
-    write('Coût');
-
-    couleurTexte(White);
-    deplacerCurseurXY(30,34);
-    writeln('x200 Câbles / x200 Plaque / x200 Régolithe');
-
-    // Consommation
-    deplacerCurseurXY(112,32);
-    couleurTexte(LightBlue);
-    writeln('Consommation');
-
-    couleurTexte(White);
-    deplacerCurseurXY(112,34);
-    writeln('1000 énergie');
 
     deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
     writeln('Source : Karine Serier');
