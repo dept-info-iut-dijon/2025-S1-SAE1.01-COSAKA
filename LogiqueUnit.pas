@@ -6,6 +6,7 @@ uses
   constantunit;
 
 function getEmplacement(zone:Zone):Emplacements;
+function getProduction(zone:Zone):Inventaire;
 
 function ProductionElectricite(zone:Zone):Integer;
 function ConsommationElectricite(zone:Zone):Integer;
@@ -24,6 +25,7 @@ function Minimum(n1:Integer; n2:Integer):Integer;
     Minimum:=n2;
   end;
 
+// Gestion des emplacements
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
                          new_type_structure:Batiment; new_materiaux:Materiaux;
@@ -180,6 +182,7 @@ procedure initEmplacements(var zone:Zone);
       end;  
   end;
 
+// Gestion des zones
 function initZone(numero:Integer; nom:String; minerai1:Materiaux; minerai2:Materiaux; minerai3:Materiaux):Zone;
   var
     new_zone:Zone;
@@ -198,6 +201,7 @@ function initZone(numero:Integer; nom:String; minerai1:Materiaux; minerai2:Mater
     initZone:=new_zone;
   end;
 
+// Gestion des batiments
 function MateriauxNecessairesConstruction(var zone:Zone; batiment:Batiment; niveau:Integer):Boolean;
   {Fonction qui prend en parametre une zone, un emplacement 
   et un niveau et renvoie Faux si l'inventaire de la zone 
@@ -416,6 +420,7 @@ procedure UpgradeBatiment(var zone:Zone; emplacement:Integer);
     end;
   end;
 
+// Gestion de la production de ressources
 function ProductionElectricite(zone:Zone):Integer;
   {Fonction qui prend en parametre une zone et qui renvoie 
   la somme de la production d'Electricite de la zone}
@@ -475,7 +480,7 @@ function MateriauxNecessaires(zone:Zone; emplacement:Structure):Boolean;
   end;
 
 procedure revenusProduction(var zone:Zone);
-  {procédure qui prend en parametre une zone et qui ajoute a 
+  {Procédure qui prend en parametre une zone et qui ajoute a 
   chaque materiaux dans l'inventaire de la zone les materiaux 
   produit par les différents batiments}
   var
@@ -523,6 +528,155 @@ procedure revenusProduction(var zone:Zone);
     end;
   end;
 
+function getProduction(zone:Zone):Inventaire;
+  {Renvoie une liste contenant pour chaque matériaux produit, sa quantité produite}
+  var
+    emplacement:Structure;
+    materiau:Materiaux;
+    possedeMateriauxNecessaires:Boolean;
+    pElectricite:Integer;
+    cElectricite:Integer;
+    res:Inventaire;
+  begin
+    for materiau in Materiaux do
+      begin
+      res[materiau]:=0;
+      end;
+    // Calcule la production en Electricite d'une zone
+    pElectricite := ProductionElectricite(zone);
+    // Calcule la Consommation en Electricite d'une zone
+    cElectricite := ConsommationElectricite(zone);
+    // Vérifie que l'on consomme moins ou autant d'Electricite que la production d'Electricite
+    if (cElectricite <= pElectricite) then
+      begin
+      // Boucle sur chaque emplacements de la zone
+      for emplacement in zone.emplacements do
+        begin
+        // Vérifie que l'emplacement a été découvert
+        if emplacement.est_decouvert and not emplacement.panne then
+          begin
+          // Vérifie que l'inventaire de la zone possede assez de materiaux
+          possedeMateriauxNecessaires := MateriauxNecessaires(zone, emplacement);
+
+          if possedeMateriauxNecessaires then
+            begin
+            // Boucle sur chaque materiaux
+            for materiau in Materiaux do
+              begin
+              // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
+              if (emplacement.consommable[materiau] > 0) then
+                  // Enleve les matériaux consommés à la variable de retour
+                  res[materiau] := res[materiau] - emplacement.consommable[materiau];
+              end;
+
+            // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
+            res[emplacement.materiaux] := res[emplacement.materiaux] + emplacement.production;
+          end;
+        end;
+      end;
+    end;
+    getProduction:=res;
+  end;
+
+// Procedure et fonctions supplémentaires
+procedure setPanne(var zone:Zone);
+  {Procedure qui prend en parametre une zone 
+  et qui a une probabilité que chaque mine ou 
+  usine puisse tomber en panne}
+  var
+    i:Integer;
+  const
+    CHANCE=0.1;
+  begin
+    // Boucle sur tous les emplacements de la zone
+    for i:=1 to Length(zone.emplacements)-1 do
+    begin
+      // Vérifie que le batiment de l'emplacement est bien une mine ou une usine
+      if (zone.emplacements[i].type_structure = Mine) or (zone.emplacements[i].type_structure = Usine) then
+      begin
+        if not zone.emplacements[i].panne then
+        begin
+          // Vérifie qu'un nombre aléatoire est inférieur à un pourcentage voulu pour pouvoir mettre en panne l'emplacement
+          if (random < CHANCE) then
+          begin
+            zone.emplacements[i].panne:=TRUE;
+          end;
+        end;
+      end;
+
+
+    end;
+  end;
+
+procedure setDate(var date:Date);
+  {Définie la date de départ}
+  begin
+  date.annee:=2025;
+  date.mois:=Septembre;
+  date.nb_jour:=1;
+  date.jour:=Lundi;
+  end;
+
+function nbJourMois(mois:Mois; annee:Integer):Integer;
+  {Renvoie le nombre de jour dans un mois en fonction du mois et d'une année}
+  begin
+  if (mois=fevrier) then
+    begin
+    if ((annee mod 4) = 0) and ((annee mod 100) <> 0) then
+      nbJourMois:=29
+    else
+      nbJourMois:=28;
+    end
+  else if (ord(mois) mod 2 = 0) then
+    nbJourMois:=30
+  else
+    nbJourMois:=31;
+  end;
+
+procedure suivante(var date:Date);
+  {Augmente la date d'un jour}
+  var
+    nb_jour_max:Integer;
+  begin
+    // Avancement du jour de la semaine
+    if (date.jour=high(Jour)) then
+      date.jour:=low(Jour)
+    else
+      date.jour:=succ(date.jour);
+
+    // Vérifie le nombre de jour dans le mois actuelle
+    nb_jour_max:=nbJourMois(date.mois, date.annee);
+
+    // Augmente la date
+    date.nb_jour:=date.nb_jour+1;
+
+    // Si on est arrivé à la fin du mois
+    if (date.nb_jour>nb_jour_max) then
+      begin
+      // Remet le jour à 1
+      date.nb_jour:=1;
+
+      // Augmente le mois en vérifiant si on est arrivé à la fin de l'année (augmente l'année si c'est le cas)
+      if (date.mois=high(Mois)) then
+        begin
+        date.mois:=low(Mois);
+        inc(date.annee);
+        end
+      else
+        date.mois:=succ(date.mois);
+      end;
+  end;
+
+procedure jourSuivant(var zone:Zone; var date:Date);
+  {Passe au jour suivant en récupérant les ressources produites}
+  begin
+  suivante(date);
+  revenusProduction(zone);
+  AfficheRecapJournee(zone, date);
+  setPanne(zone);
+  end;
+
+// Gestion des menus
 procedure MenuCreerBatiment(var zone:Zone);
   {}
   var
@@ -626,102 +780,6 @@ procedure MenuUpgradeBatiment(var zone:Zone);
     end;
   end;
 
-procedure setPanne(var zone:Zone);
-  {Procedure qui prend en parametre une zone 
-  et qui a une probabilité que chaque mine ou 
-  usine puisse tomber en panne}
-  var
-    nombreAleatoire:Integer;
-    i:Integer;
-  const
-    CHANCE=0.1;
-  begin
-    // Boucle sur tous les emplacements de la zone
-    for i:=1 to Length(zone.emplacements)-1 do
-    begin
-      // Vérifie que le batiment de l'emplacement est bien une mine ou une usine
-      if (zone.emplacements[i].type_structure = Mine) or (zone.emplacements[i].type_structure = Usine) then
-      begin
-        if not zone.emplacements[i].panne then
-        begin
-          // Vérifie qu'un nombre aléatoire est inférieur à un pourcentage voulu pour pouvoir mettre en panne l'emplacement
-          if (random < CHANCE) then
-          begin
-            zone.emplacements[i].panne:=TRUE;
-          end;
-        end;
-      end;
-
-
-    end;
-  end;
-
-procedure setDate(var date:Date);
-  {Définie la date de départ}
-  begin
-  date.annee:=2025;
-  date.mois:=Septembre;
-  date.nb_jour:=1;
-  date.jour:=Lundi;
-  end;
-
-function nbJourMois(mois:Mois; annee:Integer):Integer;
-  {Renvoie le nombre de jour dans un mois en fonction du mois et d'une année}
-  begin
-  if (mois=fevrier) then
-    begin
-    if ((annee mod 4) = 0) and ((annee mod 100) <> 0) then
-      nbJourMois:=29
-    else
-      nbJourMois:=28;
-    end
-  else if (ord(mois) mod 2 = 0) then
-    nbJourMois:=30
-  else
-    nbJourMois:=31;
-  end;
-
-procedure suivante(var date:Date);
-  {Augmente la date d'un jour}
-  var
-    nb_jour_max:Integer;
-  begin
-    // Avancement du jour de la semaine
-    if (date.jour=high(Jour)) then
-      date.jour:=low(Jour)
-    else
-      date.jour:=succ(date.jour);
-
-    // Vérifie le nombre de jour dans le mois actuelle
-    nb_jour_max:=nbJourMois(date.mois, date.annee);
-
-    // Augmente la date
-    date.nb_jour:=date.nb_jour+1;
-
-    // Si on est arrivé à la fin du mois
-    if (date.nb_jour>nb_jour_max) then
-      begin
-      // Remet le jour à 1
-      date.nb_jour:=1;
-
-      // Augmente le mois en vérifiant si on est arrivé à la fin de l'année (augmente l'année si c'est le cas)
-      if (date.mois=high(Mois)) then
-        begin
-        date.mois:=low(Mois);
-        inc(date.annee);
-        end
-      else
-        date.mois:=succ(date.mois);
-      end;
-  end;
-
-procedure jourSuivant(var zone:Zone; var date:Date);
-  {Passe au jour suivant en récupérant les ressources produites}
-  begin
-  suivante(date);
-  setPanne(zone);
-  revenusProduction(zone);
-  end;
 
 procedure Explore(var zone:Zone);
   {Effectue une action 'Explorer'}
@@ -938,18 +996,21 @@ procedure menuTransfertRessources(var zones:ZonesJeu; curent_zone:Integer);
     zones[zone_transfert].inventaire[materiaux_transfert]:=zones[zone_transfert].inventaire[materiaux_transfert]+nb_a_transmettre;
   end;
 
+// Menu Principal du jeu
 procedure JeuPrincipal();
   var
     curent_zone:Integer;  // Zone actuel du jeu
     zones:ZonesJeu;  // Les 3 zones dans lesquels le joueur peut se déplacer
     choix:String; // Sert à enregistrer les données saisits par l'utilisateir
     curent_date:Date; // La date actuelle du jeu
+    pognon:Integer;
   begin
     // Affiche le scénarion avant de lancer le jeu
     Scenario();
     
     choix:='';
     setDate(curent_date);
+    pognon:=0;
     curent_zone:=0;
 
     // Définition des 3 zones de jeu
@@ -960,7 +1021,7 @@ procedure JeuPrincipal();
     // Boucle du menu principal, s'arrête que l'utilisateur entre '0'.
     while (choix<>QUITTER) do
       begin
-      AfficherZone(zones[curent_zone], curent_date);
+      AfficherZone(zones[curent_zone], curent_date, pognon);
       readln(choix);
       // Choix 'Construire un bâtiment'
       if (choix=CONSTRUIRE) then
