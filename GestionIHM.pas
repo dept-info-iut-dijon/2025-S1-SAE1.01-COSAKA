@@ -21,7 +21,6 @@ uses constantunit,Sound;
 procedure EcranTitre();
 function AfficheMainMenu():String;
 procedure Scenario();
-procedure AfficherMessage(msg:string);
 procedure AfficherZone(zone:Zone; date:Date; argent:Integer);
 procedure AfficherEmplacements(zone:Zone);
 procedure AfficherInventaireZone(zone:Zone);
@@ -250,22 +249,6 @@ procedure Scenario();
     readln();
     SonInteraction();
     UTF8(False);
-  end;
-
-// ...............................____...___..____......._..._.____..
-// ..............................|.._.\./._.\|.._.\.....|.|.|.|.._.\.
-// ..............................|.|_).|.|.|.|.|_).|____|.|.|.|.|_).|
-// ..............................|..__/|.|_|.|..__/_____|.|_|.|..__/.
-// ..............................|_|....\___/|_|.........\___/|_|....
-
-{ Affiche un cadre centrer avec un message en entrée 'msg'}
-procedure AfficherMessage(msg:string);
-  begin
-  dessinerCadreXY((SCREEN_WIDTH div 2)-((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)-2,(SCREEN_WIDTH div 2)+((Length(msg)+10) div 2),(SCREEN_HEIGHT div 2)+2,simple,White,Black);
-  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(msg)div 2),(SCREEN_HEIGHT div 2));
-  UTF8(True);
-  writeln(msg);
-  UTF8(False);
   end;
 
 // Affiche le cadre principale du jeu
@@ -615,6 +598,7 @@ procedure AfficherActions();
 
 procedure AfficherMenuActionBatiments();
   begin
+    SonInteraction();
     dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)));
     writeln('ACTIONS');
@@ -1259,7 +1243,6 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
 procedure AfficherMenuBoutique();
 begin
   SonInteraction();
-
   effacerEcran();
   dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
   dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
@@ -1269,20 +1252,53 @@ begin
   UTF8(False);
   // Cadre 1
   dessinerCadreXY(4,2,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3),simple,white,black);
+  deplacerCurseurXY(8,4);
+  couleurTexte(Yellow);
+  writeln('HERESIE');
+  deplacerCurseurXY(8,6);
+  writeln('MULTIPLICATEUR DE PRODUCTION : x15');
+  deplacerCurseurXY(8,8);
+  writeln('DUREE : 2 JOURS');
+  deplacerCurseurXY(8,10);
+  writeln('PRIX : 300 SI-MONNAIE');
+
   // Cadre 2
   dessinerCadreXY(4,(SCREEN_HEIGHT div 3)+1,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3)*2-1,simple,white,black);
+  deplacerCurseurXY(8,16);
+  couleurTexte(LightCyan);
+  writeln('HEALTHCARE');
+  deplacerCurseurXY(8,18);
+  writeln('MULTIPLICATEUR DE PRODUCTION : x1.5');
+  deplacerCurseurXY(8,20);
+  writeln('DUREE : 15 JOURS');
+  deplacerCurseurXY(8,22);
+  writeln('PRIX : 150 SI-MONNAIE');
   // cadre 3
   dessinerCadreXY(4,(SCREEN_HEIGHT-(SCREEN_HEIGHT div 3)-1),(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,SCREEN_HEIGHT-3,simple,white,black);
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
-    writeln('Que voulez-vous acheter?'); 
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
-    writeln('[1] Boost1');
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
-    writeln('[2] Boost2');
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
-    writeln('[3] Boost3');
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
-    writeln('[0] Revenir au jeu');
+  UTF8(True);
+  deplacerCurseurXY(8,28);
+  couleurTexte(Red);
+  writeln('MARZA-EVOLUTION');
+  deplacerCurseurXY(8,30);
+  writeln('MULTIPLICATEUR DE PRODUCTION : x10 000');
+  deplacerCurseurXY(8,32);
+  writeln('DUREE : 2 JOURS');
+  deplacerCurseurXY(8,34);
+  writeln('PRIX : 1500 SI-MONNAIE');  
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+  couleurTexte(White);
+  writeln('Que voulez-vous acheter?'); 
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
+  writeln('[1] Hérésie');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+  writeln('[2] HealthCare');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
+  writeln('[3] Marza-Evolution');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+  writeln('[0] Revenir au jeu');
+  UTF8(False);
+  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
 end;
 
 end.
