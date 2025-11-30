@@ -438,12 +438,6 @@ procedure creerAscenseurOrbitale(zones:ZonesJeu; var zone:Zone; var emplacement:
     end;
   end;
 
-
-
-    // Multiplie le nombre de points de la mission par rapport aux nombres de matériaux différents de la missions
-    mission.points := round(mission.points * (0.9 + (nbMateriaux / 10)));
-  end;
-
 procedure ChangementUsine(var zone:Zone; emplacement:Integer; nouveau_materiaux:Materiaux);
   {}
   var
@@ -823,33 +817,36 @@ procedure setMission(var mission:Mission);
         end;
       end;
     end;
+    // Multiplie le nombre de points de la mission par rapport aux nombres de matériaux différents de la missions
+    mission.points := round(mission.points * (0.9 + (nbMateriaux / 10)));
+  end;
   
 procedure initMissions(var missions:MissionsActives);
   {Procedure qui initialise toutes les missions}
   var
-    missionActuelle:Mission;
+    i:Integer;
   begin
     // Boucle sur chaque mission
-    for missionActuelle in missions do
+    for i:=low(missions) to high(missions) do
     begin
       // Initialise la nouvelle mission
-      setMission(missionActuelle);
+      setMission(missions[i]);
     end;
   end;
 
 procedure actualiseMissions(var missions:MissionsActives);
   {Procedure qui actualise les missions si elles sont accomplies}
   var
-    missionActuelle:Mission;
+    i:Integer;
   begin
     // Boucle sur chaque mission
-    for missionActuelle in missions do
+    for i:=low(missions) to high(missions) do
     begin
       // Vérifie que la mission est accompli
-      if missionActuelle.accompli then
+      if missions[i].accompli then
       begin
         // Initialise la nouvelle mission
-        setMission(missionActuelle);
+        setMission(missions[i]);
       end;
     end;
   end;
@@ -892,7 +889,7 @@ procedure SuppressionMateriauxMission(var zone:Zone; var mission:Mission);
   end;
 
 procedure termineMission(var zone:Zone; var mission:Mission);
-  {Procedure qui accompli une mission et supprime les materiaux necessaires de l'inventaire de la zone}
+  {Procedure qui accompli une mission et supprime les materiaux necessaires de l'inventaire de}
   begin
     // Vérifie que les matériaux nécessaires sont présent dans l'inventaire de la zone
     if MateriauxNecessairesMission(zone, mission) then
@@ -1234,6 +1231,12 @@ procedure menuTransfertRessources(var zones:ZonesJeu; curent_zone:Integer);
     // Transmet les matériaux d'une zone à l'autre
     zones[curent_zone].inventaire[materiaux_transfert]:=zones[curent_zone].inventaire[materiaux_transfert]-nb_a_transmettre;
     zones[zone_transfert].inventaire[materiaux_transfert]:=zones[zone_transfert].inventaire[materiaux_transfert]+nb_a_transmettre;
+  end;
+
+procedure menuGestionMissions(var zone:Zone);
+  {}
+  begin
+    
   end;
 
 // Menu Principal du jeu

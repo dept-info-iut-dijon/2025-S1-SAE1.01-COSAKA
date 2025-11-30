@@ -73,7 +73,7 @@ interface
       accompli:Boolean;
     end;
 
-    MissionsActives=Array[0..3] of Mission;
+    MissionsActives=Array[0..2] of Mission;
   
   const
     SCREEN_WIDTH=200;
