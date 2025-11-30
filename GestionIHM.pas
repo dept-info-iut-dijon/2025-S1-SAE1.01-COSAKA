@@ -472,7 +472,7 @@ procedure AfficherInformations(zone:Zone; time:Date; montant_argent:Integer);
     writeln('DATE : ',time.jour, ' ', time.nb_jour, ' ', time.mois, ' ', time.annee);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),9);
     couleurTexte(LightMagenta);
-    write(NOM_MONNAIE, ' : ', montant_argent,'€');
+    write(NOM_MONNAIE, ' : ', montant_argent);
     couleurTexte(white);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),12);
 
@@ -726,8 +726,6 @@ procedure AfficherMenuZoneAvecMessage(msg:String);
     writeln('[2] ',NOM_ZONE2);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
     writeln('[3] ',NOM_ZONE3);
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
-    writeln('[0] Retour');
     UTF8(False);
     dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
@@ -912,7 +910,7 @@ procedure AfficherMenuWikiBatiment();
 
     deplacerCurseurXY(5,19);
     couleurTexte(Blue);
-    writeln('QG Spacial');
+    writeln('Ascenseur Orbital');
 
     // Consommation
     deplacerCurseurXY(112,20);
@@ -927,7 +925,7 @@ procedure AfficherMenuWikiBatiment();
 
     deplacerCurseurXY(5,24);
     couleurTexte(Blue);
-    writeln('Générateur Thermique F-1');
+    writeln('Centrale');
 
     // Niveau
     deplacerCurseurXY(8,25);
@@ -955,39 +953,6 @@ procedure AfficherMenuWikiBatiment();
     couleurTexte(White);
     deplacerCurseurXY(112,27);
     writeln('1200 énergie');
-
-    {---------Structure d'Expédition Sol-Orbital---------}
-
-    deplacerCurseurXY(5,31);
-    couleurTexte(Blue);
-    writeln('Structure d''Expédition Sol-Orbital');
-
-    // Niveau
-    deplacerCurseurXY(8,32);
-    couleurTexte(LightBlue);
-    writeln('Niveau');
-
-    couleurTexte(White);
-    deplacerCurseurXY(8,34);
-    writeln('1');
-
-    // Prix
-    deplacerCurseurXY(30,32);
-    couleurTexte(LightBlue);
-    write('Coût');
-
-    couleurTexte(White);
-    deplacerCurseurXY(30,34);
-    writeln('x200 Câbles / x200 Plaque / x200 Régolithe');
-
-    // Consommation
-    deplacerCurseurXY(112,32);
-    couleurTexte(LightBlue);
-    writeln('Consommation');
-
-    couleurTexte(White);
-    deplacerCurseurXY(112,34);
-    writeln('1000 énergie');
 
     deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
     writeln('Source : Karine Serier');
@@ -1206,7 +1171,7 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
    
    // 4. RÉCOMPENSE
    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 14, 32);
-   write('Récompense : ',miss[i].points,'€');
+   write('Récompense : ',miss[i].points, ' ', NOM_MONNAIE);
 
    // 5. ÉTAT
    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 14, 35);
@@ -1227,7 +1192,7 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
    
    // --- SECTION DU BAS (Commandes) ---
   deplacerCurseurXY((SCREEN_WIDTH div 4)-7,(SCREEN_HEIGHT-3));
-  writeln('Emetteur : Frank Deher');
+  writeln('Emetteur : Frank Deher | Dijon');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
   writeln('[1] Accomplir une mission');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));

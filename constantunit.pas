@@ -74,13 +74,18 @@ interface
 
     MissionsActives=Array[0..2] of Mission;
 
-    Effet=(Heresie, Healthcare, MarzaEvolution);
+    Effet=(Heresie,   // x15 sur la prodution pendant 2 jours 
+           Healthcare,  // x1.5 sur la prodution pendant 15 jours
+           MarzaEvolution);   // x10 000 sur la prodution pendant 2 jours
 
     Bonus=record
       type_bonus:Effet;
       actif:Boolean;
       duree:Integer;
+      date_activation:Date;
     end;
+
+    Bonuses=Array[Effet] of bonus;
 
     Direction = (Haut, Bas, Gauche, Droite);
 
@@ -150,6 +155,8 @@ interface
                                                        (0,0,0,0,0,0,0,20,0,15,0,0,0,0,150),
                                                        (0,0,0,0,0,0,0,0,0,0,30,0,0,0,150),
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+
+    BONUS_MULT:Array[Effet] of Real =(15, 1.5, 10000);
 
     NOM_ZONE1='L''Antre de Marzani';
     NOM_ZONE2='La Caverne Simmonet';
