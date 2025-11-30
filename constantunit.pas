@@ -158,7 +158,7 @@ interface
 
     BONUS_DUREE:Array[Effet] of Integer = (2, 15, 2);
     BONUS_MULT:Array[Effet] of Real = (15, 1.5, 10000);
-    BONUS_COUT:Array[Effet] of Integer = (0, 0, 0);   //(300, 150, 1500);
+    BONUS_COUT:Array[Effet] of Integer = (300, 150, 1500);
 
     NOM_ZONE1='L''Antre de Marzani';
     NOM_ZONE2='La Caverne Simmonet';

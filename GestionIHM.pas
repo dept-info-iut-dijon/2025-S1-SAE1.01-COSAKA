@@ -435,6 +435,7 @@ procedure AfficherInventaireZone(zone:Zone);
   i,count,startY:Integer;
 
   begin
+    dessinerCadreXY(BORD_GAUCHE, BORD_HAUT, SEPARATION_ECRAN_INVENTAIRE_PRINCIPAL, BORD_BAS, double, white, black);
     inventaire_zone:=zone.inventaire;
     count := Ord(High(Materiaux)) - Ord(Low(Materiaux)) + 1;
     startY := (SCREEN_HEIGHT div 2) - ((count) div 2) - 5;
