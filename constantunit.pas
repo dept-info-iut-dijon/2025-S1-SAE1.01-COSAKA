@@ -10,6 +10,7 @@ interface
     MineraiDHematite,
     ArgileRegolitique,
     CarbonePyrolyte,
+    
     LingotsDeCuivre,
     LingotsDeFer,
     PlaquesStandard,
@@ -143,6 +144,8 @@ interface
     NOM_ZONE2='La Caverne Simmonet';
     NOM_ZONE3='La Montagne Coulon';
     
+    NOM_MONNAIE='Si-Monnaie';
+
     // Constante utiles pour naviguer dans les menus
     QUITTER='0';
     CONSTRUIRE='1';
