@@ -503,6 +503,21 @@ procedure UpgradeBatiment(var zone:Zone; emplacement:Integer);
     end;
   end;
 
+procedure ReparerBatiment(var zone:Zone; emplacement:Integer);
+  {}
+  begin
+    if MateriauxNecessairesConstruction(zone, zone.emplacements[emplacement].type_structure, zone.emplacements[emplacement].niveau, True) then
+    begin
+      SuppressionMateriauxConstruction(zone, zone.emplacements[emplacement].type_structure, zone.emplacements[emplacement].niveau, True);
+
+      zone.emplacements[emplacement].panne := False;
+    end
+    else
+    begin
+      AfficherActionInformation('Vous n''avez pas les materiaux necessaires');
+        readln;
+    end;
+  end;
 
 // Gestion de la production de ressources
 function ProductionElectricite(zone:Zone):Integer;
@@ -1281,6 +1296,30 @@ procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives;
     else
     begin
       AfficherActionInformation('Vous devez construire l''ascenseur orbital pour pouvoir acceder aux missions');
+      readln;
+    end;
+  end;
+
+procedure MenuReparerBatiment(var zone:Zone);
+  {}
+  AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
+    readln(choix);
+    choix_int:=StrToInt(choix);
+    if (zone.emplacements[choix_int].type_structure=Mine) or (zone.emplacements[choix_int].type_structure=Usine) then
+    begin
+      if zone.emplacements[choix_int].panne then
+      begin
+        ReparerBatiment(zone, choix_int);
+      end
+      else
+      begin
+        AfficherActionInformation('Vous devez reparer uniquement des batiments en panne');
+        readln;
+      end;
+    end
+    else
+    begin
+      AfficherActionInformation('Vous devez choisir un emplacement d''un batiment reparable');
       readln;
     end;
   end;
