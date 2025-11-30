@@ -1281,7 +1281,7 @@ function menuChoixMateriaux(msg:String):Materiaux;
 procedure menuChangementZone(var curent_zone:Integer);
   {Affiche le menu de choix de zone et change la zone en conséquence}
   begin
-  curent_zone:=menuChoixZone('Où allons nous ?');
+  curent_zone:=menuChoixZone('Ou allons nous ?');
   end;
 
 procedure menuTransfertRessources(var zones:ZonesJeu; curent_zone:Integer);
