@@ -1192,7 +1192,7 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
    
    // --- SECTION DU BAS (Commandes) ---
   deplacerCurseurXY((SCREEN_WIDTH div 4)-7,(SCREEN_HEIGHT-3));
-  writeln('Emetteur : Frank Deher');
+  writeln('Emetteur : Frank Deher | Dijon');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
   writeln('[1] Accomplir une mission');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
