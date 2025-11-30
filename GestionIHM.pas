@@ -500,15 +500,13 @@ procedure AfficherInformations(zone:Zone; time:Date; montant_argent:Integer);
       end
       else
       begin
-        couleurTexte(Green);
+        couleurTexte(Yellow);
       end;
     write('Production Electricité');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),12);
 
     writeln(': ',ProductionElectricite(zone));
-    couleurTexte(White);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),14);
-    couleurTexte(Yellow); // couleur jaune
     write('Consommation Electricité');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),14);
     writeln(': ',ConsommationElectricite(zone));
@@ -585,19 +583,18 @@ procedure AfficherActions();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+3));
     writeln('[1] Gestion des bâtiments');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+4));
-    writeln('[2] Changer la production');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+5));
-    writeln('[4] Explorer la zone');
+    writeln('[3] Explorer la zone');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+6));
-    writeln('[5] Changer de zone');
+    writeln('[4] Changer de zone');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
-    writeln('[6] Transferer des ressources');
+    writeln('[5] Transferer des ressources');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
-    writeln('[7] Passer la journée');
+    writeln('[6] Passer la journée');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
-    writeln('[8] Missions');
+    writeln('[7] Missions');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
-    writeln('[9] Wiki');
+    writeln('[8] Wiki');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
     writeln('[0] Quitter la partie');
     UTF8(False);
@@ -615,7 +612,12 @@ begin
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+5));
   writeln('[3] Réparer un bâtiment');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+5));
+  writeln('[4] Changer la production');
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+6));
   writeln('[4] Retour');
+  UTF8(False);
+  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
 
   UTF8(False);
   dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
@@ -1246,9 +1248,9 @@ begin
   // Cadre 1
   dessinerCadreXY(4,2,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3),simple,white,black);
   // Cadre 2
-  dessinerCadreXY(4,(SCREEN_HEIGHT div 3)+1,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3)*2-1,simple,white,black)
+  dessinerCadreXY(4,(SCREEN_HEIGHT div 3)+1,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3)*2-1,simple,white,black);
   // cadre 3
-  // dessinerCadreXY(4, SCREEN_HEIGHT-(SCREEN_HEIGHT div 4),)
+  dessinerCadreXY(4,(SCREEN_HEIGHT-(SCREEN_HEIGHT div 3)-1),(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,SCREEN_HEIGHT-3,simple,white,black);
 end;
 
 end.
