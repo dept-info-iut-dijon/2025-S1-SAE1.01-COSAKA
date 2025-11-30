@@ -1462,7 +1462,7 @@ procedure menuActionBatiments(var zones:ZonesJeu; curent_zone:Integer);
     choix:='';
     while (choix<>QUITTER) do
       begin
-      AfficherZone(zones[curent_zone], curent_date, pognon);
+      AfficherInventaireZone(zones[curent_zone]);
       AfficherMenuActionBatiments();
       readln(choix);
       // Choix 'Construire un bâtiment'
