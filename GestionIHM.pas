@@ -46,9 +46,9 @@ procedure AfficherMenuWikiBatiment();
 procedure AfficherMenuWikiProduction();
 {Informations sur les matériaux de productions du jeu}
 
-procedure AfficherMenuBilan(currentDate:string;nextDate:string);
-
 procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
+
+procedure AfficherMenuBoutique();
 
 
 implementation
@@ -546,7 +546,7 @@ procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date);
 
   dessinerCadreXY(cadre_gauche, cadre_haut, cadre_droite, cadre_bas, simple, white, black);
   // Affiche la date
-  s:='RECAP DU '+GetEnumName(TypeInfo(curent_date.jour), Ord(curent_date.jour))+' '+IntToStr(curent_date.nb_jour)+' '+GetEnumName(TypeInfo(curent_date.mois), Ord(curent_date.mois))+' '+IntToStr(curent_date.annee);
+  s:='Bilan du '+GetEnumName(TypeInfo(curent_date.jour), Ord(curent_date.jour))+' '+IntToStr(curent_date.nb_jour)+' '+GetEnumName(TypeInfo(curent_date.mois), Ord(curent_date.mois))+' '+IntToStr(curent_date.annee);
   deplacerCurseurXY((cadre_droite+cadre_gauche-Length(s)) div 2, cadre_haut+1);
   write(s);
   
@@ -636,6 +636,7 @@ procedure AfficherActionInformation(msg: string);
       // Nouveau Cadre
       dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
       deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+      dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
       couleurTexte(Red); // couleur Rouge      
       compteur := 0;
       ligne := '';
@@ -679,6 +680,8 @@ procedure AfficherActionInformation(msg: string);
               Inc(j);
           end;
       end;
+      deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+      couleurTexte(White);
       SonErreur();
   end;
 
@@ -1119,8 +1122,24 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
   writeln('<| MISSIONS |>');
 
   // CADRES
+     if (miss[0].accompli) = True then
+     begin
+       couleurTexte(Green);
+     end;
+
+
   dessinerCadreXY((SCREEN_WIDTH div 5)+3, 2, ((SCREEN_WIDTH div 5)*2-2), SCREEN_HEIGHT-4, simple, white, black);
+    // CADRES
+     if (miss[1].accompli) = True then
+     begin
+       couleurTexte(Green);
+     end;
   dessinerCadreXY(((SCREEN_WIDTH div 5)*2+1), 2, ((SCREEN_WIDTH div 5)*3-2), SCREEN_HEIGHT-4, simple, white, black);
+    // CADRES
+     if (miss[2].accompli) = True then
+     begin
+       couleurTexte(Green);
+     end;
   dessinerCadreXY(((SCREEN_WIDTH div 5)*3)+1, 2, ((SCREEN_WIDTH div 5)*4-3), SCREEN_HEIGHT-4, simple, white, black);
   UTF8(True);
   
@@ -1129,7 +1148,7 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
   begin
   
    // 1. TITRE DE LA MISSION
-     DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 5, 4);
+   DeplacerCurseurXY((5 + (SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 5, 4);
    couleurTexte(yellow);
    write('MISSION ', i + 1);
    couleurTexte(white);
@@ -1198,21 +1217,18 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
  end;
 
-procedure AfficherMenuBilan(currentDate:string;nextDate:string);
-  begin
-    effacerEcran();
-    dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
 
-    // Titre
-    UTF8(True);
-    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BILAN |>')div 2),1);
-    writeln('<| BILAN |>');
+procedure AfficherMenuBoutique();
+begin
+  SonInteraction();
 
-    deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length(nextDate + ' -> ' + nextDate)div 2),5);
-    writeln(currentDate,' -> ',nextDate);
+  effacerEcran();
+  dessinerCadreXY(2, 1, (SCREEN_WIDTH-1), (SCREEN_HEIGHT-2), simple, white, black); // TAILLE DE BASE
+  dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL,1,(SCREEN_WIDTH -1),(SCREEN_HEIGHT-2),double,white,black);
+  UTF8(True);
+  deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BOUTIQUE |>')div 2),1);
+  writeln('<| BOUTIQUE |>');
 
-    UTF8(False);
-  end;
-
+end;
 
 end.

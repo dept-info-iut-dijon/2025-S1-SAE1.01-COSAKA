@@ -11,4 +11,3 @@ interface boutique
 
 actions regrouper GESTION Batiments
 
-Si missions terminé => vert
