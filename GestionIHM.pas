@@ -472,7 +472,7 @@ procedure AfficherInformations(zone:Zone; time:Date; montant_argent:Integer);
     writeln('DATE : ',time.jour, ' ', time.nb_jour, ' ', time.mois, ' ', time.annee);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),9);
     couleurTexte(LightMagenta);
-    write(NOM_MONNAIE, ' : ', montant_argent,'€');
+    write(NOM_MONNAIE, ' : ', montant_argent);
     couleurTexte(white);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),12);
 
@@ -1173,7 +1173,7 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
    
    // 4. RÉCOMPENSE
    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 14, 32);
-   write('Récompense : ',miss[i].points,'€');
+   write('Récompense : ',miss[i].points, ' ', NOM_MONNAIE);
 
    // 5. ÉTAT
    DeplacerCurseurXY(((SCREEN_WIDTH div 5)*(2*i + 3)) div 2 - 14, 35);

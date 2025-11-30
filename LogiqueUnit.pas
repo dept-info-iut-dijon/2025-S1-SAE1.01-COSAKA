@@ -578,7 +578,7 @@ function MateriauxNecessaires(zone:Zone; emplacement:Structure):Boolean;
     end;
   end;
 
-procedure revenusProduction(var zone:Zone);
+procedure revenusProduction(var zone:Zone; bonus:Bonuses);
   {Procédure qui prend en parametre une zone et qui ajoute a 
   chaque materiaux dans l'inventaire de la zone les materiaux 
   produit par les différents batiments}
@@ -588,6 +588,8 @@ procedure revenusProduction(var zone:Zone);
     possedeMateriauxNecessaires:Boolean;
     pElectricite:Integer;
     cElectricite:Integer;
+    prod_emplacement:Integer;
+    b:Bonus;
   begin
     // Calcule la production en Electricite d'une zone
     pElectricite := ProductionElectricite(zone);
@@ -618,8 +620,18 @@ procedure revenusProduction(var zone:Zone);
                     zone.inventaire[materiau] := zone.inventaire[materiau] - emplacement.consommable[materiau];
               end;
 
+              prod_emplacement:=emplacement.production;
+
+              // Ajoute les bonus si ils sont actifs
+              for b in Bonus do
+                begin
+                if bonus[Heresie].actif then
+                  prod_emplacement:=Round(prod_emplacement*BONUS_MULT[b.type_bonus]);
+                end;
+                              
               // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
-              zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + emplacement.production;
+              zone.inventaire[emplacement.materiaux] := zone.inventaire[emplacement.materiaux] + prod_emplacement;
+              
             end;
           end;
         end;
@@ -869,10 +881,18 @@ procedure setDate(var date:Date);
   date.jour:=Lundi;
   end;
 
-procedure setBonus();
-  {}
+procedure setBonuses(var bonus:Bonuses);
+  {Définies les bonuses (Tous inactifs)}
+  var
+    eff:Effet;
   begin
-    
+    for eff in Effet do
+      begin
+      bonus[eff].type_bonus:=eff;
+      bonus[eff].actif:=False;
+      bonus[eff].duree:=2;    // Durée du bonus en jour
+      setDate(bonus[eff].date_activation);
+      end;
   end;
 
 function nbJourMois(mois:Mois; annee:Integer):Integer;
@@ -925,14 +945,49 @@ procedure suivante(var date:Date);
       end;
   end;
 
-procedure jourSuivant(var zone:Zone; var date:Date; var missionsA:MissionsActives);
+function dateDepasseOuEgale(date1:Date; date2:Date):Boolean;
+  begin
+  if (date1.annee>=date2.annee) then
+    dateDepasseOuEgale:=true
+  else if ord(date1.mois)>=ord(date2.mois) then
+    dateDepasseOuEgale:=true
+  else if date1.nb_jour>=date2.nb_jour then
+    dateDepasseOuEgale:=true
+  else
+    dateDepasseOuEgale:=false;
+  end;
+
+procedure verifBonusActif(var bonus:Bonuses; curent_date:Date);
+  var
+    e:Effet;
+    date_fin:Date;
+    i:Integer;
+  begin
+    for e in Effet do
+      begin
+      if bonus[e].actif then
+        begin
+        date_fin:=curent_date;
+        // Calcule à quelle date le bonus doit s'arrêter.
+        for i:=1 to bonus[e].duree do
+          suivante(date_fin);
+
+        // Vérifie si le bonus doit s'arrêter
+        if dateDepasseOuEgale(bonus[e].date_activation, date_fin) then
+          bonus[e].actif:=False;
+          end;
+      end;
+  end;
+
+procedure jourSuivant(var zone:Zone; var date:Date; var missionsA:MissionsActives; var bonus:Bonuses);
   {Passe au jour suivant en récupérant les ressources produites}
   begin
   suivante(date);
-  revenusProduction(zone);
+  revenusProduction(zone, bonus);
   AfficheRecapJournee(zone, date);
   actualiseMissions(missionsA);
   setPanne(zone);
+  verifBonusActif(bonus, date);
   end;
 
 // Gestion des menus
@@ -1370,6 +1425,7 @@ procedure JeuPrincipal();
     curent_date:Date; // La date actuelle du jeu
     pognon:Integer;
     missionsA:MissionsActives;
+    bonus:Bonuses;
   begin
     // Affiche le scénarion avant de lancer le jeu
     Scenario();
@@ -1378,6 +1434,8 @@ procedure JeuPrincipal();
     setDate(curent_date);
     pognon:=0;
     curent_zone:=0;
+
+    setBonuses(bonus);
 
     // Définition des 3 zones de jeu
     zones[0]:=initZone(0, NOM_ZONE1, Hematite, Chalcocite, Pyrolyte);
@@ -1399,7 +1457,7 @@ procedure JeuPrincipal();
       else if (choix=EXPLORER) then
         begin
         Explore(zones[curent_zone]);
-        jourSuivant(zones[curent_zone], curent_date, missionsA);
+        jourSuivant(zones[curent_zone], curent_date, missionsA, bonus);
         end
       // Choix 'Changer de zone'
       else if (choix=CHANGER_ZONE) then
@@ -1414,7 +1472,7 @@ procedure JeuPrincipal();
       // Choix 'Passer la journée'
       else if (choix=PASSER_JOURNEE) then
         begin
-        jourSuivant(zones[curent_zone], curent_date, missionsA);
+        jourSuivant(zones[curent_zone], curent_date, missionsA, bonus);
         end
       // Choix 'Missions'                   (Aouter la logique)
       else if (choix=MISSIONS) then
