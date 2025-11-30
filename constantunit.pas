@@ -6,20 +6,20 @@ interface
   type
     // Materiaux que l'on peut récolter
     Materiaux = (
-    Chalcocite,
-    Hematite,
-    Regolitique,
-    Pyrolyte,
-    Cuivre,
-    Fer,
-    Plaques,
-    Cables,
-    Conduits,
-    Fixateur,
-    Alliage,
-    Panneaux,
-    Poutres,
-    Dalles,
+    MineraiCuivre,
+    MineraiFer,
+    Calcaire,
+    Charbon,
+    LingotsCuivre,
+    LingotsFer,
+    CablesCuivre,
+    PlaquesFer,
+    TuyauxFer,
+    SacsBeton,
+    Acier,
+    PlaquesRenforcees,
+    PoutresIndustrielles,
+    Fondations,
     Electricite
     );
 
@@ -105,39 +105,39 @@ interface
     SEPARATION_ECRAN_INFO_PRINCIPAL = (SCREEN_WIDTH div 5)*4;
     
 
-    MINERAI1=Hematite;   // Minerai le plus courant
-    MINERAI2=Chalcocite;  // 2ème Minerai le plus courant
+    MINERAI1=MineraiCuivre;   // Minerai le plus courant
+    MINERAI2=MineraiFer;  // 2ème Minerai le plus courant
 
     CONSOMMATION0:TableauMateriaux=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);  // Un tableau de consommation où rien est consommé (tout = à 0)
 
-    PRODUCTION_BASE:array[Materiaux] of Integer=(10, 15, 10, 10, // La production de base des Mines, Usines et Générateurs
-                                                 10, 10, 10, 5, 
-                                                 10, 10, 10, 10, 
-                                                 10, 10, 1000);
+    PRODUCTION_BASE:array[Materiaux] of Integer=(30, 30, 30, 30, // La production de base des Mines, Usines et Générateurs
+                                                 15, 15, 5, 10, 
+                                                 10, 5, 15, 2, 
+                                                 2, 2, 1000);
 
                                                                                      // Niveau 1
     CONSTRUCTION_BASE:Array[1..3] of Array[Batiment] of array[Materiaux] of Integer=(((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Vide
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Centrale
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)),    // AscenseurOrbital
+                                                                                      (0,0,0,0,0,0,0,10,0,0,0,0,0,0,0),    // Mine
+                                                                                      (0,0,0,0,0,0,10,10,0,0,0,0,0,0,0),    // Usine
+                                                                                      (0,0,0,0,0,0,30,10,0,20,0,0,0,0,0),    // Centrale
+                                                                                      (0,0,0,0,0,0,200,200,0,200,0,0,0,0,0)),    // AscenseurOrbital
                                                                                      // Niveau 2
                                                                                      ((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Vide
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Centrale
+                                                                                      (0,0,0,0,0,0,0,20,0,20,0,0,0,0,0),    // Mine
+                                                                                      (0,0,0,0,0,0,0,20,0,20,0,0,0,0,0),    // Usine
+                                                                                      (0,0,0,0,0,0,40,40,0,20,0,0,0,0,0),    // Centrale
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)),    // AscenseurOrbital
                                                                                      // Niveau 3
                                                                                      ((0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Vide
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Hub
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Gisement
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Mine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Usine
-                                                                                      (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Centrale
+                                                                                      (0,0,0,0,0,0,0,20,0,0,20,0,0,0,0),    // Mine
+                                                                                      (0,0,0,0,0,0,0,20,0,0,20,0,0,0,0),    // Usine
+                                                                                      (0,0,0,0,0,0,50,50,0,0,40,0,0,0,0),    // Centrale
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)));  // AscenseurOrbital
 
     CONSOMMABLE_BASE:Array[Materiaux] of TableauMateriaux=((0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
@@ -146,14 +146,14 @@ interface
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
                                                        (30,0,0,0,0,0,0,0,0,0,0,0,0,0,150),
                                                        (0,30,0,0,0,0,0,0,0,0,0,0,0,0,150),
-                                                       (0,0,0,0,0,60,0,0,0,0,0,0,0,0,150),
                                                        (0,0,0,0,15,0,0,0,0,0,0,0,0,0,150),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,150),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,150),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,150),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,150),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,150),
-                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,150),
+                                                       (0,0,0,0,0,60,0,0,0,0,0,0,0,0,150),
+                                                       (0,0,0,0,0,30,0,0,0,0,0,0,0,0,150),
+                                                       (0,0,15,0,0,0,0,0,0,0,0,0,0,0,150),
+                                                       (0,0,0,15,0,30,0,0,0,0,0,0,0,0,150),
+                                                       (0,0,0,0,0,0,0,20,0,0,20,0,0,0,150),
+                                                       (0,0,0,0,0,0,0,20,0,15,0,0,0,0,150),
+                                                       (0,0,0,0,0,0,0,0,0,0,30,0,0,0,150),
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
 
     BONUS_DUREE:Array[Effet] of Integer = (2, 15, 2);
@@ -169,8 +169,8 @@ interface
     // Constante utiles pour naviguer dans les menus
     QUITTER='0';
     CONSTRUIRE='1';
-    CHANGER_PRODUCTION='4';
-    AMELIORER='3';
+    CHANGER_PRODUCTION='3';
+    AMELIORER='2';
     REPARER='4';
     EXPLORER='2';
     CHANGER_ZONE='3';

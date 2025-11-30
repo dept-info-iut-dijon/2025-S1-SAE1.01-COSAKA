@@ -4,9 +4,9 @@ unit gestionIHM;
 
 {
 RÔLE : L’unité gère l’affichage console de manière structurée,
- notamment le positionnement précis du curseur,
- le centrage dynamique de textes et la prise en charge facultative de l’encodage UTF-8.
- Elle fournit des procédures permettant de contrôler la mise en page,
+notamment le positionnement précis du curseur,
+le centrage dynamique de textes et la prise en charge facultative de l’encodage UTF-8.
+Elle fournit des procédures permettant de contrôler la mise en page,
 de calculer automatiquement les positions en fonction de la taille de l’écran et d’assurer un rendu propre,
 quelle que soit la quantité de contenu affiché.
 L’activation temporaire de l’UTF-8 garantit un affichage correct des caractères accentués sans perturber les autres interfaces du programme,
@@ -47,8 +47,10 @@ procedure AfficherMenuWikiProduction();
 {Informations sur les matériaux de productions du jeu}
 
 procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
+{Affiche les missions disponibles}
 
 procedure AfficherMenuBoutique();
+{Affiche la boutique via les missions}
 
 
 implementation
@@ -728,8 +730,6 @@ procedure AfficherMenuZoneAvecMessage(msg:String);
     writeln('[2] ',NOM_ZONE2);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
     writeln('[3] ',NOM_ZONE3);
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
-    writeln('[0] Retour');
     UTF8(False);
     dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
@@ -782,7 +782,7 @@ procedure AfficherMenuMateriauxTransformer();
     // Affiche les matériaux transformés uniquement
     for m in Materiaux do 
       begin
-        if (m <> Electricite) and (m <> Hematite) and (m <> Chalcocite) and (m <> Regolitique) and (m <> Pyrolyte) then
+        if (m <> Electricite) and (m <> MineraiFer) and (m <> MineraiCuivre) and (m <> Charbon) and (m <> Calcaire) then
           begin
             deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34), startY + (i - 1));
             writeln('[', i, '] ', m);
@@ -914,7 +914,7 @@ procedure AfficherMenuWikiBatiment();
 
     deplacerCurseurXY(5,19);
     couleurTexte(Blue);
-    writeln('QG Spacial');
+    writeln('Ascenseur Orbital');
 
     // Consommation
     deplacerCurseurXY(112,20);
@@ -929,7 +929,7 @@ procedure AfficherMenuWikiBatiment();
 
     deplacerCurseurXY(5,24);
     couleurTexte(Blue);
-    writeln('Générateur Thermique F-1');
+    writeln('Centrale');
 
     // Niveau
     deplacerCurseurXY(8,25);
@@ -957,39 +957,6 @@ procedure AfficherMenuWikiBatiment();
     couleurTexte(White);
     deplacerCurseurXY(112,27);
     writeln('1200 énergie');
-
-    {---------Structure d'Expédition Sol-Orbital---------}
-
-    deplacerCurseurXY(5,31);
-    couleurTexte(Blue);
-    writeln('Structure d''Expédition Sol-Orbital');
-
-    // Niveau
-    deplacerCurseurXY(8,32);
-    couleurTexte(LightBlue);
-    writeln('Niveau');
-
-    couleurTexte(White);
-    deplacerCurseurXY(8,34);
-    writeln('1');
-
-    // Prix
-    deplacerCurseurXY(30,32);
-    couleurTexte(LightBlue);
-    write('Coût');
-
-    couleurTexte(White);
-    deplacerCurseurXY(30,34);
-    writeln('x200 Câbles / x200 Plaque / x200 Régolithe');
-
-    // Consommation
-    deplacerCurseurXY(112,32);
-    couleurTexte(LightBlue);
-    writeln('Consommation');
-
-    couleurTexte(White);
-    deplacerCurseurXY(112,34);
-    writeln('1000 énergie');
 
     deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
     writeln('Source : Karine Serier');
@@ -1032,25 +999,25 @@ procedure AfficherMenuWikiProduction();
 
     couleurTexte(White);
     deplacerCurseurXY(8,7);
-    writeln('Cuivre');
+    writeln('Lingots de Cuivre');
     deplacerCurseurXY(8,9);
-    writeln('Fer');
+    writeln('Lingots de Fer');
     deplacerCurseurXY(8,11);
-    writeln('Câbles');
+    writeln('Cables de Cuivre');
     deplacerCurseurXY(8,13);
-    writeln('Plaque');
+    writeln('Plaques de Fer');
     deplacerCurseurXY(8,15);
-    writeln('Conduits');
+    writeln('Tuyaux en Fer');
     deplacerCurseurXY(8,17);
-    writeln('Fixateur');
+    writeln('Sacs de Beton');
     deplacerCurseurXY(8,19);
-    writeln('Alliage');
+    writeln('Acier');
     deplacerCurseurXY(8,21);
-    writeln('Panneaux');
+    writeln('Plaques Renforcees');
     deplacerCurseurXY(8,23);
-    writeln('Poutres');
+    writeln('Poutres Industrielles');
     deplacerCurseurXY(8,25);
-    writeln('Dalles');
+    writeln('Fondations');
 
     {---------Quantité produite par lot---------}
 
@@ -1064,21 +1031,21 @@ procedure AfficherMenuWikiProduction();
     deplacerCurseurXY(50,9);
     writeln('15 Lingots');
     deplacerCurseurXY(50,11);
-    writeln('5 Câbles');
+    writeln('5 Cables');
     deplacerCurseurXY(50,13);
-    writeln('10 Plaque');
+    writeln('10 Plaqueq');
     deplacerCurseurXY(50,15);
-    writeln('10 Conduits');
+    writeln('10 Tuyaux');
     deplacerCurseurXY(50,17);
     writeln('5 Sacs');
     deplacerCurseurXY(50,19);
-    writeln('15 Alliages');
+    writeln('15 Acier');
     deplacerCurseurXY(50,21);
-    writeln('2 Panneaux');
+    writeln('2 Plaques');
     deplacerCurseurXY(50,23);
     writeln('2 Poutres');
     deplacerCurseurXY(50,25);
-    writeln('2 Dalles');
+    writeln('2 Fondations');
 
     {---------Ressources nécessaires à la production---------}
 
@@ -1088,25 +1055,25 @@ procedure AfficherMenuWikiProduction();
 
     couleurTexte(White);
     deplacerCurseurXY(90,7);
-    writeln('x30 Chalcocite');
+    writeln('x30 Minerais de Cuivre');
     deplacerCurseurXY(90,9);
-    writeln('x30 Hématite');
+    writeln('x30 Minerais de Fer');
     deplacerCurseurXY(90,11);
-    writeln('x15 Cuivre');
+    writeln('x15 Lingots de Cuivre');
     deplacerCurseurXY(90,13);
-    writeln('x60 Fer');
+    writeln('x60 Lingots de Fer');
     deplacerCurseurXY(90,15);
-    writeln('x30 Fer');
+    writeln('x30 Lingots de Fer');
     deplacerCurseurXY(90,17);
-    writeln('x15 Régolitique');
+    writeln('x15 Calcaire');
     deplacerCurseurXY(90,19);
-    writeln('x30 Hématite / x15 Pyrolyté');
+    writeln('x30 HémaMinerais de Fer / x15 Charbon');
     deplacerCurseurXY(90,21);
-    writeln('x20 Plaque / x20 Alliage');
+    writeln('x20 Plaques de Fer / x20 Acier');
     deplacerCurseurXY(90,23);
-    writeln('x20 Plaque / x15 Régolithe');
+    writeln('x20 Plaques de Fer / x15 Sacs de Beton');
     deplacerCurseurXY(90,25);
-    writeln('x30 Régolithe');
+    writeln('x30 Sacs de Beton');
 
     deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
     writeln('Source : Sabine Vaudeville');
@@ -1229,7 +1196,7 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
    
    // --- SECTION DU BAS (Commandes) ---
   deplacerCurseurXY((SCREEN_WIDTH div 4)-7,(SCREEN_HEIGHT-3));
-  writeln('Emetteur : Frank Deher');
+  writeln('Emetteur : Frank Deher | Dijon');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
   writeln('[1] Accomplir une mission');
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
@@ -1240,7 +1207,6 @@ procedure AfficherMenuMissions(miss:MissionsActives; zone_actuelle:Zone);
   dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
   deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
  end;
-
 
 procedure AfficherMenuBoutique();
   begin
