@@ -1228,7 +1228,6 @@ begin
   UTF8(True);
   deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| BOUTIQUE |>')div 2),1);
   writeln('<| BOUTIQUE |>');
-
 end;
 
 end.
