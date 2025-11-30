@@ -701,6 +701,11 @@ procedure setDate(var date:Date);
   date.jour:=Lundi;
   end;
 
+procedure setBonus();
+  {}
+  begin
+  end;
+
 function nbJourMois(mois:Mois; annee:Integer):Integer;
   {Renvoie le nombre de jour dans un mois en fonction du mois et d'une année}
   begin
@@ -890,7 +895,7 @@ procedure SuppressionMateriauxMission(var zone:Zone; var mission:Mission);
     end;
   end;
 
-procedure termineMission(var zone:Zone; var mission:Mission);
+procedure termineMission(var zone:Zone; var mission:Mission; var pognon:Integer);
   {Procedure qui accompli une mission et supprime les materiaux necessaires de l'inventaire de}
   begin
     // Vérifie que les matériaux nécessaires sont présent dans l'inventaire de la zone
@@ -901,6 +906,7 @@ procedure termineMission(var zone:Zone; var mission:Mission);
 
       // Définie la mission comme accompli      
       mission.accompli := True;
+      pognon := pognon + mission.points;
     end
     else
     begin
@@ -1235,28 +1241,33 @@ procedure menuTransfertRessources(var zones:ZonesJeu; curent_zone:Integer);
     zones[zone_transfert].inventaire[materiaux_transfert]:=zones[zone_transfert].inventaire[materiaux_transfert]+nb_a_transmettre;
   end;
 
-procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives; curent_zone:Integer);
-  {}
+procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives; curent_zone:Integer; var pognon:Integer);
+  {Procedure qui gere le menu des missions}
   var
     choix:string;
     choix2:string;
     choix2_int:Integer;
   begin
+    // Initialise la variable
     choix:='-1';
+    // Vérifie que l'ascenseur Orbital a été construit
     if ExisteAscenseurOrbital(zones) then
     begin
       while (choix<>QUITTER) do
       begin
         AfficherMenuMissions(missionsA,zones[curent_zone]);
         readln(choix);
+        // Accomplir une mission
         if (choix = '1') then
         begin
+          // CHoisir la mission
           AfficherActionInformation('Veuillez choisir une mission (entre 0 et 2)');
           readln(Choix2);
           choix2_int:=StrToInt(choix);
           if (choix2 >= '0') and (choix2 <= '2') then
-            termineMission(zones[curent_zone], missionsA[choix2_int]);
+            termineMission(zones[curent_zone], missionsA[choix2_int], pognon);
         end
+        // Boutique Si-monnaie
         else if (choix = '2') then
         begin
         end;
@@ -1339,7 +1350,7 @@ procedure JeuPrincipal();
       // Choix 'Missions'                   (Aouter la logique)
       else if (choix=MISSIONS) then
         begin
-          menuGestionMissions(zones, missionsA, curent_zone);
+          menuGestionMissions(zones, missionsA, curent_zone, pognon);
         end
       // Choix 'Wiki'                       (Finir entrer les données)
       else if (choix=WIKI) then
