@@ -8,8 +8,6 @@ begin
   EcranTitre();
     // Sons mécaniques/industriels
   readln();
-  AfficherMenuBoutique();
-  readln();
   SonInteraction();
   MainMenu();
 end.

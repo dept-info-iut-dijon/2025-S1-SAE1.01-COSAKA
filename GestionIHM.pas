@@ -248,6 +248,7 @@ procedure Scenario();
     writeln('Appuyez sur ENTRER pour continuer');
     deplacerCurseurXY(2,SCREEN_HEIGHT-1);
     readln();
+    SonInteraction();
     UTF8(False);
   end;
 
@@ -1263,6 +1264,16 @@ begin
   dessinerCadreXY(4,(SCREEN_HEIGHT div 3)+1,(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,(SCREEN_HEIGHT div 3)*2-1,simple,white,black);
   // cadre 3
   dessinerCadreXY(4,(SCREEN_HEIGHT-(SCREEN_HEIGHT div 3)-1),(SCREEN_WIDTH)-(SCREEN_WIDTH div 4)+8,SCREEN_HEIGHT-3,simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    writeln('Que voulez-vous acheter?'); 
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+9));
+    writeln('[1] Boost1');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+10));
+    writeln('[2] Boost2');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
+    writeln('[3] Boost3');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+    writeln('[0] Revenir au jeu');
 end;
 
 end.
