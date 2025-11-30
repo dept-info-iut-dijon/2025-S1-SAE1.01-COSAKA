@@ -549,22 +549,31 @@ procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date);
   deplacerCurseurXY((cadre_droite+cadre_gauche-Length(s)) div 2, cadre_haut+1);
   write(s);
   
-  i:=0;
-  for materiau in Materiaux do
+  if (total_materiaux_a_afficher=0) then
     begin
-    if (production[materiau]<>0) and (materiau<>Electricite) then
+    s:='Aucun changement dans les materiaux aujourd''hui';
+    deplacerCurseurXY(((cadre_gauche+cadre_droite-Length(s)) div 2 ), cadre_haut+3);
+    write(s);
+    end
+  else
+    begin
+    i:=0;
+    for materiau in Materiaux do
       begin
-      s:=GetEnumName(TypeInfo(curent_date.jour), Ord(curent_date.jour)) + ' :';
-      deplacerCurseurXY(((cadre_gauche+cadre_droite) div 2 )-Length(s)-10, cadre_haut+3+i*2);
-      write(materiau);
-      if production[materiau]>0 then
-        couleurTexte(Green)
-      else if production[materiau]<0 then
-        couleurTexte(Red);
-      deplacerCurseurXY(((cadre_gauche+cadre_droite) div 2 )+10, cadre_haut+3+i*2);
-      write(production[materiau]);
-      couleurTexte(White);
-      inc(i);
+      if (production[materiau]<>0) and (materiau<>Electricite) then
+        begin
+        s:=GetEnumName(TypeInfo(curent_date.jour), Ord(curent_date.jour)) + ' :';
+        deplacerCurseurXY(((cadre_gauche+cadre_droite) div 2 )-Length(s)-10, cadre_haut+3+i*2);
+        write(materiau);
+        if production[materiau]>0 then
+          couleurTexte(Green)
+        else if production[materiau]<0 then
+          couleurTexte(Red);
+        deplacerCurseurXY(((cadre_gauche+cadre_droite) div 2 )+10, cadre_haut+3+i*2);
+        write(production[materiau]);
+        couleurTexte(White);
+        inc(i);
+        end;
       end;
     end;
   SonBilan();
@@ -604,29 +613,29 @@ procedure AfficherActions();
   end;
 
 procedure AfficherMenuActionBatiments();
-begin
-  dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)));
-  writeln('ACTIONS');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+4));
-  UTF8(True);
-  writeln('[1] Construire un bâtiment');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+5));
-  writeln('[2] Améliorer un bâtiment');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+6));
-  writeln('[3] Réparer un bâtiment');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
-  writeln('[4] Changer la production');
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
-  writeln('[0] Retour');
-  UTF8(False);
-  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+  begin
+    dessinerCadreXY(SEPARATION_ECRAN_INFO_PRINCIPAL, BORD_HAUT, BORD_DROIT, BORD_BAS, double, white, black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10))-(Length('ACTIONS')div 2),((SCREEN_HEIGHT div 2)));
+    writeln('ACTIONS');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+4));
+    UTF8(True);
+    writeln('[1] Construire un bâtiment');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+5));
+    writeln('[2] Améliorer un bâtiment');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+6));
+    writeln('[3] Changer la production');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+7));
+    writeln('[4] Réparer un bâtiment');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+8));
+    writeln('[0] Retour');
+    UTF8(False);
+    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
 
-  UTF8(False);
-  dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
-  deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
-end;
+    UTF8(False);
+    dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
+  end;
 
 procedure AfficherMenuBatiment();
   begin

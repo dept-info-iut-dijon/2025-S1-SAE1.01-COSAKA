@@ -82,7 +82,7 @@ interface
       duree:Integer;
     end;
 
-
+    Direction = (Haut, Bas, Gauche, Droite);
 
   
   const
