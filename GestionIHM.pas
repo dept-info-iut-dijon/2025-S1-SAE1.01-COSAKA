@@ -780,7 +780,7 @@ procedure AfficherMenuMateriauxTransformer();
     // Affiche les matériaux transformés uniquement
     for m in Materiaux do 
       begin
-        if (m <> Electricite) and (m <> Hematite) and (m <> Chalcocite) and (m <> Regolitique) and (m <> Pyrolyte) then
+        if (m <> Electricite) and (m <> MineraiFer) and (m <> MineraiCuivre) and (m <> Charbon) and (m <> Calcaire) then
           begin
             deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34), startY + (i - 1));
             writeln('[', i, '] ', m);
@@ -997,25 +997,25 @@ procedure AfficherMenuWikiProduction();
 
     couleurTexte(White);
     deplacerCurseurXY(8,7);
-    writeln('Cuivre');
+    writeln('Lingots de Cuivre');
     deplacerCurseurXY(8,9);
-    writeln('Fer');
+    writeln('Lingots de Fer');
     deplacerCurseurXY(8,11);
-    writeln('Câbles');
+    writeln('Cables de Cuivre');
     deplacerCurseurXY(8,13);
-    writeln('Plaque');
+    writeln('Plaques de Fer');
     deplacerCurseurXY(8,15);
-    writeln('Conduits');
+    writeln('Tuyaux en Fer');
     deplacerCurseurXY(8,17);
-    writeln('Fixateur');
+    writeln('Sacs de Beton');
     deplacerCurseurXY(8,19);
-    writeln('Alliage');
+    writeln('Acier');
     deplacerCurseurXY(8,21);
-    writeln('Panneaux');
+    writeln('Plaques Renforcees');
     deplacerCurseurXY(8,23);
-    writeln('Poutres');
+    writeln('Poutres Industrielles');
     deplacerCurseurXY(8,25);
-    writeln('Dalles');
+    writeln('Fondations');
 
     {---------Quantité produite par lot---------}
 
@@ -1029,21 +1029,21 @@ procedure AfficherMenuWikiProduction();
     deplacerCurseurXY(50,9);
     writeln('15 Lingots');
     deplacerCurseurXY(50,11);
-    writeln('5 Câbles');
+    writeln('5 Cables');
     deplacerCurseurXY(50,13);
-    writeln('10 Plaque');
+    writeln('10 Plaqueq');
     deplacerCurseurXY(50,15);
-    writeln('10 Conduits');
+    writeln('10 Tuyaux');
     deplacerCurseurXY(50,17);
     writeln('5 Sacs');
     deplacerCurseurXY(50,19);
-    writeln('15 Alliages');
+    writeln('15 Acier');
     deplacerCurseurXY(50,21);
-    writeln('2 Panneaux');
+    writeln('2 Plaques');
     deplacerCurseurXY(50,23);
     writeln('2 Poutres');
     deplacerCurseurXY(50,25);
-    writeln('2 Dalles');
+    writeln('2 Fondations');
 
     {---------Ressources nécessaires à la production---------}
 
@@ -1053,25 +1053,25 @@ procedure AfficherMenuWikiProduction();
 
     couleurTexte(White);
     deplacerCurseurXY(90,7);
-    writeln('x30 Chalcocite');
+    writeln('x30 Minerais de Cuivre');
     deplacerCurseurXY(90,9);
-    writeln('x30 Hématite');
+    writeln('x30 Minerais de Fer');
     deplacerCurseurXY(90,11);
-    writeln('x15 Cuivre');
+    writeln('x15 Lingots de Cuivre');
     deplacerCurseurXY(90,13);
-    writeln('x60 Fer');
+    writeln('x60 Lingots de Fer');
     deplacerCurseurXY(90,15);
-    writeln('x30 Fer');
+    writeln('x30 Lingots de Fer');
     deplacerCurseurXY(90,17);
-    writeln('x15 Régolitique');
+    writeln('x15 Calcaire');
     deplacerCurseurXY(90,19);
-    writeln('x30 Hématite / x15 Pyrolyté');
+    writeln('x30 HémaMinerais de Fer / x15 Charbon');
     deplacerCurseurXY(90,21);
-    writeln('x20 Plaque / x20 Alliage');
+    writeln('x20 Plaques de Fer / x20 Acier');
     deplacerCurseurXY(90,23);
-    writeln('x20 Plaque / x15 Régolithe');
+    writeln('x20 Plaques de Fer / x15 Sacs de Beton');
     deplacerCurseurXY(90,25);
-    writeln('x30 Régolithe');
+    writeln('x30 Sacs de Beton');
 
     deplacerCurseurXY(5,(SCREEN_HEIGHT-3));
     writeln('Source : Sabine Vaudeville');

@@ -161,10 +161,10 @@ procedure initEmplacements(var zone:Zone);
     // Définie tous les emplacements par des emplacements vides et non découverts
     for i:=low(zone.emplacements) to high(zone.emplacements) do
       begin
-      setEmplacement(zone.emplacements[i], 0, false, Vide, Hematite, 0, CONSOMMATION0, false);
+      setEmplacement(zone.emplacements[i], 0, false, Vide, MineraiFer, 0, CONSOMMATION0, false);
       end;
     // Définie le Hub de la zone
-    setEmplacement(zone.emplacements[0], 0, true, Hub, Hematite, 0, CONSOMMATION0, false);
+    setEmplacement(zone.emplacements[0], 0, true, Hub, MineraiFer, 0, CONSOMMATION0, false);
     // Définie un emplacement avec un gisement du premier minerai de la zone.
     setEmplacement(zone.emplacements[random(8)+1], 3, true, Gisement, zone.minerais[0], 0, CONSOMMATION0, false);
 
@@ -345,11 +345,10 @@ procedure creerUsine(var zone:Zone; emplacement:Integer; nouveau_materiaux:Mater
 
 procedure creerCentrale(var zone:Zone; var emplacement:Integer);
   {{Procédure qui prend en paramètre un emplacement, une zone 
-  et un nouveau materiau qui modifie ce même emplacement en changeant 
-  le type de la structure en 'Usine', en initialisant le 
+  et qui modifie ce même emplacement en changeant 
+  le type de la structure en 'Centrale', en initialisant le 
   niveau de la structure à 1, en supprimant les coûts de 
-  la construction de l'inventaire de la zone, en initialisant 
-  l'énergie consommé du batiment et en initialisant la production 
+  la construction de l'inventaire de la zone et en initialisant la production 
   de base du batiment }
   const
     NOUVEAU_NIVEAU = 1;
@@ -400,13 +399,7 @@ function ExisteAscenseurOrbital(zones:ZonesJeu):Boolean;
   end;
 
 procedure creerAscenseurOrbitale(zones:ZonesJeu; var zone:Zone; var emplacement:Integer);
-  {{Procédure qui prend en paramètre un emplacement, une zone 
-  et un nouveau materiau qui modifie ce même emplacement en changeant 
-  le type de la structure en 'Usine', en initialisant le 
-  niveau de la structure à 1, en supprimant les coûts de 
-  la construction de l'inventaire de la zone, en initialisant 
-  l'énergie consommé du batiment et en initialisant la production 
-  de base du batiment }
+  {{Procédure qui créer un AscenseurOrbitale }
   const
     NOUVEAU_NIVEAU = 1;
   var
@@ -1438,9 +1431,14 @@ procedure JeuPrincipal();
     setBonuses(bonus);
 
     // Définition des 3 zones de jeu
-    zones[0]:=initZone(0, NOM_ZONE1, Hematite, Chalcocite, Pyrolyte);
-    zones[1]:=initZone(0, NOM_ZONE2, Hematite, Chalcocite, Pyrolyte);
-    zones[2]:=initZone(0, NOM_ZONE3, Regolitique, Pyrolyte, Hematite);
+    zones[0]:=initZone(0, NOM_ZONE1, MineraiFer, MineraiCuivre, Calcaire);
+    zones[1]:=initZone(0, NOM_ZONE2, MineraiFer, MineraiCuivre, Calcaire);
+    zones[2]:=initZone(0, NOM_ZONE3, Charbon, Calcaire, MineraiFer);
+
+    // Initialisation des ressources de base
+    zones[0].inventaire[CablesCuivre] := 100;
+    zones[0].inventaire[PlaquesFer] := 100;
+    zones[0].inventaire[SacsBeton] := 20;
 
     // Initialisation des Missions
     initMissions(missionsA);
