@@ -427,7 +427,7 @@ procedure AfficherEmplacements(zone:Zone);
 procedure AfficherInventaireZone(zone:Zone);
   var
   m:Materiaux; // Prend la liste des Materiaux
-  inventaire_zone:Inventaire;
+  inventaire_zone:TableauMateriaux;
   i,count,startY:Integer;
 
   begin

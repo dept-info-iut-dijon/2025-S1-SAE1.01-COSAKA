@@ -27,7 +27,7 @@ function Minimum(n1:Integer; n2:Integer):Integer;
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
                          new_type_structure:Batiment; new_materiaux:Materiaux;
-                         new_production:Integer; new_consommable:Consommation;
+                         new_production:Integer; new_consommable:TableauMateriaux;
                          new_panne:Boolean);
   {Définit les valeur des paramètres de l'emplacement 'emplacement'.
   Attention, tous les paramètres doivent être renseignés.}
@@ -133,7 +133,7 @@ function getIndiceEmplacementVideAlea(zone:Zone):Integer;
 procedure ajouteStructureEmplacementAlea(var zone:Zone; niveau:Integer; 
                                          est_decouvert:Boolean; type_structure:Batiment;
                                          materiaux:Materiaux; production:Integer;
-                                         consommable:Consommation; panne:Boolean);
+                                         consommable:TableauMateriaux; panne:Boolean);
   {Ajoute une structure avec des caractéristiques spécifiés en paramètre
   à un emplacement aléatoire d'une zone.}
   var
@@ -434,7 +434,68 @@ procedure creerAscenseurOrbitale(zones:ZonesJeu; var zone:Zone; var emplacement:
     end;
   end;
 
+procedure setMission(var mission:Mission);
+  {Procedure qui permet de créer une mission avec un nombre
+  aléatoire de matériaux entre 1 et 4 ainsi qu'un nombres 
+  aléatoire entre 5 et 15 de chacun de ces matériaux}
+  var
+    i:Integer;
+    nbMateriaux:Integer;
+    materiau:Materiaux;
+    nbAleatoire:Integer;
+    sortie:Boolean;
+  const
+    CHANCE=0.5;
+  begin
+    mission.accompli := False;
 
+    // Initialise le nombre de materiaux minimum a 1
+    nbMateriaux:=1;
+    for i:=1 to 3 do
+    begin
+      // Si le nombre aléatoire de la fonction random est plus petit que le seuil définis, le nombre de materiaux augmente de 1
+      if random < CHANCE then
+        inc(nbMateriaux);
+    end;
+
+    // Initialise le tableau des ressources de la mission à 0
+    for materiau in Materiaux do
+    begin
+      mission.ressources[materiau]:=0;
+    end;
+
+    // Boucle sur le nombres de materiaux de la mission
+    for i:=1 to nbMateriaux do
+    begin
+      // Initialise la sortie a False
+      sortie:=False;
+      while not sortie do
+      begin
+        // Choisit un nombre aléatoire afin de choisir uniquement des materiaux transformés
+        nbAleatoire := random(StrToInt(MATERIAUX_TRANSFORMES)) + StrToInt(MATERIAUX_PREMIERS);
+        // Boucle sur tous les materiaux
+        for materiau in Materiaux do
+        begin
+          // Vérifie si le materiau sur lequel on boucle correspond au nombre aléatoire
+          if (ord(materiau) = nbAleatoire) then
+          begin
+            // Vérifie que le materiau n'a pas déjà de ressources attribués
+            if (mission.ressources[materiau] = 0) then
+            begin
+              // Créer un nombre aléatoire de nombres d'un matériau entre 5 et 15 compris
+              mission.ressources[materiau] := (5 + (random(10)+1));
+              // Ajoute pour chaque matériau le nombre de points de la hierarchie du matériaux transformé
+              mission.points := mission.points + nbAleatoire;
+              sortie := True;
+            end;
+          end;
+        end;
+      end;
+    end;
+
+    // Multiplie le nombre de points de la mission par rapport aux nombres de matériaux différents de la missions
+    mission.points := round(mission.points * (0.9 + (nbMateriaux / 10)));
+  end;
 
 procedure ChangementUsine(var zone:Zone; emplacement:Integer; nouveau_materiaux:Materiaux);
   {}
@@ -1137,9 +1198,11 @@ procedure JeuPrincipal();
       // Choix 'Missions'                   (Aouter la logique)
       else if (choix=MISSIONS) then
         begin
-        // A CHANGER CAR ON PEUT PAS Y ACCER DANS ASCENSEUR ORBITAL !!!
-          AfficherMenuMissions();
-          readln();
+          if ExisteAscenseurOrbital(zones) then
+          begin
+            AfficherMenuMissions();
+            readln();
+          end;
         end
       // Choix 'Wiki'                       (Finir entrer les données)
       else if (choix=WIKI) then

@@ -26,7 +26,7 @@ interface
     // Batiment que l'ont peut construire
     Batiment=(Vide, Hub, Gisement, Mine, Usine, Centrale, AscenseurOrbital);
 
-    Consommation=Array[Materiaux] of Integer;
+    TableauMateriaux=Array[Materiaux] of Integer;
     
     // Les structures que pourront contenir les emplacements (représente un emplacement en quelque sorte)
     Structure=record
@@ -35,13 +35,12 @@ interface
       est_decouvert:Boolean;
       materiaux:Materiaux;
       production:Integer;
-      consommable:Consommation;
+      consommable:TableauMateriaux;
       panne:Boolean;
       // Il faudrat sûrement rajouter des choses par la suite
     end;
 
     Emplacements=Array[0..9] of Structure;
-    Inventaire=Array[Materiaux] of Integer;
 
     // Une zone du jeu, contenant par défaut 10 emplacements
     Zone=record
@@ -49,7 +48,7 @@ interface
       nom:String;
       emplacements:Emplacements;
       minerais:Array[0..2] of Materiaux;
-      inventaire:Inventaire;
+      inventaire:TableauMateriaux;
     end;
 
     Mois=(Janvier, Fevrier, Mars, Avril, 
@@ -66,6 +65,13 @@ interface
     end;
 
     ZonesJeu=Array[0..2] of Zone;
+
+    Mission=record
+      numero:Integer;
+      ressources:TableauMateriaux;
+      points:Integer;
+      accompli:Boolean;
+    end;
   
   const
     SCREEN_WIDTH=200;
@@ -85,7 +91,7 @@ interface
     MINERAI1=MineraiDHematite;   // Minerai le plus courant
     MINERAI2=FragmentDeChalcocite;  // 2ème Minerai le plus courant
 
-    CONSOMMATION0:Consommation=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);  // Un tableau de consommation où rien est consommé (tout = à 0)
+    CONSOMMATION0:TableauMateriaux=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);  // Un tableau de consommation où rien est consommé (tout = à 0)
 
     PRODUCTION_BASE:array[Materiaux] of Integer=(10, 15, 10, 10, // La production de base des Mines, Usines et Générateurs
                                                  10, 10, 10, 5, 
@@ -117,7 +123,7 @@ interface
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),    // Centrale
                                                                                       (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)));  // AscenseurOrbital
 
-    CONSOMMABLE_BASE:Array[Materiaux] of Consommation=((0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
+    CONSOMMABLE_BASE:Array[Materiaux] of TableauMateriaux=((0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
                                                        (0,0,0,0,0,0,0,0,0,0,0,0,0,0,100),
@@ -151,7 +157,7 @@ interface
 
     MATERIAUX_PREMIERS='4';
     MATERIAUX_AUTRES='1';
-    MATERIAUX_TRANSFORMES='9'{ord(high(Materiaux))-MATERIAUX_PREMIERS-MATERIAUX_AUTRES};
+    MATERIAUX_TRANSFORMES='10'{ord(high(Materiaux))-MATERIAUX_PREMIERS-MATERIAUX_AUTRES};
     NBR_BATIMENTS_AMELIORABLES='3';
 
     // Sert dans les menus affichés en plusieurs fois.
