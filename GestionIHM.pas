@@ -22,10 +22,11 @@ procedure EcranTitre();
 function AfficheMainMenu():String;
 procedure Scenario();
 procedure AfficherMessage(msg:string);
-procedure AfficherZone(zone:Zone; date:Date);
+procedure AfficherZone(zone:Zone; date:Date; argent:Integer);
 procedure AfficherEmplacements(zone:Zone);
 procedure AfficherInventaireZone(zone:Zone);
-procedure AfficherInformations(zone:zone; time:Date);
+procedure AfficherInformations(zone:zone; time:Date; montant_argent:Integer);
+procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date);
 procedure AfficherActions();
 procedure UTF8(status:Boolean);
 {Moifie le traitement des caractères spéciaux (é, à, ç, etc...) en UTF8 si status = TRUE sinon RESET}
@@ -264,7 +265,7 @@ procedure AfficherMessage(msg:string);
   end;
 
 // Affiche le cadre principale du jeu
-procedure AfficherZone(zone:Zone; date:Date);
+procedure AfficherZone(zone:Zone; date:Date; argent:Integer);
   begin
     effacerEcran();
     {1 cadre principale avec deux cadres de chaque coté}
@@ -284,7 +285,7 @@ procedure AfficherZone(zone:Zone; date:Date);
 
     {Call des procedures pour assembler toutes les interfaces en une}
     AfficherEmplacements(zone);
-    AfficherInformations(zone,date);
+    AfficherInformations(zone, date, argent);
     AfficherInventaireZone(zone);
     AfficherActions();
   end;
@@ -427,7 +428,7 @@ procedure AfficherEmplacements(zone:Zone);
 procedure AfficherInventaireZone(zone:Zone);
   var
   m:Materiaux; // Prend la liste des Materiaux
-  inventaire_zone:Inventaire;
+  inventaire_zone:TableauMateriaux;
   i,count,startY:Integer;
 
   begin
@@ -461,13 +462,15 @@ procedure AfficherInventaireZone(zone:Zone);
 // .|.||.|\..|.._||.|_|.|.._.<|.|..|.|/.___.\|.|..|.|.|_|.|.|\..|___).|
 // |___|_|.\_|_|...\___/|_|.\_\_|..|_/_/...\_\_|.|___\___/|_|.\_|____/.
 
-procedure AfficherInformations(zone:Zone; time:Date);
+procedure AfficherInformations(zone:Zone; time:Date; montant_argent:Integer);
   begin
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),5);
     writeln('ZONE : ',zone.nom);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),7);
     writeln('DATE : ',time.jour, ' ', time.nb_jour, ' ', time.mois, ' ', time.annee);
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),10);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),9);
+    write(NOM_MONNAIE, ' : ', montant_argent);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),12);
 
     {Si la consommation est plus importante que la production
     alors la valeur s'affiche en rouge}
@@ -481,17 +484,73 @@ procedure AfficherInformations(zone:Zone; time:Date);
       end;
       UTF8(True);
     write('Production Electricité');
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),10);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),12);
 
     writeln(': ',ProductionElectricite(zone));
     couleurTexte(White);
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),11);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),14);
     couleurTexte(Yellow); // couleur jaune
     write('Consommation Electricité');
-    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),11);
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-9),14);
     writeln(': ',ConsommationElectricite(zone));
     couleurTexte(White); // Reset de la couleur
     UTF8(False);
+  end;
+
+procedure AfficheRecapJournee(curent_zone:Zone;curent_date:Date);
+  var
+    production:TableauMateriaux;
+    materiau:Materiaux;
+    total_materiaux_a_afficher:Integer;
+    s:String;
+
+    // Coordonées des bords du cadre affiché
+    cadre_haut,
+    cadre_bas,
+    cadre_droite,
+    cadre_gauche:Integer;
+
+    i:Integer;
+  begin
+  production:=getProduction(curent_zone);
+  
+  total_materiaux_a_afficher:=0;
+  for materiau in Materiaux do
+    begin
+    if (production[materiau]<>0) and (materiau<>Electricite) then
+      inc(total_materiaux_a_afficher);
+    end;
+  
+  cadre_haut:=(BORD_BAS-BORD_HAUT) div 2-total_materiaux_a_afficher-5;
+  cadre_bas:=(BORD_BAS-BORD_HAUT) div 2+total_materiaux_a_afficher;
+  cadre_gauche:=(BORD_DROIT-BORD_GAUCHE) div 2-40;
+  cadre_droite:=(BORD_DROIT-BORD_GAUCHE) div 2+40;
+
+  dessinerCadreXY(cadre_gauche, cadre_haut, cadre_droite, cadre_bas, simple, white, black);
+  // Affiche la date
+  s:='RECAP DU '+GetEnumName(TypeInfo(curent_date.jour), Ord(curent_date.jour))+' '+IntToStr(curent_date.nb_jour)+' '+GetEnumName(TypeInfo(curent_date.mois), Ord(curent_date.mois))+' '+IntToStr(curent_date.annee);
+  deplacerCurseurXY((cadre_droite+cadre_gauche-Length(s)) div 2, cadre_haut+1);
+  write(s);
+  
+  i:=0;
+  for materiau in Materiaux do
+    begin
+    if (production[materiau]<>0) and (materiau<>Electricite) then
+      begin
+      s:=GetEnumName(TypeInfo(curent_date.jour), Ord(curent_date.jour)) + ' :';
+      deplacerCurseurXY(((cadre_gauche+cadre_droite) div 2 )-Length(s)-10, cadre_haut+3+i*2);
+      write(materiau);
+      if production[materiau]>0 then
+        couleurTexte(Green)
+      else if production[materiau]<0 then
+        couleurTexte(Red);
+      deplacerCurseurXY(((cadre_gauche+cadre_droite) div 2 )+10, cadre_haut+3+i*2);
+      write(production[materiau]);
+      couleurTexte(White);
+      inc(i);
+      end;
+    end;
+  readln;
   end;
 
 // .................................._....____._____.___.___.._..._.____..
@@ -522,6 +581,8 @@ procedure AfficherActions();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
     writeln('[9] Wiki');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+    writeln('[10] Reparer un batiment');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+13));
     writeln('[0] Quitter la partie');
     UTF8(False);
     dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
@@ -540,6 +601,8 @@ procedure AfficherMenuBatiment();
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+11));
     writeln('[3] Centrale');
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+12));
+    writeln('[4] Ascenseur Orbitale');
+    deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10) div 10-34),((SCREEN_HEIGHT div 2)+13));
     writeln('[0] Retour');
     dessinerCadreXY((SCREEN_WIDTH div 5+1)*4,(SCREEN_HEIGHT-5),(SCREEN_WIDTH -4),(SCREEN_HEIGHT-3),simple,white,black);
     deplacerCurseurXY((SCREEN_WIDTH-(SCREEN_WIDTH div 10)),((SCREEN_HEIGHT )-4));
@@ -712,11 +775,11 @@ procedure AfficherMenuWikiBatiment();
     deplacerCurseurXY((SCREEN_WIDTH div 2)-(Length('<| WIKI BATIMENTS |>')div 2),1);
     writeln('<| WIKI BATIMENTS |>');
 
-    {---------Extracteur---------}
+    {---------Mine---------}
 
     deplacerCurseurXY(5,3);
     couleurTexte(Blue);
-    writeln('Extracteur');
+    writeln('Mine');
 
     // Niveaux
     deplacerCurseurXY(8,4);
@@ -757,11 +820,11 @@ procedure AfficherMenuWikiBatiment();
     deplacerCurseurXY(112,8);
     writeln('100 énergie');
 
-    {---------Raffinerie d'Assemblage---------}
+    {---------Usine---------}
 
     deplacerCurseurXY(5,11);
     couleurTexte(Blue);
-    writeln('Raffinerie d''Assemblage');
+    writeln('Usine');
 
     // Niveaux
     deplacerCurseurXY(8,12);

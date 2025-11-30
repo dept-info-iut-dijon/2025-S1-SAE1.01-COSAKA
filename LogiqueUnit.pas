@@ -6,6 +6,7 @@ uses
   constantunit;
 
 function getEmplacement(zone:Zone):Emplacements;
+function getProduction(zone:Zone):TableauMateriaux;
 
 function ProductionElectricite(zone:Zone):Integer;
 function ConsommationElectricite(zone:Zone):Integer;
@@ -24,10 +25,11 @@ function Minimum(n1:Integer; n2:Integer):Integer;
     Minimum:=n2;
   end;
 
+// Gestion des emplacements
 procedure setEmplacement(var emplacement:Structure; 
                          new_niveau:Integer; new_est_decouvert:Boolean;
                          new_type_structure:Batiment; new_materiaux:Materiaux;
-                         new_production:Integer; new_consommable:Consommation;
+                         new_production:Integer; new_consommable:TableauMateriaux;
                          new_panne:Boolean);
   {Définit les valeur des paramètres de l'emplacement 'emplacement'.
   Attention, tous les paramètres doivent être renseignés.}
@@ -133,7 +135,7 @@ function getIndiceEmplacementVideAlea(zone:Zone):Integer;
 procedure ajouteStructureEmplacementAlea(var zone:Zone; niveau:Integer; 
                                          est_decouvert:Boolean; type_structure:Batiment;
                                          materiaux:Materiaux; production:Integer;
-                                         consommable:Consommation; panne:Boolean);
+                                         consommable:TableauMateriaux; panne:Boolean);
   {Ajoute une structure avec des caractéristiques spécifiés en paramètre
   à un emplacement aléatoire d'une zone.}
   var
@@ -180,6 +182,7 @@ procedure initEmplacements(var zone:Zone);
       end;  
   end;
 
+// Gestion des zones
 function initZone(numero:Integer; nom:String; minerai1:Materiaux; minerai2:Materiaux; minerai3:Materiaux):Zone;
   var
     new_zone:Zone;
@@ -198,7 +201,8 @@ function initZone(numero:Integer; nom:String; minerai1:Materiaux; minerai2:Mater
     initZone:=new_zone;
   end;
 
-function MateriauxNecessairesConstruction(var zone:Zone; batiment:Batiment; niveau:Integer):Boolean;
+// Gestion des batiments
+function MateriauxNecessairesConstruction(var zone:Zone; batiment:Batiment; niveau:Integer; reparerPanne:Boolean=False):Boolean;
   {Fonction qui prend en parametre une zone, un emplacement 
   et un niveau et renvoie Faux si l'inventaire de la zone 
   contient moins de materiaux que le nombre de materiaux 
@@ -213,14 +217,23 @@ function MateriauxNecessairesConstruction(var zone:Zone; batiment:Batiment; nive
       // Vérifie que le materiau sur lequel on boucle est necessaire a la construction du batiment
       if (CONSTRUCTION_BASE[niveau][batiment][materiau] > 0) then
       begin
-        // Vérifie que l'inventaire de la zone possèdent assez de matériaux
-        if (zone.inventaire[materiau] < CONSTRUCTION_BASE[niveau][batiment][materiau]) then
-          MateriauxNecessairesConstruction := False;
+        if reparerPanne then
+        begin
+          // Vérifie que l'inventaire de la zone possèdent assez de matériaux
+          if (zone.inventaire[materiau] < (CONSTRUCTION_BASE[niveau][batiment][materiau]) div 5) then
+            MateriauxNecessairesConstruction := False;
+        end
+        else
+        begin
+          // Vérifie que l'inventaire de la zone possèdent assez de matériaux
+          if (zone.inventaire[materiau] < CONSTRUCTION_BASE[niveau][batiment][materiau]) then
+            MateriauxNecessairesConstruction := False;
+        end;
       end;
     end;
   end;
 
-procedure SuppressionMateriauxConstruction(var zone:Zone; batiment:Batiment; niveau:Integer);
+procedure SuppressionMateriauxConstruction(var zone:Zone; batiment:Batiment; niveau:Integer; reparerPanne:Boolean=False);
   {Procédure qui prend en parametre une zone, un emplacement et 
   un niveau et enleve les matériaux necessaires pour la construction
   d'un batiment à l'inventaire de la zone}
@@ -233,8 +246,16 @@ procedure SuppressionMateriauxConstruction(var zone:Zone; batiment:Batiment; niv
       // Vérifie que le materiau sur lequel on boucle est necessaire a la construction du batiment
       if (CONSTRUCTION_BASE[niveau][batiment][materiau] > 0) then
       begin
-        // Supprime les matériaux nécessaire a la construction de l'inventaire
-        zone.inventaire[materiau] :=  zone.inventaire[materiau] - CONSTRUCTION_BASE[niveau][batiment][materiau];
+        if reparerPanne then
+        begin
+          // Supprime les matériaux nécessaire a la construction de l'inventaire
+          zone.inventaire[materiau] :=  zone.inventaire[materiau] - (CONSTRUCTION_BASE[niveau][batiment][materiau] div 5);
+        end
+        else
+        begin
+          // Supprime les matériaux nécessaire a la construction de l'inventaire
+          zone.inventaire[materiau] :=  zone.inventaire[materiau] - CONSTRUCTION_BASE[niveau][batiment][materiau];
+        end;
       end;
     end;
   end;
@@ -353,6 +374,76 @@ procedure creerCentrale(var zone:Zone; var emplacement:Integer);
     end;
   end;
 
+function ExisteAscenseurOrbital(zones:ZonesJeu):Boolean;
+  {Fonction qui renvoie True si elle un batiment 
+  AscenseurOrbital existe dans les zones du jeu, False sinon}
+  var
+    zoneActuelle:Zone;
+    emplacement:Structure;
+  begin
+    // Initialise la variable de retour a Faux
+    ExisteAscenseurOrbital := False;
+    // Boucle sur chaque zone
+    for zoneActuelle in zones do
+    begin
+      // Boucle sur chaque emplacement
+      for emplacement in zoneActuelle.emplacements do
+      begin
+        // Vérifie que le batiment présent sur l'emplacement est un AscenseurOrbital
+        if (emplacement.type_structure = AscenseurOrbital) then
+          // Déclare la variable de retour Vrai
+          ExisteAscenseurOrbital := True;
+      end;
+    end;
+  end;
+
+procedure creerAscenseurOrbitale(zones:ZonesJeu; var zone:Zone; var emplacement:Integer);
+  {{Procédure qui prend en paramètre un emplacement, une zone 
+  et un nouveau materiau qui modifie ce même emplacement en changeant 
+  le type de la structure en 'Usine', en initialisant le 
+  niveau de la structure à 1, en supprimant les coûts de 
+  la construction de l'inventaire de la zone, en initialisant 
+  l'énergie consommé du batiment et en initialisant la production 
+  de base du batiment }
+  const
+    NOUVEAU_NIVEAU = 1;
+  var
+    possedeMateriauxNecessaires:Boolean;
+  begin
+    if not ExisteAscenseurOrbital(zones) then
+    begin
+      // Vérifie que la zone possede les materiaux necessaires a la construction du batiment
+      possedeMateriauxNecessaires := MateriauxNecessairesConstruction(zone, AscenseurOrbital, NOUVEAU_NIVEAU);
+      if possedeMateriauxNecessaires then
+      begin
+        // Supprime les materiaux necessaire a la construction du batiment de l'inventaire de la zone
+        SuppressionMateriauxConstruction(zone, AscenseurOrbital, NOUVEAU_NIVEAU);
+        
+        // Modifie l'emplacement en mettant les parametres voulu, en initialisant la production et les consommables de base de l'usine
+        setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
+                        AscenseurOrbital, zone.emplacements[emplacement].materiaux, zone.emplacements[emplacement].production, zone.emplacements[emplacement].consommable,
+                        False);
+      end
+      else
+      begin
+        // Affiche le message d'erreur
+        AfficherActionInformation('Vous n''avez pas les materiaux necessaires');
+        readln;
+      end;
+    end
+    else
+    begin
+      AfficherActionInformation('Il existe deja un Ascenseur Orbital');
+      readln;
+    end;
+  end;
+
+
+
+    // Multiplie le nombre de points de la mission par rapport aux nombres de matériaux différents de la missions
+    mission.points := round(mission.points * (0.9 + (nbMateriaux / 10)));
+  end;
+
 procedure ChangementUsine(var zone:Zone; emplacement:Integer; nouveau_materiaux:Materiaux);
   {}
   var
@@ -416,6 +507,7 @@ procedure UpgradeBatiment(var zone:Zone; emplacement:Integer);
     end;
   end;
 
+// Gestion de la production de ressources
 function ProductionElectricite(zone:Zone):Integer;
   {Fonction qui prend en parametre une zone et qui renvoie 
   la somme de la production d'Electricite de la zone}
@@ -475,7 +567,7 @@ function MateriauxNecessaires(zone:Zone; emplacement:Structure):Boolean;
   end;
 
 procedure revenusProduction(var zone:Zone);
-  {procédure qui prend en parametre une zone et qui ajoute a 
+  {Procédure qui prend en parametre une zone et qui ajoute a 
   chaque materiaux dans l'inventaire de la zone les materiaux 
   produit par les différents batiments}
   var
@@ -523,118 +615,66 @@ procedure revenusProduction(var zone:Zone);
     end;
   end;
 
-procedure MenuCreerBatiment(var zone:Zone);
-  {}
+
+function getProduction(zone:Zone):TableauMateriaux;
+  {Renvoie une liste contenant pour chaque matériaux produit, sa quantité produite}
   var
-    choix:String;
-    choix_int:Integer;
-    choix2:String;
-    choix2_int:Integer;
-    sortie:Boolean;
-    sortie2:Boolean;
+    emplacement:Structure;
     materiau:Materiaux;
+    possedeMateriauxNecessaires:Boolean;
+    pElectricite:Integer;
+    cElectricite:Integer;
+    res:TableauMateriaux;
   begin
-    AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
-    readln(choix);
-    choix_int:=StrToInt(choix);
-    if zone.emplacements[choix_int].est_decouvert then
-    begin
-      if (zone.emplacements[choix_int].type_structure = Vide) or (zone.emplacements[choix_int].type_structure = Gisement) then
+    for materiau in Materiaux do
       begin
-        sortie:=False;
-        while not sortie do
+      res[materiau]:=0;
+      end;
+    // Calcule la production en Electricite d'une zone
+    pElectricite := ProductionElectricite(zone);
+    // Calcule la Consommation en Electricite d'une zone
+    cElectricite := ConsommationElectricite(zone);
+    // Vérifie que l'on consomme moins ou autant d'Electricite que la production d'Electricite
+    if (cElectricite <= pElectricite) then
+      begin
+      // Boucle sur chaque emplacements de la zone
+      for emplacement in zone.emplacements do
         begin
-          AfficherMenuBatiment();
-          readln(choix);
-          if choix = '0' then
-            sortie:=True
-          else  if choix = '1' then
-          begin 
-            creerMine(zone, choix_int);
-            sortie:=True;
-          end
-          else if choix = '2' then
+        // Vérifie que l'emplacement a été découvert
+        if emplacement.est_decouvert and not emplacement.panne then
           begin
-            sortie2:=False;
-            while not sortie2 do
+          // Vérifie que l'inventaire de la zone possede assez de materiaux
+          possedeMateriauxNecessaires := MateriauxNecessaires(zone, emplacement);
+
+          if possedeMateriauxNecessaires then
             begin
-              AfficherMenuMateriauxTransformer();
-              readln(choix2);
-              if (choix>=QUITTER) and (choix<=MATERIAUX_TRANSFORMES) then
+            // Boucle sur chaque materiaux
+            for materiau in Materiaux do
               begin
-                choix2_int:=StrToInt(choix2);
-                sortie2:=True;
+              // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
+              if (emplacement.consommable[materiau] > 0) then
+                  // Enleve les matériaux consommés à la variable de retour
+                  res[materiau] := res[materiau] - emplacement.consommable[materiau];
               end;
-            end;
-            if choix2<>QUITTER then
-            begin
-              for materiau in Materiaux do
-              begin
-                if ord(materiau) = (choix2_int+StrToInt(MATERIAUX_PREMIERS)-1) then
-                  creerUsine(zone, choix_int, materiau);
-              end;
-              sortie:=True;
-            end;
-          end
-          else if choix = '3' then
-            begin
-              creerCentrale(zone, choix_int);
-              sortie:=True;
-            end;
+
+            // Ajoute le nombre de materiaux produit à l'emplacement du même matériaux
+            res[emplacement.materiaux] := res[emplacement.materiaux] + emplacement.production;
+          end;
         end;
-      end
-      else
-      begin
-        AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un autre batiment');
-        readln;
       end;
-    end
-    else
-    begin
-      AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
-      readln;
     end;
+    getProduction:=res;
   end;
 
-procedure MenuUpgradeBatiment(var zone:Zone);
-  {}
-  var
-    choix:string;
-    choix_int:Integer;
-  begin
-    AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
-    readln(choix);
-    choix_int:=StrToInt(choix);
-    if zone.emplacements[choix_int].est_decouvert then
-    begin
-      if (zone.emplacements[choix_int].type_structure = Mine) or 
-          (zone.emplacements[choix_int].type_structure = Usine) or 
-          (zone.emplacements[choix_int].type_structure = Centrale) then
-      begin
-        UpgradeBatiment(zone, choix_int);
-      end
-      else
-      begin
-        AfficherActionInformation('Vous devez choisir uniquement un batiment améliorable');
-        readln;
-      end;
-    end
-    else
-    begin
-      AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
-      readln;
-    end;
-  end;
-
+// Procedure et fonctions supplémentaires
 procedure setPanne(var zone:Zone);
   {Procedure qui prend en parametre une zone 
   et qui a une probabilité que chaque mine ou 
   usine puisse tomber en panne}
   var
-    nombreAleatoire:Integer;
     i:Integer;
   const
-    CHANCE=0.1;
+    CHANCE=0.02;
   begin
     // Boucle sur tous les emplacements de la zone
     for i:=1 to Length(zone.emplacements)-1 do
@@ -719,9 +759,267 @@ procedure jourSuivant(var zone:Zone; var date:Date);
   {Passe au jour suivant en récupérant les ressources produites}
   begin
   suivante(date);
-  setPanne(zone);
   revenusProduction(zone);
+  AfficheRecapJournee(zone, date);
+  setPanne(zone);
   end;
+
+// Gestion des missions
+procedure setMission(var mission:Mission);
+  {Procedure qui permet de créer une mission avec un nombre
+  aléatoire de matériaux entre 1 et 4 ainsi qu'un nombres 
+  aléatoire entre 5 et 15 de chacun de ces matériaux}
+  var
+    i:Integer;
+    nbMateriaux:Integer;
+    materiau:Materiaux;
+    nbAleatoire:Integer;
+    sortie:Boolean;
+  const
+    CHANCE=0.5;
+  begin
+    mission.accompli := False;
+
+    // Initialise le nombre de materiaux minimum a 1
+    nbMateriaux:=1;
+    for i:=1 to 3 do
+    begin
+      // Si le nombre aléatoire de la fonction random est plus petit que le seuil définis, le nombre de materiaux augmente de 1
+      if random < CHANCE then
+        inc(nbMateriaux);
+    end;
+
+    // Initialise le tableau des ressources de la mission à 0
+    for materiau in Materiaux do
+    begin
+      mission.ressources[materiau]:=0;
+    end;
+
+    // Boucle sur le nombres de materiaux de la mission
+    for i:=1 to nbMateriaux do
+    begin
+      // Initialise la sortie a False
+      sortie:=False;
+      while not sortie do
+      begin
+        // Choisit un nombre aléatoire afin de choisir uniquement des materiaux transformés
+        nbAleatoire := random(StrToInt(MATERIAUX_TRANSFORMES)) + StrToInt(MATERIAUX_PREMIERS);
+        // Boucle sur tous les materiaux
+        for materiau in Materiaux do
+        begin
+          // Vérifie si le materiau sur lequel on boucle correspond au nombre aléatoire
+          if (ord(materiau) = nbAleatoire) then
+          begin
+            // Vérifie que le materiau n'a pas déjà de ressources attribués
+            if (mission.ressources[materiau] = 0) then
+            begin
+              // Créer un nombre aléatoire de nombres d'un matériau entre 5 et 15 compris
+              mission.ressources[materiau] := (5 + (random(10)+1));
+              // Ajoute pour chaque matériau le nombre de points de la hierarchie du matériaux transformé
+              mission.points := mission.points + nbAleatoire;
+              sortie := True;
+            end;
+          end;
+        end;
+      end;
+    end;
+  
+procedure initMissions(var missions:MissionsActives);
+  {Procedure qui initialise toutes les missions}
+  var
+    missionActuelle:Mission;
+  begin
+    // Boucle sur chaque mission
+    for missionActuelle in missions do
+    begin
+      // Initialise la nouvelle mission
+      setMission(missionActuelle);
+    end;
+  end;
+
+procedure actualiseMissions(var missions:MissionsActives);
+  {Procedure qui actualise les missions si elles sont accomplies}
+  var
+    missionActuelle:Mission;
+  begin
+    // Boucle sur chaque mission
+    for missionActuelle in missions do
+    begin
+      // Vérifie que la mission est accompli
+      if missionActuelle.accompli then
+      begin
+        // Initialise la nouvelle mission
+        setMission(missionActuelle);
+      end;
+    end;
+  end;
+
+function MateriauxNecessairesMission(zone:Zone; mission:Mission):Boolean;
+  {Fonction qui renvoie Vrai si les materiaux necessaires a l'accomplissement 
+  de la mission sont présent dans l'inventaire de la zone et Faux sinon}
+  var
+    materiau:Materiaux;
+  begin
+    MateriauxNecessairesMission := True;
+    // Boucle sur chaque materiaux du type Materiaux
+    for materiau in Materiaux do
+    begin
+      // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
+      if (mission.ressources[materiau] > 0) then
+      begin
+        // Vérifie que l'inventaire de la zone possèdent assez de matériaux
+        if (zone.inventaire[materiau] < mission.ressources[materiau]) then
+          MateriauxNecessairesMission := False;
+      end;
+    end;
+  end;
+
+procedure SuppressionMateriauxMission(var zone:Zone; var mission:Mission);
+  {Procedure qui supprime les materiaux necessaires a une mission}
+  var
+    materiau:Materiaux;
+  begin
+    // Boucle sur chaque materiaux du type Materiaux
+    for materiau in Materiaux do
+    begin
+      // Vérifie que le materiau sur lequel on boucle est necessaire au batiment
+      if (mission.ressources[materiau] > 0) then
+      begin
+          // Supprime les matériaux nécessaire de l'inventaire
+          zone.inventaire[materiau] :=  zone.inventaire[materiau] - mission.ressources[materiau];
+      end;
+    end;
+  end;
+
+procedure termineMission(var zone:Zone; var mission:Mission);
+  {Procedure qui accompli une mission et supprime les materiaux necessaires de l'inventaire de la zone}
+  begin
+    // Vérifie que les matériaux nécessaires sont présent dans l'inventaire de la zone
+    if MateriauxNecessairesMission(zone, mission) then
+    begin
+      // Supprime les matériaux nécessaires de la zone
+      SuppressionMateriauxMission(zone, mission);
+
+      // Définie la mission comme accompli      
+      mission.accompli := True;
+    end
+    else
+    begin
+      AfficherActionInformation('Vous n''avez pas les materiaux necessaires pour accomplir cette mission');
+      readln;
+    end;
+  end;
+
+// Gestion des menus
+procedure MenuCreerBatiment(zones:ZonesJeu; var zone:Zone);
+
+  {}
+  var
+    choix:String;
+    choix_int:Integer;
+    choix2:String;
+    choix2_int:Integer;
+    sortie:Boolean;
+    sortie2:Boolean;
+    materiau:Materiaux;
+  begin
+    AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
+    readln(choix);
+    choix_int:=StrToInt(choix);
+    if zone.emplacements[choix_int].est_decouvert then
+    begin
+      if (zone.emplacements[choix_int].type_structure = Vide) or (zone.emplacements[choix_int].type_structure = Gisement) then
+      begin
+        sortie:=False;
+        while not sortie do
+        begin
+          AfficherMenuBatiment();
+          readln(choix);
+          if choix = '0' then
+            sortie:=True
+          else  if choix = '1' then
+          begin 
+            creerMine(zone, choix_int);
+            sortie:=True;
+          end
+          else if choix = '2' then
+          begin
+            sortie2:=False;
+            while not sortie2 do
+            begin
+              AfficherMenuMateriauxTransformer();
+              readln(choix2);
+              if (choix>=QUITTER) and (choix<=MATERIAUX_TRANSFORMES) then
+              begin
+                choix2_int:=StrToInt(choix2);
+                sortie2:=True;
+              end;
+            end;
+            if choix2<>QUITTER then
+            begin
+              for materiau in Materiaux do
+              begin
+                if ord(materiau) = (choix2_int+StrToInt(MATERIAUX_PREMIERS)-1) then
+                  creerUsine(zone, choix_int, materiau);
+              end;
+              sortie:=True;
+            end;
+          end
+          else if choix = '3' then
+          begin
+            creerCentrale(zone, choix_int);
+            sortie:=True;
+          end
+          else if choix = '4' then
+          begin
+            creerAscenseurOrbitale(zones, zone, choix_int);
+            sortie:=True;
+          end;
+        end;
+      end
+      else
+      begin
+        AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un autre batiment');
+        readln;
+      end;
+    end
+    else
+    begin
+      AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
+      readln;
+    end;
+  end;
+
+procedure MenuUpgradeBatiment(var zone:Zone);
+  {}
+  var
+    choix:string;
+    choix_int:Integer;
+  begin
+    AfficherActionInformation('Veuillez choisir un emplacement(entre 0 et 9)');
+    readln(choix);
+    choix_int:=StrToInt(choix);
+    if zone.emplacements[choix_int].est_decouvert then
+    begin
+      if (zone.emplacements[choix_int].type_structure = Mine) or 
+          (zone.emplacements[choix_int].type_structure = Usine) or 
+          (zone.emplacements[choix_int].type_structure = Centrale) then
+      begin
+        UpgradeBatiment(zone, choix_int);
+      end
+      else
+      begin
+        AfficherActionInformation('Vous devez choisir uniquement un batiment améliorable');
+        readln;
+      end;
+    end
+    else
+    begin
+      AfficherActionInformation('Vous ne pouvez pas construire un batiment sur un emplacement non explore');
+      readln;
+    end;
+  end;
+
 
 procedure Explore(var zone:Zone);
   {Effectue une action 'Explorer'}
@@ -938,18 +1236,21 @@ procedure menuTransfertRessources(var zones:ZonesJeu; curent_zone:Integer);
     zones[zone_transfert].inventaire[materiaux_transfert]:=zones[zone_transfert].inventaire[materiaux_transfert]+nb_a_transmettre;
   end;
 
+// Menu Principal du jeu
 procedure JeuPrincipal();
   var
     curent_zone:Integer;  // Zone actuel du jeu
     zones:ZonesJeu;  // Les 3 zones dans lesquels le joueur peut se déplacer
     choix:String; // Sert à enregistrer les données saisits par l'utilisateir
     curent_date:Date; // La date actuelle du jeu
+    pognon:Integer;
   begin
     // Affiche le scénarion avant de lancer le jeu
     Scenario();
     
     choix:='';
     setDate(curent_date);
+    pognon:=0;
     curent_zone:=0;
 
     // Définition des 3 zones de jeu
@@ -960,12 +1261,12 @@ procedure JeuPrincipal();
     // Boucle du menu principal, s'arrête que l'utilisateur entre '0'.
     while (choix<>QUITTER) do
       begin
-      AfficherZone(zones[curent_zone], curent_date);
+      AfficherZone(zones[curent_zone], curent_date, pognon);
       readln(choix);
       // Choix 'Construire un bâtiment'
       if (choix=CONSTRUIRE) then
         begin
-        MenuCreerBatiment(zones[curent_zone]);
+        MenuCreerBatiment(zones, zones[curent_zone]);
         end
       // Choix 'Changer de production'
       else if (choix=CHANGER_PRODUCTION) then
@@ -1001,9 +1302,11 @@ procedure JeuPrincipal();
       // Choix 'Missions'                   (Aouter la logique)
       else if (choix=MISSIONS) then
         begin
-        // A CHANGER CAR ON PEUT PAS Y ACCER DANS ASCENSEUR ORBITAL !!!
-          AfficherMenuMissions();
-          readln();
+          if ExisteAscenseurOrbital(zones) then
+          begin
+            AfficherMenuMissions();
+            readln();
+          end;
         end
       // Choix 'Wiki'                       (Finir entrer les données)
       else if (choix=WIKI) then
