@@ -753,8 +753,6 @@ procedure actualiseMissions(var missionsA:MissionsActives);
       begin
         // Initialise la nouvelle mission
         setMission(missionsA[i]);
-        AfficherActionInformation(IntToStr(i));
-        readln;
       end;
     end;
   end;
@@ -772,8 +770,6 @@ function MateriauxNecessairesMission(zone:Zone; mission:Mission):Boolean;
       // Vérifie que l'emplacement consomme le materiaux sur lequel on boucle
       if (mission.ressources[materiau] > 0) then
       begin
-        AfficherActionInformation(IntToStr(mission.ressources[materiau]));
-        readln;
         // Vérifie que l'inventaire de la zone possèdent assez de matériaux
         if (zone.inventaire[materiau] < mission.ressources[materiau]) then
           MateriauxNecessairesMission := False;
