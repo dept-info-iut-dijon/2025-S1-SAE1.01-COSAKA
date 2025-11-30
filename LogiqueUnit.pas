@@ -1380,10 +1380,14 @@ procedure MenuReparerBatiment(var zone:Zone);
 procedure menuActionBatiments(var zones:ZonesJeu; curent_zone:Integer);
   var
     choix:String;
+    curent_date:Date; // La date actuelle du jeu
+    pognon:Integer;
   begin
+    setDate(curent_date);
     choix:='';
     while (choix<>QUITTER) do
       begin
+      AfficherZone(zones[curent_zone], curent_date, pognon);
       AfficherMenuActionBatiments();
       readln(choix);
       // Choix 'Construire un bâtiment'
