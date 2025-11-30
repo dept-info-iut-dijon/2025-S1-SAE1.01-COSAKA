@@ -1,6 +1,5 @@
 # 2025-S1-SAE1.01-COSAKA
-Dépôt de rendu SAE 1.01 
+Dépôt de rendu SAE 1.01 - DUPUIS Gabin  NAVELOT-GENET Anatole  SUCCAR Eric  WAGNER Tom
 
 SatisFact'IUT by COSAKA
 
-DUPUIS Gabin  NAVELOT-GENET Anatole  SUCCAR Eric  WAGNER Tom
