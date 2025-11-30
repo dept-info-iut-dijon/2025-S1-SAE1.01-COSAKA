@@ -288,7 +288,7 @@ procedure creerMine(var zone:Zone; emplacement:Integer);
         SuppressionMateriauxConstruction(zone, Mine, NOUVEAU_NIVEAU);
 
         // Calcul de la production selon le niveau du Gisement
-        production := round(PRODUCTION_BASE[zone.emplacements[emplacement].materiaux]);
+        production := round(PRODUCTION_BASE[zone.emplacements[emplacement].materiaux]*zone.emplacements[emplacement].niveau*0.5);
 
         // Modifie l'emplacement avec les nouveaux paramètres
         setEmplacement(zone.emplacements[emplacement], NOUVEAU_NIVEAU, zone.emplacements[emplacement].est_decouvert, 
@@ -1417,7 +1417,6 @@ procedure menuGestionMissions(var zones:ZonesJeu; var missionsA:MissionsActives;
   end;
 
 procedure MenuReparerBatiment(var zone:Zone);
-  {}
   var
     choix:string;
     choix_int:Integer;
@@ -1456,7 +1455,6 @@ procedure menuActionBatiments(var zones:ZonesJeu; curent_zone:Integer);
   var
     choix:String;
     curent_date:Date; // La date actuelle du jeu
-    pognon:Integer;
   begin
     setDate(curent_date);
     choix:='';
