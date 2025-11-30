@@ -503,10 +503,6 @@ procedure UpgradeBatiment(var zone:Zone; emplacement:Integer);
     end;
   end;
 
-procedure ReparerBatiment(var zone:Zone; emplacement:Integer);
-  {}
-  begin
-  end;
 
 // Gestion de la production de ressources
 function ProductionElectricite(zone:Zone):Integer;
@@ -1295,6 +1291,7 @@ procedure JeuPrincipal();
     curent_zone:Integer;  // Zone actuel du jeu
     zones:ZonesJeu;  // Les 3 zones dans lesquels le joueur peut se déplacer
     choix:String; // Sert à enregistrer les données saisits par l'utilisateir
+    choix2:String;
     curent_date:Date; // La date actuelle du jeu
     pognon:Integer;
     missionsA:MissionsActives;
@@ -1303,6 +1300,7 @@ procedure JeuPrincipal();
     Scenario();
     
     choix:='';
+    choix2:='';
     setDate(curent_date);
     pognon:=0;
     curent_zone:=0;
@@ -1323,27 +1321,27 @@ procedure JeuPrincipal();
       // Choix 'Gestion des batiments'
       if (choix=MENU_BATIMENTS) then
       begin
-        while (choix<>QUITTER) do
+        while (choix2<>QUITTER) do
         begin
           AfficherMenuActionBatiments();
-          readln(choix);
+          readln(choix2);
           // Choix 'Construire un bâtiment'
-          if (choix=CONSTRUIRE) then
+          if (choix2=CONSTRUIRE) then
           begin
             MenuCreerBatiment(zones, zones[curent_zone]);
           end
           // Choix 'Changer de production'
-          else if (choix=CHANGER_PRODUCTION) then
+          else if (choix2=CHANGER_PRODUCTION) then
           begin
             MenuChangementUsine(zones[curent_zone]);
           end
           // Choix 'Améliorer un bâtiment'
-          else if (choix=AMELIORER) then
+          else if (choix2=AMELIORER) then
           begin
             MenuUpgradeBatiment(zones[curent_zone]);
           end
           // Choix 'Réparer un bâtiment'
-          else if (choix=AMELIORER) then
+          else if (choix2=REPARER) then
           begin
             
           end;
